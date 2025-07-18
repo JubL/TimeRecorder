@@ -1,0 +1,65 @@
+[tool.ruff]
+# do not check jupyter notebooks
+extend-exclude = [
+    "*.ipynb",
+]
+
+# assume Python 3.13
+target-version = "py313"
+
+[tool.ruff.lint.per-file-ignores]
+# ignore some checks in test cases
+"test_*.py" = [
+    "D100",     # undocumented-public-module
+    "D103",     # undocumented-public-function
+    "INP001",   # implicit-namespace-package
+    "S101",     # assert
+    "T201",     # print
+    "PLR2004",  # magic-value-comparison
+]
+
+[tool.ruff.lint]
+# igonre following rules
+ignore = [
+    "D104",     # undocumented-public-package
+    "SIM108",   # if-else-block-instead-of-if-exp
+    "S101",     # assert-used
+]
+
+# enforce following rules
+select = [
+    "A",        # flake8-builtins
+    "ANN",      # flake8-annotations
+    "ARG",      # flake8-unused-arguments
+    "ASYNC",    # flake8-async
+    "C90",      # mccabe
+    "D",        # pydocstyle
+    "E",        # pycodestyle Error
+    "ERA",      # eradicate
+    "F",        # pyflakes
+    "FBT",      # flake8-boolean-trap
+    "I",        # isort
+    "INP",      # flake8-no-pep420
+    "ISC",      # flake8-implicit-str-concat
+    "LOG",      # flake8-logging
+    "N",        # pep8-naming
+    "PIE",      # flake8-pie
+    "PL",       # pylint
+    "PT",       # flake8-pytest-style
+    "S",        # flake8-bandit
+    "SIM",      # flake8-simplify
+    "T10",      # flake8-debugger
+    "T20",      # flake8-print
+    "UP",       # pyupgrade
+    "W",        # pycodestyle Warning
+]
+
+[tool.ruff.format]
+line-ending = "lf"  # unix style line ending
+docstring-code-format = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"   # Docstring style
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 160
