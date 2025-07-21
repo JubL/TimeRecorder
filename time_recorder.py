@@ -68,6 +68,7 @@ import pathlib
 from datetime import datetime, timedelta
 
 import colorama
+
 # import holidays
 import pandas as pd
 import psutil
@@ -86,6 +87,7 @@ RESET = colorama.Style.RESET_ALL
 
 # if datetime(2025, 12, 25) in holidays_de_he:  # This is how to test for a holiday.
 #     print("Christmas is a holiday in Hessen, Germany in 2025.")
+
 
 class BootTimeError(Exception):
     """Custom exception for errors retrieving boot time."""
@@ -124,14 +126,7 @@ class TimeRecorder:
         Format string for parsing time (default: "%H:%M:%S").
     """
 
-    def __init__(
-        self,
-        date: str,
-        start_time: str,
-        end_time: str,
-        lunch_break_duration: int,
-        full_format: str = r"%d.%m.%Y %H:%M:%S"
-    ) -> None:
+    def __init__(self, date: str, start_time: str, end_time: str, lunch_break_duration: int, full_format: str = r"%d.%m.%Y %H:%M:%S") -> None:
         """
         Initialize a TimeRecorder object with the provided parameters.
 
@@ -234,6 +229,10 @@ class TimeRecorder:
             # Update start time to boot time
             self.start_time = datetime.fromtimestamp(boot_timestamp)
 
+            # get the function name and additional debug information
+            self.func_name = "update_boot_time"
+            logger.debug(f"DEBUG information from {self.func_name}: Updated start_time to boot time: {self.start_time}")
+
             # Adjust end time to match boot time date while keeping original time
             try:
                 self.end_time = datetime.strptime(
@@ -272,7 +271,10 @@ class TimeRecorder:
         - overtime
         """
         self.work_time = self.calculate_work_duration()
+        self.func_name = "evaluate_work_hours"
+        logger.debug(f"DEBUG information from {self.func_name}: Calculated work_time: {self.work_time}")
         self.case, self.overtime = self.calculate_overtime(self.work_time)
+        logger.debug(f"DEBUG information from {self.func_name}: Case: {self.case}, Overtime: {self.overtime}")
 
     def calculate_work_duration(self) -> timedelta:
         """
@@ -305,6 +307,12 @@ class TimeRecorder:
         # Sanity check: work duration must not be negative
         if work_duration <= timedelta(0):
             raise ValueError("The work duration must be positive.")
+
+        self.func_name = "calculate_work_duration"
+        logger.debug(
+            f"DEBUG information from {self.func_name}: Total duration: {total_duration}, "
+            f"Lunch break: {self.lunch_break_duration}, Work duration: {work_duration}"
+        )
 
         return work_duration
 
@@ -383,6 +391,10 @@ class TimeRecorder:
         OSError
             If the pandas dataframe directory does not exist.
         """
+        # Ensure the directory exists and create a new DataFrame if it doesn't
+
+        self.func_name = "record_into_df"
+        logger.debug(f"DEBUG information from {self.func_name}: Recording into DataFrame at: {df_path}")
         # sanity checks
         if not df_path.parent.exists():
             raise OSError(f"Directory {df_path.parent} does not exist")
@@ -391,10 +403,10 @@ class TimeRecorder:
             self.create_df(df_path)
 
         # add the time report data to the dataframe
-        df = pd.read_csv(df_path, sep=';', encoding='utf-8')
+        df = pd.read_csv(df_path, sep=";", encoding="utf-8")
         # Add the new row to the DataFrame in a single line
         df.loc[len(df)] = self.time_report_line_to_dict()
-        df.to_csv(df_path, sep=';', index=False, encoding='utf-8')
+        df.to_csv(df_path, sep=";", index=False, encoding="utf-8")
 
     def create_df(self, df_path: pathlib.Path) -> None:
         """
@@ -408,7 +420,7 @@ class TimeRecorder:
         # create a pandas dataframe
         columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         df = pd.DataFrame(columns=columns)
-        df.to_csv(df_path, index=False, sep=';', encoding='utf-8')
+        df.to_csv(df_path, index=False, sep=";", encoding="utf-8")
 
     def time_report_line_to_dict(self) -> dict:
         """
@@ -427,7 +439,8 @@ class TimeRecorder:
             "lunch_break_duration": int(self.lunch_break_duration.total_seconds() // self.sec_in_min),
             "work_time": round(self.work_time.total_seconds() / self.sec_in_hour, 2),
             "case": self.case,
-            "overtime": round(self.overtime.total_seconds() / self.sec_in_hour, 2)}
+            "overtime": round(self.overtime.total_seconds() / self.sec_in_hour, 2),
+        }
 
     def squash_df(self, df_path: pathlib.Path) -> None:
         """
@@ -441,45 +454,54 @@ class TimeRecorder:
         df_path : pathlib.Path
             Path to the pandas dataframe file.
         """
+        self.func_name = "squash_df"
+        logger.debug(f"DEBUG information from {self.func_name}: Squashing DataFrame at: {df_path}")
+
         def calculate_total_overtime(row: pd.core.series.Series) -> float | str:
             """Return empty string if work_time is missing or empty, otherwise calculate overtime."""
-            if row['work_time'] == '' or pd.isnull(row['work_time']):
-                return ''
+            if row["work_time"] == "" or pd.isnull(row["work_time"]):
+                return ""
             # Overtime is total work_time minus 8 hours (per day)
-            overtime = row['work_time'] - 8
+            overtime = row["work_time"] - 8
             return round(overtime, 2)
 
         def reevaluate_case(row: pd.core.series.Series) -> str:
             """Reevaluate the case based on the work_time."""
-            if row['work_time'] == '' or pd.isnull(row['work_time']):
-                return ''
+            if row["work_time"] == "" or pd.isnull(row["work_time"]):
+                return ""
             # work_time is in hours (float)
-            work_time_td = timedelta(hours=row['work_time']) if row['work_time'] != '' else timedelta(0)
+            work_time_td = timedelta(hours=row["work_time"]) if row["work_time"] != "" else timedelta(0)
             case, _ = self.calculate_overtime(work_time_td)
             return case
 
         try:
-            df = pd.read_csv(df_path, sep=';', encoding='utf-8')
-            df['date'] = pd.to_datetime(df['date'], format=self.date_format)
+            df = pd.read_csv(df_path, sep=";", encoding="utf-8")
+            df["date"] = pd.to_datetime(df["date"], format=self.date_format)
 
             # Group by date and weekday, aggregate work_time and lunch_break_duration
-            df = df.groupby(['date', 'weekday'], as_index=False).agg({
-                'start_time': 'first',
-                'end_time': 'last',
-                'lunch_break_duration': lambda x: x.sum() if x.notnull().any() else '',
-                'work_time': lambda x: x.sum() if x.notnull().any() else '',
-            }).reset_index(drop=True)
+            df = (
+                df.groupby(["date", "weekday"], as_index=False)
+                .agg(
+                    {
+                        "start_time": "first",
+                        "end_time": "last",
+                        "lunch_break_duration": lambda x: x.sum() if x.notnull().any() else "",
+                        "work_time": lambda x: x.sum() if x.notnull().any() else "",
+                    }
+                )
+                .reset_index(drop=True)
+            )
 
             # Reevaluate 'case' after aggregation using self.calculate_overtime
-            df['case'] = df.apply(reevaluate_case, axis=1)
-            df['overtime'] = df.apply(calculate_total_overtime, axis=1)
+            df["case"] = df.apply(reevaluate_case, axis=1)
+            df["overtime"] = df.apply(calculate_total_overtime, axis=1)
 
             # Reorder columns so 'weekday' comes before 'date'
-            columns_order = ['weekday', 'date', 'start_time', 'end_time', 'lunch_break_duration', 'work_time', 'case', 'overtime']
+            columns_order = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
             # Format 'date' column according to self.date_format
-            df['date'] = df['date'].dt.strftime(self.date_format)
+            df["date"] = df["date"].dt.strftime(self.date_format)
             df = df[columns_order]
-            df.to_csv(df_path, sep=';', index=False, encoding='utf-8')
+            df.to_csv(df_path, sep=";", index=False, encoding="utf-8")
         except FileNotFoundError:
             logger.error(f"File not found: {df_path}")
         except pd.errors.EmptyDataError:
@@ -505,9 +527,10 @@ class TimeRecorder:
             The estimated total work hours for a standard 5-day week, rounded to two decimal places.
             Returns 0.0 if no work days are found in the log file.
         """
-        result = 0.
+        result = 0.0
+        self.func_name = "get_weekly_hours_from_log"
         try:
-            df = pd.read_csv(log_path, sep=';', encoding='utf-8')
+            df = pd.read_csv(log_path, sep=";", encoding="utf-8")
         except FileNotFoundError:
             logger.error(f"Log file not found: {log_path}")
         except pd.errors.EmptyDataError:
@@ -515,16 +538,17 @@ class TimeRecorder:
         except pd.errors.ParserError as e:
             logger.error(f"Error parsing log file: {e}")
         else:
-            if 'work_time' not in df.columns or 'date' not in df.columns:
+            if "work_time" not in df.columns or "date" not in df.columns:
                 logger.error("Log file must contain 'work_time' and 'date' columns.")
             else:
                 try:
-                    df['work_time'] = pd.to_timedelta(df['work_time'], unit='h')
+                    df["work_time"] = pd.to_timedelta(df["work_time"], unit="h")
                 except (ValueError, TypeError) as e:
                     logger.error(f"Error converting 'work_time' to timedelta: {e}")
                 else:
-                    weekly_hours = df['work_time'].sum().total_seconds() / self.sec_in_hour
-                    num_days = df[df['work_time'] > pd.Timedelta(0)]['date'].nunique()
+                    weekly_hours = df["work_time"].sum().total_seconds() / self.sec_in_hour
+                    num_days = df[df["work_time"] > pd.Timedelta(0)]["date"].nunique()
+                    logger.debug(f"DEBUG information from {self.func_name}: Weekly hours: {weekly_hours}, Number of days: {num_days}")
                     if num_days == 0:
                         logger.warning("No work days found in the log file.")
                     else:
@@ -607,13 +631,11 @@ if __name__ == "__main__":
     # TODO: for that, a list of holidays needs to be provided. Maybe try 'pip install holidays'.
     # TODO: How can I add custom holidays to the list of holidays?
 
-    # TODO: add a verbose debug mode (with logger.extra() or logger.debug()) to log more information about the calculations and the data processing?
-
     USE_BOOT_TIME = True  # Use system boot time as start time
     DATE = "25.06.2025"  # Date in DD.MM.YYYY format
     START_TIME = "07:06"  # Starting time in DD.MM.YYYY HH:MM format
-    END_TIME = "18:05"  # Ending time in DD.MM.YYYY HH:MM format
-    LUNCH_BREAK_DURATION = 60  # Duration of the lunch break in minutes
+    END_TIME = "17:30"  # Ending time in DD.MM.YYYY HH:MM format
+    LUNCH_BREAK_DURATION = 90  # Duration of the lunch break in minutes
     LOG_PATH = pathlib.Path.cwd() / "timereport_logbook.txt"  # Path to the log file in the current directory
     LOG = False  # Set to True to log the results
 
