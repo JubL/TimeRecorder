@@ -199,7 +199,7 @@ class TimeRecorder:
         try:
             return datetime.strptime(date + " " + time, full_format)
         except ValueError as e:
-            raise ValueError(f"Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}")
+            raise ValueError(f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}")
 
     def update_boot_time(self) -> None:
         """
@@ -224,7 +224,7 @@ class TimeRecorder:
             # Get system boot time
             boot_timestamp = psutil.boot_time()
             if boot_timestamp is None:
-                raise BootTimeError("Failed to retrieve system boot time")
+                raise BootTimeError(f"{RED}Failed to retrieve system boot time{RESET}")
 
             # Update start time to boot time
             self.start_time = datetime.fromtimestamp(boot_timestamp)
@@ -239,7 +239,7 @@ class TimeRecorder:
                     self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format), self.full_format
                 )
             except ValueError as e:
-                raise BootTimeError(f"Failed to adjust end time: {e}")
+                raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}")
 
             # Recalculate work hours
             self.evaluate_work_hours()
@@ -249,9 +249,9 @@ class TimeRecorder:
             self.weekday = datetime.strptime(self.date, self.date_format).strftime("%a")
 
         except psutil.Error as e:
-            raise BootTimeError(f"Error accessing system information: {e}")
+            raise BootTimeError(f"{RED}Error accessing system information: {e}{RESET}")
         except Exception as e:
-            raise BootTimeError(f"Unexpected error while updating boot time: {e}")
+            raise BootTimeError(f"{RED}Unexpected error while updating boot time: {e}{RESET}")
 
     def evaluate_work_hours(self) -> None:
         """
@@ -294,10 +294,10 @@ class TimeRecorder:
         """
         # Validate that start time is not after end time
         if self.start_time >= self.end_time:
-            raise ValueError(f"The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}")
+            raise ValueError(f"{RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{RESET}")
 
         if self.lunch_break_duration < timedelta(0):
-            raise ValueError("The lunch break duration must be a non-negative integer.")
+            raise ValueError(f"{RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{RESET}")
 
         # Calculate the total duration between start and end times
         total_duration = self.end_time - self.start_time
@@ -306,7 +306,7 @@ class TimeRecorder:
 
         # Sanity check: work duration must not be negative
         if work_duration <= timedelta(0):
-            raise ValueError("The work duration must be positive.")
+            raise ValueError(f"{RED}The work duration must be positive. Start time: {self.start_time}, End time: {self.end_time}{RESET}")
 
         self.func_name = "calculate_work_duration"
         logger.debug(
@@ -397,7 +397,7 @@ class TimeRecorder:
         logger.debug(f"DEBUG information from {self.func_name}: Recording into DataFrame at: {df_path}")
         # sanity checks
         if not df_path.parent.exists():
-            raise OSError(f"Directory {df_path.parent} does not exist")
+            raise OSError(f"{RED}Directory {df_path.parent} does not exist{RESET}")
 
         if not df_path.exists() or df_path.stat().st_size == 0:
             self.create_df(df_path)
@@ -503,9 +503,9 @@ class TimeRecorder:
             df = df[columns_order]
             df.to_csv(df_path, sep=";", index=False, encoding="utf-8")
         except FileNotFoundError:
-            logger.error(f"File not found: {df_path}")
+            logger.error(f"{RED}File not found: {df_path}{RESET}")
         except pd.errors.EmptyDataError:
-            logger.warning(f"DataFrame file is empty: {df_path}")
+            logger.warning(f"{RED}DataFrame file is empty: {df_path}{RESET}")
         except OSError as e:
             logger.error(f"I/O error while squashing DataFrame: {e}")
 
@@ -532,19 +532,19 @@ class TimeRecorder:
         try:
             df = pd.read_csv(log_path, sep=";", encoding="utf-8")
         except FileNotFoundError:
-            logger.error(f"Log file not found: {log_path}")
+            logger.error(f"{RED}Log file not found: {log_path}{RESET}")
         except pd.errors.EmptyDataError:
-            logger.warning(f"Log file is empty: {log_path}")
+            logger.warning(f"{RED}Log file is empty: {log_path}{RESET}")
         except pd.errors.ParserError as e:
-            logger.error(f"Error parsing log file: {e}")
+            logger.error(f"{RED}Error parsing log file: {e}{RESET}")
         else:
             if "work_time" not in df.columns or "date" not in df.columns:
-                logger.error("Log file must contain 'work_time' and 'date' columns.")
+                logger.error(f"{RED}Log file must contain 'work_time' and 'date' columns. Found columns: {df.columns.tolist()}{RESET}")
             else:
                 try:
                     df["work_time"] = pd.to_timedelta(df["work_time"], unit="h")
                 except (ValueError, TypeError) as e:
-                    logger.error(f"Error converting 'work_time' to timedelta: {e}")
+                    logger.error(f"{RED}Error converting 'work_time' to timedelta: {e}{RESET}")
                 else:
                     weekly_hours = df["work_time"].sum().total_seconds() / self.sec_in_hour
                     num_days = df[df["work_time"] > pd.Timedelta(0)]["date"].nunique()
@@ -596,7 +596,7 @@ class TimeRecorder:
         """
         # Validate case value
         if self.case not in ["overtime", "undertime"]:
-            raise ValueError(f"Unexpected value for case: {self.case}. Expected 'overtime' or 'undertime'.")
+            raise ValueError(f"{RED}Unexpected value for case: {self.case}. Expected 'overtime' or 'undertime'.{RESET}")
 
         # Build output strings
         work_hours = int(self.work_time.total_seconds() // self.sec_in_hour)
