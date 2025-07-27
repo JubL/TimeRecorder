@@ -142,22 +142,51 @@ class TimeRecorder:
             Duration of the lunch break in minutes.
         full_format : str, optional
             Format string for parsing full datetime (default: "%d.%m.%Y %H:%M:%S").
-        date_format : str, optional
-            Format string for parsing date (default: "%d.%m.%Y").
-        time_format : str, optional
-            Format string for parsing time (default: "%H:%M:%S").
 
         Notes
         -----
         - Time strings without seconds will have ":00" appended automatically.
         """
+        def _parse_datetime(date: str, time: str, full_format: str) -> datetime:
+            """
+            Parse a datetime string, handling cases where seconds are missing.
+
+            Parameters
+            ----------
+            date : str
+                Date string in the format specified by date_format.
+            time : str
+                Time string, which may or may not include seconds.
+            full_format : str
+                The expected format string for the complete datetime.
+
+            Returns
+            -------
+            datetime
+                A datetime object parsed from the input strings.
+
+            Notes
+            -----
+            If the time string doesn't include seconds (contains only one ':'),
+            they will be added as ":00" before parsing.
+            """
+            # Check if time string has seconds (contains ':')
+            if time.count(":") == 1:
+                # Add seconds if missing
+                time = time + ":00"
+
+            try:
+                return datetime.strptime(date + " " + time, full_format)
+            except ValueError as e:
+                raise ValueError(f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}")
+
         self.full_format = full_format
         self.date_format, self.time_format = self.full_format.split(" ")
 
         self.date = date
 
-        self.start_time = self._parse_datetime(date, start_time, full_format)  # Start time as a datetime object
-        self.end_time = self._parse_datetime(date, end_time, full_format)  # End time as a datetime object
+        self.start_time = _parse_datetime(date, start_time, full_format)  # Start time as a datetime object
+        self.end_time = _parse_datetime(date, end_time, full_format)  # End time as a datetime object
         self.lunch_break_duration = timedelta(minutes=lunch_break_duration)  # Duration of the lunch break in minutes
 
         self.weekday = self.start_time.strftime("%a")
@@ -167,39 +196,6 @@ class TimeRecorder:
         self.sec_in_min = 60  # Number of seconds in a minute
         self.sec_in_hour = 3600  # Number of seconds in an hour
         self.min_in_hour = 60  # Number of minutes in an hour
-
-    def _parse_datetime(self, date: str, time: str, full_format: str) -> datetime:
-        """
-        Parse a datetime string, handling cases where seconds are missing.
-
-        Parameters
-        ----------
-        date : str
-            Date string in the format specified by date_format.
-        time : str
-            Time string, which may or may not include seconds.
-        full_format : str
-            The expected format string for the complete datetime.
-
-        Returns
-        -------
-        datetime
-            A datetime object parsed from the input strings.
-
-        Notes
-        -----
-        If the time string doesn't include seconds (contains only one ':'),
-        they will be added as ":00" before parsing.
-        """
-        # Check if time string has seconds (contains ':')
-        if time.count(":") == 1:
-            # Add seconds if missing
-            time = time + ":00"
-
-        try:
-            return datetime.strptime(date + " " + time, full_format)
-        except ValueError as e:
-            raise ValueError(f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}")
 
     def update_boot_time(self) -> None:
         """
