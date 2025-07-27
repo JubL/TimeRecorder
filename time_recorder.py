@@ -579,32 +579,23 @@ class TimeRecorder:
         """
         result = 0.0
         self.func_name = "get_weekly_hours_from_log"
+
+        df = self.load_logbook(log_path)
+
         try:
-            df = pd.read_csv(log_path, sep=";", encoding="utf-8")
-        except FileNotFoundError:
-            logger.error(f"{RED}Log file not found: {log_path}{RESET}")
-        except pd.errors.EmptyDataError:
-            logger.warning(f"{RED}Log file is empty: {log_path}{RESET}")
-        except pd.errors.ParserError as e:
-            logger.error(f"{RED}Error parsing log file: {e}{RESET}")
+            df["work_time"] = pd.to_timedelta(df["work_time"], unit="h")
+        except (ValueError, TypeError) as e:
+            logger.error(f"{RED}Error converting 'work_time' to timedelta: {e}{RESET}")
         else:
-            if "work_time" not in df.columns or "date" not in df.columns:
-                logger.error(f"{RED}Log file must contain 'work_time' and 'date' columns. Found columns: {df.columns.tolist()}{RESET}")
+            weekly_hours = df["work_time"].sum().total_seconds() / self.sec_in_hour
+            num_days = df[df["work_time"] > pd.Timedelta(0)]["date"].nunique()
+            logger.debug(f"DEBUG information from {self.func_name}: Weekly hours: {weekly_hours}, Number of days: {num_days}")
+            if num_days == 0:
+                logger.warning("No work days found in the log file.")
             else:
-                try:
-                    df["work_time"] = pd.to_timedelta(df["work_time"], unit="h")
-                except (ValueError, TypeError) as e:
-                    logger.error(f"{RED}Error converting 'work_time' to timedelta: {e}{RESET}")
-                else:
-                    weekly_hours = df["work_time"].sum().total_seconds() / self.sec_in_hour
-                    num_days = df[df["work_time"] > pd.Timedelta(0)]["date"].nunique()
-                    logger.debug(f"DEBUG information from {self.func_name}: Weekly hours: {weekly_hours}, Number of days: {num_days}")
-                    if num_days == 0:
-                        logger.warning("No work days found in the log file.")
-                    else:
-                        weekly_hours /= num_days  # average work hours per day
-                        weekly_hours *= 5  # assuming a 5-day work week
-                        result = round(weekly_hours, 2)
+                weekly_hours /= num_days  # average work hours per day
+                weekly_hours *= 5  # assuming a 5-day work week
+                result = round(weekly_hours, 2)
         return result
 
     def __repr__(self) -> str:
