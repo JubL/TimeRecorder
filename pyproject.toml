@@ -19,7 +19,7 @@ target-version = "py313"
 ]
 
 [tool.ruff.lint]
-# igonre following rules
+# ignore following rules
 ignore = [
     "D104",     # undocumented-public-package
     "SIM108",   # if-else-block-instead-of-if-exp
@@ -51,6 +51,7 @@ select = [
     "T10",      # flake8-debugger
     "T20",      # flake8-print
     "UP",       # pyupgrade
+    "Q",        # flake8-quotes
     "W",        # pycodestyle Warning
 ]
 
