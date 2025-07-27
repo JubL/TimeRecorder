@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Work Hours Evaluation and Logging Module at your service.
+Work Hours Evaluation and Logging Module.
 
 This module provides functionality to calculate and evaluate work hours,
 taking into account start and end times, lunch break duration, and optional
@@ -8,21 +8,24 @@ use of the system boot time as the starting point. It assesses whether the
 work duration exceeds or falls short of a standard work day, calculates
 possible overtime or undertime, and weekly work hour analysis.
 
-Modules:
+Dependencies:
+-------------
+- logging: For logging messages and information.
+- pathlib: For file path manipulations.
+- datetime, timedelta: For manipulating dates and times.
+- colorama: For colored terminal text output.
+- pandas: For handling tabular data (CSV logbook).
+- psutil: For retrieving system boot time.
+- holidays: (optional, commented out) For handling public holidays.
+
+Classes:
 --------
-- logging: Used for logging messages and information.
-- pathlib: Used for file path manipulations and checking file existence.
-- datetime, timedelta: Used for manipulating dates and times.
-- colorama: Used for colored terminal text output.
-- pandas: Used for handling data in tabular form, specifically for reading and writing CSV files.
-- psutil: Used for retrieving system information such as boot time.
-- holidays: (commented out) Intended for handling public holidays, but not currently used.
+- TimeRecorder: Represents a single time report entry and provides methods for work hour calculations and logbook management.
+- BootTimeError: Custom exception for boot time retrieval errors.
 
 Functions:
 ----------
-calculate_work_duration(_start_time: datetime,
-                        _end_time: datetime,
-                        _lunch_break_duration: int) -> timedelta
+calculate_work_duration(_start_time: datetime, _end_time: datetime, _lunch_break_duration: int) -> timedelta
     Calculate work duration excluding lunch break.
 
 get_boot_time(time_format: str) -> datetime
@@ -31,37 +34,32 @@ get_boot_time(time_format: str) -> datetime
 extract_hours_minutes(time: timedelta) -> tuple[int, int]
     Extract hours and minutes from a timedelta object.
 
-evaluate_work_hours(_use_boot_time: bool,
-                    _start_time: str,
-                    _end_time: str,
-                    _lunch_break_duration: int,
-                    _format: str) -> tuple[int, int, str, int, int]
+evaluate_work_hours(_use_boot_time: bool, _start_time: str, _end_time: str, _lunch_break_duration: int, _format: str) -> tuple[int, int, str, int, int]
     Evaluate work hours and calculate overtime or undertime.
 
 calculate_overtime(work_time: timedelta) -> tuple[str, timedelta]
     Determine overtime or undertime based on work duration.
 
-record_into_logbook(_weekday: str, _date: str, _start_time: str,
-                    _end_time: str, _lunch_break_duration: int,
-                    _work_hours: int, _work_minutes: int,
-                    _case: str, _overtime_hours: int,
-                    _overtime_minutes: int, filename: str) -> None
+record_into_logbook(_weekday: str, _date: str, _start_time: str, _end_time: str, _lunch_break_duration: int, _work_hours: int, _work_minutes: int, _case: str, _overtime_hours: int, _overtime_minutes: int, filename: str) -> None
     Append a new record to the logbook CSV file.
 
-display_results(_work_hours: int, _work_minutes: int, _case: str,
-                _overtime_hours: int, _overtime_minutes: int) -> None
+display_results(_work_hours: int, _work_minutes: int, _case: str, _overtime_hours: int, _overtime_minutes: int) -> None
     Display formatted work duration and overtime / undertime information.
 
-main(use_boot_time: bool, date: str, start_time: str, end_time: str,
-     lunch_break_duration: int, log: bool, log_path: str) -> None
+main(use_boot_time: bool, date: str, start_time: str, end_time: str, lunch_break_duration: int, log: bool, log_path: str) -> None
     Main function to calculate work hours and write a log entry if logging is enabled.
 
+Logbook File Format:
+--------------------
+CSV file with columns:
+    weekday, date, start_time, end_time, lunch_break_duration, work_time, case, overtime
 
-Example:
---------
+Script Usage:
+-------------
 If called as a standalone script, it will calculate work hours and print
 results based on the defined start and end times, lunch break, and utilizing
 the system boot time as the starting point if enabled.
+
 """
 import logging
 import pathlib
@@ -516,10 +514,7 @@ class TimeRecorder:
         df_path : pathlib.Path
             Path to the pandas dataframe file.
         """
-        self.func_name = "squash_df"
-        logger.debug(f"DEBUG information from {self.func_name}: Squashing DataFrame at: {df_path}")
-
-        def calculate_total_overtime(row: pd.core.series.Series) -> float | str:
+        def calculate_total_overtime(row: pd.Series) -> float | str:
             """Return empty string if work_time is missing or empty, otherwise calculate overtime."""
             if row["work_time"] == "" or pd.isnull(row["work_time"]):
                 return ""
@@ -527,7 +522,7 @@ class TimeRecorder:
             overtime = row["work_time"] - 8
             return round(overtime, 2)
 
-        def reevaluate_case(row: pd.core.series.Series) -> str:
+        def reevaluate_case(row: pd.Series) -> str:
             """Reevaluate the case based on the work_time."""
             if row["work_time"] == "" or pd.isnull(row["work_time"]):
                 return ""
@@ -573,7 +568,7 @@ class TimeRecorder:
 
         Parameters
         ----------
-        log_path : str
+        log_path : pathlib.Path
             The file path to the CSV log file. The file must contain a 'work_time' column (in hours) and a 'date' column.
 
         Returns
