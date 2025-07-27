@@ -803,7 +803,9 @@ if __name__ == "__main__":
     # TODO: add a log message to squash_df to indicate that squashing did occure
 
     # TODO: put logbook handling into a separate class
-    # TODO: put the test of one class into one file and the test of another class into another file
+    # TODO: put the test of one class into one file or folder and the test of another class into another file or folder
+
+    # TODO: write tests for load_logbook, save_logbook, create_df, find_missing_days_in_logbook, add_missing_days_to_logbook
 
     USE_BOOT_TIME = True  # Use system boot time as start time
     DATE = "25.07.2025"  # Date in DD.MM.YYYY format
