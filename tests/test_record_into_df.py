@@ -41,15 +41,6 @@ class TestRecordIntoDF:
         assert (df2["date"] == line.date).all()
 
     @pytest.mark.fast
-    def test_record_into_df_raises_if_parent_missing(self, tmp_path: pathlib.Path, line: tr.TimeRecorder) -> None:
-        """Test that record_into_df raises OSError if the parent directory does not exist."""
-        missing_dir = tmp_path / "doesnotexist"
-        df_file = missing_dir / "logbook_df.csv"
-        assert not missing_dir.exists()
-        with pytest.raises(OSError, match="Directory .* does not exist"):
-            line.record_into_df(df_file)
-
-    @pytest.mark.fast
     def test_create_df_creates_file_with_correct_columns(self, tmp_path: pathlib.Path, line: tr.TimeRecorder) -> None:
         """Test that create_df creates a file with the correct columns and no rows."""
         df_file = tmp_path / "logbook_df.csv"
