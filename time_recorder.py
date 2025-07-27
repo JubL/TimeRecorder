@@ -536,40 +536,33 @@ class TimeRecorder:
             case, _ = self.calculate_overtime(work_time_td)
             return case
 
-        try:
-            df = pd.read_csv(df_path, sep=";", encoding="utf-8")
-            df["date"] = pd.to_datetime(df["date"], format=self.date_format)
+        df = self.load_logbook(df_path)
+        df["date"] = pd.to_datetime(df["date"], format=self.date_format)
 
-            # Group by date and weekday, aggregate work_time and lunch_break_duration
-            df = (
-                df.groupby(["date", "weekday"], as_index=False)
-                .agg(
-                    {
-                        "start_time": "first",
-                        "end_time": "last",
-                        "lunch_break_duration": lambda x: x.sum() if x.notnull().any() else "",
-                        "work_time": lambda x: x.sum() if x.notnull().any() else "",
-                    }
-                )
-                .reset_index(drop=True)
+        # Group by date and weekday, aggregate work_time and lunch_break_duration
+        df = (
+            df.groupby(["date", "weekday"], as_index=False)
+            .agg(
+                {
+                    "start_time": "first",
+                    "end_time": "last",
+                    "lunch_break_duration": lambda x: x.sum() if x.notnull().any() else "",
+                    "work_time": lambda x: x.sum() if x.notnull().any() else "",
+                }
             )
+            .reset_index(drop=True)
+        )
 
-            # Reevaluate 'case' after aggregation using self.calculate_overtime
-            df["case"] = df.apply(reevaluate_case, axis=1)
-            df["overtime"] = df.apply(calculate_total_overtime, axis=1)
+        df["case"] = df.apply(reevaluate_case, axis=1)
+        df["overtime"] = df.apply(calculate_total_overtime, axis=1)
 
-            # Reorder columns so 'weekday' comes before 'date'
-            columns_order = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
-            # Format 'date' column according to self.date_format
-            df["date"] = df["date"].dt.strftime(self.date_format)
-            df = df[columns_order]
-            df.to_csv(df_path, sep=";", index=False, encoding="utf-8")
-        except FileNotFoundError:
-            logger.error(f"{RED}File not found: {df_path}{RESET}")
-        except pd.errors.EmptyDataError:
-            logger.warning(f"{RED}DataFrame file is empty: {df_path}{RESET}")
-        except OSError as e:
-            logger.error(f"I/O error while squashing DataFrame: {e}")
+        # Reorder columns so 'weekday' comes before 'date'
+        columns_order = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
+        # Format 'date' column according to self.date_format
+        df["date"] = df["date"].dt.strftime(self.date_format)
+        df = df[columns_order]
+        self.save_logbook(df, df_path)
+
 
     def get_weekly_hours_from_log(self, log_path: str) -> float:
         """
