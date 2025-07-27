@@ -40,7 +40,8 @@ evaluate_work_hours(_use_boot_time: bool, _start_time: str, _end_time: str, _lun
 calculate_overtime(work_time: timedelta) -> tuple[str, timedelta]
     Determine overtime or undertime based on work duration.
 
-record_into_logbook(_weekday: str, _date: str, _start_time: str, _end_time: str, _lunch_break_duration: int, _work_hours: int, _work_minutes: int, _case: str, _overtime_hours: int, _overtime_minutes: int, filename: str) -> None
+record_into_logbook(_weekday: str, _date: str, _start_time: str, _end_time: str, _lunch_break_duration: int, _work_hours: int,
+                    _work_minutes: int, _case: str, _overtime_hours: int, _overtime_minutes: int, filename: str) -> None
     Append a new record to the logbook CSV file.
 
 display_results(_work_hours: int, _work_minutes: int, _case: str, _overtime_hours: int, _overtime_minutes: int) -> None
@@ -66,7 +67,6 @@ import pathlib
 from datetime import datetime, timedelta
 
 import colorama
-
 import holidays
 import pandas as pd
 import psutil
@@ -79,7 +79,7 @@ RED = colorama.Fore.RED
 GREEN = colorama.Fore.GREEN
 RESET = colorama.Style.RESET_ALL
 
-holidays_de_he = holidays.country_holidays('DE', subdiv='HE')
+holidays_de_he = holidays.country_holidays("DE", subdiv="HE")
 
 
 class BootTimeError(Exception):
@@ -140,6 +140,7 @@ class TimeRecorder:
         -----
         - Time strings without seconds will have ":00" appended automatically.
         """
+
         def _parse_datetime(date: str, time: str, full_format: str) -> datetime:
             """
             Parse a datetime string, handling cases where seconds are missing.
@@ -509,6 +510,7 @@ class TimeRecorder:
         df_path : pathlib.Path
             Path to the pandas dataframe file.
         """
+
         def calculate_total_overtime(row: pd.Series) -> float | str:
             """Return empty string if work_time is missing or empty, otherwise calculate overtime."""
             if row["work_time"] == "" or pd.isnull(row["work_time"]):
@@ -798,19 +800,16 @@ if __name__ == "__main__":
     # TODO: maybe use command line arguments for the use_boot_time, date, start time, end time, lunch break duration and logging and log path
     # TODO: use argparse to parse the command line arguments
 
-    # TODO: add missing days in the log file, so that saturdays and sundays are also logged, even if no work was done on these days
-    # TODO: implement a last_day_is_fryday() function to check if the last day in the log file is a friday and if so,
-    # TODO: add the next saturday and sunday as missing days with 0 work hours.
+    # TODO: add a log message to squash_df to indicate that squashing did occure
 
-    # TODO: add holidays to the log file, so that these days are also logged, even if no work was done on these days.
-    # TODO: for that, a list of holidays needs to be provided. Maybe try 'pip install holidays'.
-    # TODO: How can I add custom holidays to the list of holidays?
+    # TODO: put logbook handling into a separate class
+    # TODO: put the test of one class into one file and the test of another class into another file
 
     USE_BOOT_TIME = True  # Use system boot time as start time
-    DATE = "25.06.2025"  # Date in DD.MM.YYYY format
-    START_TIME = "07:06"  # Starting time in DD.MM.YYYY HH:MM format
-    END_TIME = "17:30"  # Ending time in DD.MM.YYYY HH:MM format
-    LUNCH_BREAK_DURATION = 90  # Duration of the lunch break in minutes
+    DATE = "25.07.2025"  # Date in DD.MM.YYYY format
+    START_TIME = "07:00"  # Starting time in DD.MM.YYYY HH:MM format
+    END_TIME = "17:15"  # Ending time in DD.MM.YYYY HH:MM format
+    LUNCH_BREAK_DURATION = 60  # Duration of the lunch break in minutes
     LOG_PATH = pathlib.Path.cwd() / "timereport_logbook.txt"  # Path to the log file in the current directory
     LOG = False  # Set to True to log the results
 
