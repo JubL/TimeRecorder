@@ -553,17 +553,44 @@ class TimeRecorder:
         df = df[columns_order]
         self.save_logbook(df, df_path)
 
-    def add_missing_days_to_log(self, log_path: pathlib.Path) -> None:
+    def find_and_add_missing_days(self, log_path: pathlib.Path) -> None:
         """
-        Add missing weekend days to the log file.
+        Find and add missing holidays and weekend days to the log file.
 
-        This method checks the log file for missing entries on Saturdays and Sundays.
-        If these days are missing, it adds them with just the weekdaay and the date.
+        This method checks the log file for missing entries.
+        If these days are missing, it adds them with just the weekday and the date.
 
         Parameters
         ----------
         log_path : pathlib.Path
             The file path to the CSV log file. The file must contain a 'date' column.
+        """
+        missing_days = self.find_missing_days_in_logbook(log_path)
+
+        if missing_days:
+            self.add_missing_days_to_logbook(missing_days, log_path)
+
+    def find_missing_days_in_logbook(self, log_path: pathlib.Path) -> list[tuple[datetime, datetime]]:
+        """
+        Find missing days in the logbook by checking for gaps between consecutive entries.
+
+        This method loads the logbook CSV file, checks for any missing days between consecutive entries,
+        and returns a list of tuples representing the start and end dates of the missing periods.
+
+        Parameters
+        ----------
+        log_path : pathlib.Path
+            The file path to the CSV log file. The file must contain a 'date' column.
+
+        Returns
+        -------
+        list[tuple[datetime, datetime]]
+            A list of tuples, where each tuple contains the start and end dates of a missing period.
+
+        Notes
+        -----
+        - If the log file is empty, it logs a warning and returns an empty list.
+        - If there are missing days, it logs a warning for each gap found.
         """
         df = self.load_logbook(log_path)
 
@@ -578,64 +605,89 @@ class TimeRecorder:
         missing_days = []
         for i in range(len(df) - 1):
             if (df["date"].iloc[i + 1] - df["date"].iloc[i]).days > 1:
-                logger.warning(f"{RED}There are missing days in the logbook between {df['date'].iloc[i].strftime(self.date_format)} and {df['date'].iloc[i + 1].strftime(self.date_format)}{RESET}")
-                missing_days.append((df["date"].iloc[i], df['date'].iloc[i + 1]))
+                logger.warning(
+                    f"{RED}There are missing days in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
+                    f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{RESET}"
+                )
+                missing_days.append((df["date"].iloc[i], df["date"].iloc[i + 1]))
 
-        if not missing_days:
-            del missing_days
-            return
+        return missing_days
 
-        # Convert 'date' column to string format
-        df["date"] = df["date"].dt.strftime(self.date_format)
+    def add_missing_days_to_logbook(self, missing_days: list[tuple[datetime, datetime]], log_path: pathlib.Path) -> None:
+        """
+        Add missing Saturdays, Sundays, and holidays to the logbook DataFrame for specified date ranges.
+
+        For each tuple of (start_date, end_date) in `missing_days`, this method generates all dates between the two (excluding the endpoints),
+        and checks if each date is missing from the logbook. If a date is a holiday (as defined in `holidays_de_he`), Saturday, or Sunday,
+        and is not already present in the DataFrame, it is added with appropriate default values.
+        After processing, the DataFrame is sorted by date and saved back to the specified log file.
+
+        Parameters
+        ----------
+        df: pd.DataFrame
+            The logbook DataFrame to update. Must contain a 'date' column.
+        missing_days: list of tuple of datetime
+            List of (start_date, end_date) tuples specifying date ranges to check for missing days.
+        log_path: pathlib.Path
+            Path to the logbook file where the updated DataFrame will be saved.
+
+        Returns
+        -------
+        None
+        """
+        df = self.load_logbook(log_path)
+        # Convert 'date' column to string format for comparison
+        df["date"] = pd.to_datetime(df["date"], format=self.date_format).dt.strftime(self.date_format)
+
+        saturday = 5  # Constant for Saturday
+        sunday = 6    # Constant for Sunday
 
         for start_date, end_date in missing_days:
-            # Generate all dates between start_date and end_date
-            all_dates = pd.date_range(start=start_date, end=end_date, freq='D', inclusive='neither')
-
-            # Check for missing Saturdays and Sundays
-            saturday = 5  # Constant for Saturday
-            sunday = 6  # Constant for Sunday
+            # Generate all dates between start_date and end_date (exclusive)
+            all_dates = pd.date_range(start=start_date + timedelta(days=1), end=end_date - timedelta(days=1), freq="D")
             for date in all_dates:
-                if not any(df["date"] == date):
-                    # TODO: Check if a missing day is a holiday. If not: proceed to add 'regular' saturdays and sundays.
-                    if date in holidays_de_he:
-                        print(f"Found a wild {holidays_de_he[date]}.")  # Print the name of the holiday.
-                        df.loc[len(df)] = {
-                            "weekday": date.strftime("%a"),  # Get the weekday abbreviation
-                            "date": date.strftime(self.date_format),
-                            "start_time": holidays_de_he[date],
-                            "end_time": "",
-                            "lunch_break_duration": "",
-                            "work_time": "",
-                            "case": "",
-                            "overtime": "",
-                        }
-                        logger.info(f"Added missing holiday on {date.strftime(self.date_format)} - {holidays_de_he[date]}")
+                date_str = date.strftime(self.date_format)
+                if any(df["date"] == date_str):
+                    continue
 
-                    if date.weekday() == saturday and not any(df["date"] == date):  # Saturday
-                        df.loc[len(df)] = {
-                            "weekday": "Sat",
-                            "date": date.strftime(self.date_format),
-                            "start_time": "",
-                            "end_time": "",
-                            "lunch_break_duration": "",
-                            "work_time": "",
-                            "case": "",
-                            "overtime": "",
-                        }
-                        logger.info(f"Added missing Saturday on {date.strftime(self.date_format)}")
-                    elif date.weekday() == sunday and not any(df["date"] == date):  # Sunday
-                        df.loc[len(df)] = {
-                            "weekday": "Sun",
-                            "date": date.strftime(self.date_format),
-                            "start_time": "",
-                            "end_time": "",
-                            "lunch_break_duration": "",
-                            "work_time": "",
-                            "case": "",
-                            "overtime": "",
-                        }
-                        logger.info(f"Added missing Sunday on {date.strftime(self.date_format)}")
+                if date in holidays_de_he:
+                    logger.info(f"Found a wild {holidays_de_he[date]}.")  # Print the name of the holiday.
+                    df.loc[len(df)] = {
+                        "weekday": date.strftime("%a"),
+                        "date": date_str,
+                        "start_time": holidays_de_he[date],
+                        "end_time": "",
+                        "lunch_break_duration": "",
+                        "work_time": "",
+                        "case": "",
+                        "overtime": "",
+                    }
+                    logger.info(f"Added missing holiday on {date_str} - {holidays_de_he[date]}")
+
+                if date.weekday() == saturday and not any(df["date"] == date_str):
+                    df.loc[len(df)] = {
+                        "weekday": "Sat",
+                        "date": date_str,
+                        "start_time": "",
+                        "end_time": "",
+                        "lunch_break_duration": "",
+                        "work_time": "",
+                        "case": "",
+                        "overtime": "",
+                    }
+                    logger.info(f"Added missing Saturday on {date_str}")
+                elif date.weekday() == sunday and not any(df["date"] == date_str):
+                    df.loc[len(df)] = {
+                        "weekday": "Sun",
+                        "date": date_str,
+                        "start_time": "",
+                        "end_time": "",
+                        "lunch_break_duration": "",
+                        "work_time": "",
+                        "case": "",
+                        "overtime": "",
+                    }
+                    logger.info(f"Added missing Sunday on {date_str}")
 
         # Sort and save the updated DataFrame back to the log file
         df.sort_values(by="date", inplace=True, key=lambda x: pd.to_datetime(x, format=self.date_format))
@@ -772,6 +824,7 @@ if __name__ == "__main__":
 
     if LOG:
         tr_line.record_into_df(LOG_PATH)
+        tr_line.find_and_add_missing_days(LOG_PATH)
         tr_line.squash_df(LOG_PATH)
 
     average_weekly_hours = tr_line.get_weekly_hours_from_log(LOG_PATH)
