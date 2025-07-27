@@ -373,6 +373,81 @@ class TimeRecorder:
 
         return case, overtime
 
+    def load_logbook(self, log_path: pathlib.Path) -> pd.DataFrame:
+        """
+        Load the logbook CSV file into a pandas DataFrame.
+
+        Parameters
+        ----------
+        log_path : pathlib.Path
+            Path to the logbook CSV file.
+
+        Returns
+        -------
+        pd.DataFrame
+            The loaded DataFrame containing the logbook data.
+
+        Notes
+        -----
+        If the logbook file does not exist or is empty, a new DataFrame is created.
+        Handles file not found, empty data, and parsing errors gracefully.
+        """
+        if not log_path.exists() or log_path.stat().st_size == 0:
+            self.create_df(log_path)
+
+        try:
+            df = pd.read_csv(log_path, sep=";", encoding="utf-8")  # how are empty fields read? as NaN?
+            logger.debug(f"Read logbook from {log_path}")
+        except FileNotFoundError:
+            logger.error(f"{RED}Log file not found: {log_path}{RESET}")
+        except pd.errors.EmptyDataError:
+            logger.warning(f"{RED}Log file is empty: {log_path}{RESET}")
+        except pd.errors.ParserError as e:
+            logger.error(f"{RED}Error parsing log file: {e}{RESET}")
+
+        # sanity checks
+        # make sure all required coloumns are present
+        required_columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
+        if not all(col in df.columns for col in required_columns):
+            raise KeyError(f"{RED}Log file is missing required columns: {required_columns}.")
+
+        # count the number of coloumns
+        if len(df.columns) != len(required_columns):
+            raise ValueError(f"{RED}Log file has an unexpected number of columns: {len(df.columns)}. Expected 8 columns.{RESET}")
+
+        # TODO: Check if the columns are in the correct format (e.g., date as datetime, time as str)
+
+        return df
+
+    def save_logbook(self, df: pd.DataFrame, log_path: pathlib.Path) -> None:
+        """
+        Save a pandas DataFrame to a CSV file.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The DataFrame to be saved.
+        log_path : pathlib.Path
+            Path to the CSV file.
+
+        Notes
+        -----
+        The DataFrame is saved using ';' as the separator and UTF-8 encoding.
+        Handles OSError and general exceptions gracefully.
+        """
+        if len(df) > 0 and type(df["date"][0]) is pd.Timestamp:
+            # Convert 'date' column to string format if it is in datetime format
+            df["date"] = df["date"].dt.strftime(self.date_format)
+        try:
+            df.to_csv(log_path, sep=";", index=False, encoding="utf-8")
+            logger.debug(f"Logbook saved to {log_path}")
+        except PermissionError as e:
+            logger.error(f"{RED}Permission denied when saving logbook to {log_path}: {e}{RESET}")
+        except OSError as e:
+            logger.error(f"{RED}OS error while saving logbook to {log_path}: {e}{RESET}")
+        except Exception as e:
+            logger.error(f"{RED}Unexpected error saving logbook to {log_path}: {e}{RESET}")
+
     def record_into_df(self, df_path: pathlib.Path) -> None:
         """
         Write the time report data into a pandas dataframe.
@@ -389,20 +464,11 @@ class TimeRecorder:
         """
         # Ensure the directory exists and create a new DataFrame if it doesn't
 
-        self.func_name = "record_into_df"
-        logger.debug(f"DEBUG information from {self.func_name}: Recording into DataFrame at: {df_path}")
-        # sanity checks
-        if not df_path.parent.exists():
-            raise OSError(f"{RED}Directory {df_path.parent} does not exist{RESET}")
+        df = self.load_logbook(df_path)
 
-        if not df_path.exists() or df_path.stat().st_size == 0:
-            self.create_df(df_path)
-
-        # add the time report data to the dataframe
-        df = pd.read_csv(df_path, sep=";", encoding="utf-8")
         # Add the new row to the DataFrame in a single line
         df.loc[len(df)] = self.time_report_line_to_dict()
-        df.to_csv(df_path, sep=";", index=False, encoding="utf-8")
+        self.save_logbook(df, df_path)
 
     def create_df(self, df_path: pathlib.Path) -> None:
         """
@@ -416,7 +482,7 @@ class TimeRecorder:
         # create a pandas dataframe
         columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         df = pd.DataFrame(columns=columns)
-        df.to_csv(df_path, index=False, sep=";", encoding="utf-8")
+        self.save_logbook(df, df_path)
 
     def time_report_line_to_dict(self) -> dict:
         """
