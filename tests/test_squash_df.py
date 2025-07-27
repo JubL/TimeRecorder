@@ -7,7 +7,7 @@ import sys
 import pandas as pd
 import pytest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # Adjust path to import time_recording module
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # Adjust path to import time_recording module
 
 import time_recorder as tr
 
@@ -40,9 +40,9 @@ class TestSquashDF:
             "case": ["undertime", "undertime", "overtime"],
             "overtime": [-7, 4.5, 0.0],
         })
-        df.to_csv(df_file, sep=';', index=False, encoding='utf-8')
+        df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
         line.squash_df(df_file)
-        result = pd.read_csv(df_file, sep=';', encoding='utf-8')
+        result = pd.read_csv(df_file, sep=";", encoding="utf-8")
         # Should have two rows (grouped by date and weekday)
         assert len(result) == 2
         # Check that lunch_break_duration and work_time are summed for the grouped date

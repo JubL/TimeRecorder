@@ -5,7 +5,7 @@ import sys
 import pandas as pd
 import pytest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # Adjust path to import time_recording module
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # Adjust path to import time_recording module
 
 import time_recorder as tr
 
@@ -30,13 +30,13 @@ class TestRecordIntoDF:
         # Should create file and write header + row
         line.record_into_df(df_file)
         assert df_file.exists()
-        df = pd.read_csv(df_file, sep=';', encoding='utf-8')
+        df = pd.read_csv(df_file, sep=";", encoding="utf-8")
         assert len(df) == 1
         assert df.iloc[0]["date"] == line.date
         assert df.iloc[0]["weekday"] == line.weekday
         # Appending another row should add a new row
         line.record_into_df(df_file)
-        df2 = pd.read_csv(df_file, sep=';', encoding='utf-8')
+        df2 = pd.read_csv(df_file, sep=";", encoding="utf-8")
         assert len(df2) == 2
         assert (df2["date"] == line.date).all()
 
@@ -46,7 +46,7 @@ class TestRecordIntoDF:
         df_file = tmp_path / "logbook_df.csv"
         line.create_df(df_file)
         assert df_file.exists()
-        df = pd.read_csv(df_file, sep=';', encoding='utf-8')
+        df = pd.read_csv(df_file, sep=";", encoding="utf-8")
         expected_columns = [
             "weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"
         ]
