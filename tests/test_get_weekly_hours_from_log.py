@@ -117,5 +117,3 @@ class TestGetWeeklyHoursFromLog:
         # Average = (7.3333+7.6666)/2 = 7.5, weekly = 7.5*5 = 37.5
         result = line.get_weekly_hours_from_log(file)
         assert result == 37.5
-
-

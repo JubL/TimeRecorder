@@ -167,7 +167,7 @@ class TimeRecorder:
             # Check if time string has seconds (contains ':')
             if time.count(":") == 1:
                 # Add seconds if missing
-                time = time + ":00"
+                time += ":00"
 
             try:
                 return datetime.strptime(date + " " + time, full_format)
@@ -263,7 +263,7 @@ class TimeRecorder:
         self.work_time = self.calculate_work_duration()
         self.func_name = "evaluate_work_hours"
         logger.debug(f"DEBUG information from {self.func_name}: Calculated work_time: {self.work_time}")
-        self.case, self.overtime = self.calculate_overtime(self.work_time)
+        self.case, self.overtime = self.calculate_overtime()
         logger.debug(f"DEBUG information from {self.func_name}: Case: {self.case}, Overtime: {self.overtime}")
 
     def calculate_work_duration(self) -> timedelta:
@@ -338,7 +338,7 @@ class TimeRecorder:
 
         return hours, minutes, seconds
 
-    def calculate_overtime(self, work_time: timedelta) -> tuple[str, timedelta]:
+    def calculate_overtime(self, work_time: timedelta = 0) -> tuple[str, timedelta]:
         """
         Determine whether the given work time results in overtime or undertime by comparing it to a full work day.
 
@@ -346,7 +346,7 @@ class TimeRecorder:
 
         Parameters
         ----------
-        work_time : timedelta
+        work_time : timedelta, default 0
             The total work time represented as a timedelta object.
 
         Returns
@@ -357,6 +357,9 @@ class TimeRecorder:
             - timedelta: The amount of overtime or undertime calculated as a difference from a full work day
         """
         _full_day = timedelta(hours=8, minutes=0)
+
+        if work_time == 0:
+            work_time = self.work_time
 
         if work_time >= _full_day:
             case = "overtime"
@@ -513,7 +516,7 @@ class TimeRecorder:
 
         def calculate_total_overtime(row: pd.Series) -> float | str:
             """Return empty string if work_time is missing or empty, otherwise calculate overtime."""
-            if row["work_time"] == "" or pd.isnull(row["work_time"]):
+            if not row["work_time"] or pd.isnull(row["work_time"]):
                 return ""
             # Overtime is total work_time minus 8 hours (per day)
             overtime = row["work_time"] - 8
@@ -521,10 +524,10 @@ class TimeRecorder:
 
         def reevaluate_case(row: pd.Series) -> str:
             """Reevaluate the case based on the work_time."""
-            if row["work_time"] == "" or pd.isnull(row["work_time"]):
+            if not row["work_time"] or pd.isnull(row["work_time"]):
                 return ""
             # work_time is in hours (float)
-            work_time_td = timedelta(hours=row["work_time"]) if row["work_time"] != "" else timedelta(0)
+            work_time_td = timedelta(hours=row["work_time"]) if row["work_time"] else timedelta(0)
             case, _ = self.calculate_overtime(work_time_td)
             return case
 
@@ -642,7 +645,7 @@ class TimeRecorder:
         df["date"] = pd.to_datetime(df["date"], format=self.date_format).dt.strftime(self.date_format)
 
         saturday = 5  # Constant for Saturday
-        sunday = 6    # Constant for Sunday
+        sunday = 6  # Constant for Sunday
 
         for start_date, end_date in missing_days:
             # Generate all dates between start_date and end_date (exclusive)
@@ -772,7 +775,7 @@ class TimeRecorder:
         Overtime is displayed in green, undertime in red.
         """
         # Validate case value
-        if self.case not in ["overtime", "undertime"]:
+        if self.case not in {"overtime", "undertime"}:
             raise ValueError(f"{RED}Unexpected value for case: {self.case}. Expected 'overtime' or 'undertime'.{RESET}")
 
         # Build output strings
@@ -806,6 +809,8 @@ if __name__ == "__main__":
     # TODO: put the test of one class into one file or folder and the test of another class into another file or folder
 
     # TODO: write tests for load_logbook, save_logbook, create_df, find_missing_days_in_logbook, add_missing_days_to_logbook
+
+    # TODO: use a dict to store the parameters for the TimeRecorder object or perhaps a configuration file (yaml)
 
     USE_BOOT_TIME = True  # Use system boot time as start time
     DATE = "25.07.2025"  # Date in DD.MM.YYYY format

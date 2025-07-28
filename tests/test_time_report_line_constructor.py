@@ -50,7 +50,7 @@ class TestTimeRecorderConstructor:
         assert line.end_time == case["expected_end"]
         assert line.lunch_break_duration == case["expected_lunch"]
         assert isinstance(line.work_time, timedelta)
-        assert line.case in ("overtime", "undertime")
+        assert line.case in {"overtime", "undertime"}
         assert isinstance(line.overtime, timedelta)
         assert isinstance(line.weekday, str)
         assert line.full_format == case["full_format"]

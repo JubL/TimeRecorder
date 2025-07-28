@@ -43,7 +43,7 @@ class TestTimeRecorderUpdateBootTime:
         assert sample_line.end_time.time() == old_end_time.time()
         # Work hours and overtime should be recalculated
         assert isinstance(sample_line.work_time, timedelta)
-        assert sample_line.case in ("overtime", "undertime")
+        assert sample_line.case in {"overtime", "undertime"}
         assert isinstance(sample_line.overtime, timedelta)
 
     @pytest.mark.fast

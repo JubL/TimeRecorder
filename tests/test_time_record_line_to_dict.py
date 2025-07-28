@@ -34,5 +34,5 @@ class TestTimeRecorderToDict:
         for key, value in results.items():
             assert result[key] == value
         assert isinstance(result["work_time"], float)
-        assert result["case"] in ("overtime", "undertime")
+        assert result["case"] in {"overtime", "undertime"}
         assert isinstance(result["overtime"], float)
