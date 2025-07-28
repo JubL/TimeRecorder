@@ -26,10 +26,7 @@ class TestTimeRecorderUpdateBootTime:
 
     @pytest.mark.fast
     @patch("psutil.boot_time")
-    def test_update_boot_time_sets_start_time_to_boot_time(self,
-                                                           mock_boot_time: Mock,
-                                                           sample_line: tr.TimeRecorder,
-                                                           fake_boot_timestamp: datetime) -> None:
+    def test_update_boot_time_sets_start_time_to_boot_time(self, mock_boot_time: Mock, sample_line: tr.TimeRecorder, fake_boot_timestamp: datetime) -> None:
         """Test that update_boot_time sets start_time to the system boot time."""
         mock_boot_time.return_value = fake_boot_timestamp
 
@@ -48,10 +45,7 @@ class TestTimeRecorderUpdateBootTime:
 
     @pytest.mark.fast
     @patch("psutil.boot_time")
-    def test_update_boot_time_updates_weekday_and_date(self,
-                                                       mock_boot_time: Mock,
-                                                       sample_line: tr.TimeRecorder,
-                                                       fake_boot_timestamp: datetime) -> None:
+    def test_update_boot_time_updates_weekday_and_date(self, mock_boot_time: Mock, sample_line: tr.TimeRecorder, fake_boot_timestamp: datetime) -> None:
         """Test that update_boot_time updates weekday and date to match the boot time."""
         mock_boot_time.return_value = fake_boot_timestamp
 
@@ -83,9 +77,7 @@ class TestTimeRecorderUpdateBootTime:
 
     @pytest.mark.fast
     @patch("psutil.boot_time")
-    def test_update_boot_time_end_time_before_boot_time(self,
-                                                        mock_boot_time: Mock,
-                                                        sample_line: tr.TimeRecorder) -> None:
+    def test_update_boot_time_end_time_before_boot_time(self, mock_boot_time: Mock, sample_line: tr.TimeRecorder) -> None:
         """Test behavior if the original end time is before the boot time (should raise or handle gracefully)."""
         # Set a fake boot time after the original end time
         fake_boot_datetime = datetime(2025, 4, 26, 16, 0, 0)

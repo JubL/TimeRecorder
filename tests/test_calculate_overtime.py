@@ -27,7 +27,7 @@ class TestCalculateOvertime:
             (timedelta(hours=7, minutes=59), "undertime", timedelta(minutes=1)),
             (timedelta(hours=0), "undertime", timedelta(hours=8)),
             (timedelta(hours=12), "overtime", timedelta(hours=4)),
-        ]
+        ],
     )
     @pytest.mark.fast
     def test_calculate_overtime_cases(self, line: tr.TimeRecorder, work_time: timedelta, expected_case: str, expected_delta: timedelta) -> None:

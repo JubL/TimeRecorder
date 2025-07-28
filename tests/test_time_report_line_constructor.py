@@ -33,7 +33,7 @@ class TestTimeRecorderConstructor:
                 "expected_end": datetime.strptime("2025-04-24 15:40:00", "%Y-%m-%d %H:%M:%S"),
                 "expected_lunch": timedelta(minutes=45),
             },
-        ]
+        ],
     )
     @pytest.mark.fast
     def test_init_valid(self, case: dict) -> None:

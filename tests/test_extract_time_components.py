@@ -28,7 +28,7 @@ class TestExtractTimeComponents:
             (timedelta(hours=1), (1, 0, 0)),
             (timedelta(minutes=90), (1, 30, 0)),
             (timedelta(seconds=3721), (1, 2, 1)),
-        ]
+        ],
     )
     @pytest.mark.fast
     def test_extract_time_components_basic(self, line: tr.TimeRecorder, delta: timedelta, expected: tuple[int, int, int]) -> None:
@@ -43,7 +43,7 @@ class TestExtractTimeComponents:
             (timedelta(days=0, hours=2, minutes=15, seconds=30), (2, 15, 30)),
             (timedelta(days=0, hours=0, minutes=0, seconds=0), (0, 0, 0)),
             (timedelta(days=4, hours=23, minutes=59, seconds=59), (119, 59, 59)),
-        ]
+        ],
     )
     @pytest.mark.fast
     def test_extract_time_components_with_days(self, line: tr.TimeRecorder, delta: timedelta, expected: tuple[int, int, int]) -> None:

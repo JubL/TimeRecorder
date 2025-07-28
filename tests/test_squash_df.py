@@ -26,16 +26,18 @@ class TestSquashDF:
         """Test that squash_df groups by date and sums work_time and lunch_break_duration."""
         df_file = tmp_path / "logbook_df.csv"
         # Create a DataFrame with duplicate dates and different work_time/lunch_break_duration
-        df = pd.DataFrame({
-            "weekday": ["Thu", "Thu", "Fri"],
-            "date": ["24.04.2025", "24.04.2025", "25.04.2025"],
-            "start_time": ["08:00:00", "11:30:00", "08:00:00"],
-            "end_time": ["9:00:00", "17:00:00", "16:00:00"],
-            "lunch_break_duration": [1, 60, 60],
-            "work_time": [1.0, 6.0, 8.0],
-            "case": ["undertime", "undertime", "overtime"],
-            "overtime": [-7, 4.5, 0.0],
-        })
+        df = pd.DataFrame(
+            {
+                "weekday": ["Thu", "Thu", "Fri"],
+                "date": ["24.04.2025", "24.04.2025", "25.04.2025"],
+                "start_time": ["08:00:00", "11:30:00", "08:00:00"],
+                "end_time": ["9:00:00", "17:00:00", "16:00:00"],
+                "lunch_break_duration": [1, 60, 60],
+                "work_time": [1.0, 6.0, 8.0],
+                "case": ["undertime", "undertime", "overtime"],
+                "overtime": [-7, 4.5, 0.0],
+            }
+        )
         df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
         line.squash_df(df_file)
         result = pd.read_csv(df_file, sep=";", encoding="utf-8")

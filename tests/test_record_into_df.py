@@ -43,8 +43,6 @@ class TestRecordIntoDF:
         line.create_df(df_file)
         assert df_file.exists()
         df = pd.read_csv(df_file, sep=";", encoding="utf-8")
-        expected_columns = [
-            "weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"
-        ]
+        expected_columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         assert list(df.columns) == expected_columns
         assert len(df) == 0
