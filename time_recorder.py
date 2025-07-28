@@ -329,7 +329,7 @@ class TimeRecorder:
         ignoring any days. For timedeltas longer than 24 hours, only the
         hours within the last day will be returned.
         """
-        hours, remainder = divmod(time.total_seconds(), self.sec_in_hour)
+        hours, remainder = divmod(int(time.total_seconds()), self.sec_in_hour)
         minutes, seconds = divmod(remainder, self.sec_in_min)
 
         max_hours_in_day = 24
@@ -338,7 +338,7 @@ class TimeRecorder:
 
         return hours, minutes, seconds
 
-    def calculate_overtime(self, work_time: timedelta = 0) -> tuple[str, timedelta]:
+    def calculate_overtime(self, work_time: timedelta = timedelta(0)) -> tuple[str, timedelta]:
         """
         Determine whether the given work time results in overtime or undertime by comparing it to a full work day.
 
@@ -515,7 +515,11 @@ class TimeRecorder:
         """
 
         def calculate_total_overtime(row: pd.Series) -> float | str:
-            """Return empty string if work_time is missing or empty, otherwise calculate overtime."""
+            """
+            Calculate total overtime for a given row.
+
+            Return empty string if work_time is missing or empty, otherwise calculate overtime.
+            """
             if not row["work_time"] or pd.isnull(row["work_time"]):
                 return ""
             # Overtime is total work_time minus 8 hours (per day)
@@ -601,7 +605,7 @@ class TimeRecorder:
 
         if df.empty:
             logger.warning(f"{RED}Log file is empty. Cannot add weekend days.{RESET}")
-            return
+            return []
 
         df["date"] = pd.to_datetime(df["date"], format=self.date_format)
 
@@ -797,11 +801,9 @@ class TimeRecorder:
 
 
 if __name__ == "__main__":
-    # TODO: start time needs to be logged at power up automatically
-    # TODO: end time and results need to be logged at power down automatically
-
     # TODO: maybe use command line arguments for the use_boot_time, date, start time, end time, lunch break duration and logging and log path
     # TODO: use argparse to parse the command line arguments
+    # TODO: or use a yaml config file
 
     # TODO: add a log message to squash_df to indicate that squashing did occure
 
