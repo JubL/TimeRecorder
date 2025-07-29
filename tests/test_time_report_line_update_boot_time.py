@@ -47,9 +47,7 @@ def test_update_boot_time_sets_start_time_to_boot_time(
 
 @pytest.mark.fast
 @patch("psutil.boot_time")
-def test_update_boot_time_updates_weekday_and_date(
-    mock_boot_time: Mock, sample_line: tr.TimeRecorder, fake_boot_timestamp: float
-) -> None:
+def test_update_boot_time_updates_weekday_and_date(mock_boot_time: Mock, sample_line: tr.TimeRecorder, fake_boot_timestamp: float) -> None:
     """Test that update_boot_time updates weekday and date to match the boot time."""
     mock_boot_time.return_value = fake_boot_timestamp
 
