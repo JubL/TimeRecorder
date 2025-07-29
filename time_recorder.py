@@ -173,7 +173,7 @@ class TimeRecorder:
             except ValueError as e:
                 raise ValueError(
                     f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}"
-                )
+                ) from e
 
         self.full_format = full_format
         self.date_format, self.time_format = self.full_format.split(" ")
@@ -214,7 +214,7 @@ class TimeRecorder:
             # Get system boot time
             boot_timestamp = psutil.boot_time()
         except psutil.Error as e:
-            raise BootTimeError(f"{RED}Error accessing system information: {e}{RESET}")
+            raise BootTimeError(f"{RED}Error accessing system information: {e}{RESET}") from e
 
         # Update start time to boot time
         self.start_time = datetime.fromtimestamp(boot_timestamp)
@@ -228,7 +228,7 @@ class TimeRecorder:
                 self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format), self.full_format
             )
         except ValueError as e:
-            raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}")
+            raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}") from e
 
         # Recalculate work hours
         self.evaluate_work_hours()
