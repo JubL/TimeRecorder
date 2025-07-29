@@ -34,6 +34,7 @@ select = [
     "ANN",      # flake8-annotations
     "ARG",      # flake8-unused-arguments
     "ASYNC",    # flake8-async
+    "B",        # bugbear
     "C90",      # mccabe
     "D",        # pydocstyle
     "E",        # pycodestyle Error
@@ -68,3 +69,9 @@ convention = "numpy"   # Docstring style
 
 [tool.ruff.lint.pycodestyle]
 max-line-length = 160
+
+[tool.pytest.ini_options]
+markers = [
+    "fast: mark test as fast (less than 10 sseconds)",
+    "slow: mark test as slow (more than 30 seconds, deselect with '-m \"not slow\"')"
+]
