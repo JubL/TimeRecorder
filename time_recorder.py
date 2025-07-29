@@ -31,9 +31,6 @@ calculate_work_duration(_start_time: datetime, _end_time: datetime, _lunch_break
 get_boot_time(time_format: str) -> datetime
     Retrieve system boot time.
 
-extract_hours_minutes(time: timedelta) -> tuple[int, int]
-    Extract hours and minutes from a timedelta object.
-
 evaluate_work_hours(_use_boot_time: bool, _start_time: str, _end_time: str, _lunch_break_duration: int, _format: str) -> tuple[int, int, str, int, int]
     Evaluate work hours and calculate overtime or undertime.
 
@@ -217,8 +214,6 @@ class TimeRecorder:
         try:
             # Get system boot time
             boot_timestamp = psutil.boot_time()
-            if boot_timestamp is None:
-                raise BootTimeError(f"{RED}Failed to retrieve system boot time{RESET}")
 
             # Update start time to boot time
             self.start_time = datetime.fromtimestamp(boot_timestamp)
