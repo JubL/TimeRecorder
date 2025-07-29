@@ -7,6 +7,8 @@ extend-exclude = [
 # assume Python 3.13
 target-version = "py313"
 
+indent-width = 4  # use 4 spaces for indentation
+
 [tool.ruff.lint.per-file-ignores]
 # ignore some checks in test cases
 "test_*.py" = [
@@ -58,6 +60,8 @@ select = [
 [tool.ruff.format]
 line-ending = "lf"  # unix style line ending
 docstring-code-format = true
+quote-style = "double"  # use double quotes for strings
+indent-style = "space"
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"   # Docstring style
