@@ -21,11 +21,12 @@ class TestCalculateOvertime:
     @pytest.mark.parametrize(
         ("work_time", "expected_case", "expected_delta"),
         [
-            (timedelta(hours=8), "overtime", timedelta(hours=0)),
-            (timedelta(hours=9, minutes=15), "overtime", timedelta(hours=1, minutes=15)),
-            (timedelta(hours=8, minutes=1), "overtime", timedelta(minutes=1)),
+            (timedelta(hours=0), "undertime", timedelta(hours=8)),
+            (timedelta(hours=1), "undertime", timedelta(hours=7)),
             (timedelta(hours=7, minutes=59), "undertime", timedelta(minutes=1)),
-            (timedelta(hours=1), "undertime", timedelta(hours=7)),  # FIXME: This case is debatable, but included for completeness
+            (timedelta(hours=8), "overtime", timedelta(hours=0)),
+            (timedelta(hours=8, minutes=1), "overtime", timedelta(minutes=1)),
+            (timedelta(hours=9, minutes=15), "overtime", timedelta(hours=1, minutes=15)),
             (timedelta(hours=12), "overtime", timedelta(hours=4)),
         ],
     )
