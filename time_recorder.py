@@ -120,8 +120,7 @@ class TimeRecorder:
     def __init__(
         self, date: str, start_time: str, end_time: str, lunch_break_duration: int, full_format: str = r"%d.%m.%Y %H:%M:%S"
     ) -> None:
-        """
-        Initialize a TimeRecorder object with the provided parameters.
+        """Initialize a TimeRecorder object with the provided parameters.
 
         Parameters
         ----------
@@ -194,8 +193,7 @@ class TimeRecorder:
         self.min_in_hour = 60  # Number of minutes in an hour
 
     def update_boot_time(self) -> None:
-        """
-        Update the start time to the system boot time.
+        """Update the start time to the system boot time.
 
         This method retrieves the system boot time using psutil and updates
         the object's start_time attribute. The end_time is adjusted to match
@@ -240,8 +238,7 @@ class TimeRecorder:
         self.weekday = datetime.strptime(self.date, self.date_format).strftime("%a")
 
     def evaluate_work_hours(self) -> None:
-        """
-        Evaluate the total work hours and calculate overtime/undertime.
+        """Evaluate the total work hours and calculate overtime/undertime.
 
         This method:
         1. Calculates total work duration excluding lunch break
@@ -262,8 +259,7 @@ class TimeRecorder:
         logger.debug(f"Case: {self.case}, Overtime: {self.overtime}")
 
     def calculate_work_duration(self) -> timedelta:
-        """
-        Calculate the work duration by subtracting lunch break from total time between start and end.
+        """Calculate the work duration by subtracting lunch break from total time between start and end.
 
         Returns
         -------
@@ -302,8 +298,7 @@ class TimeRecorder:
         return work_duration
 
     def calculate_overtime(self, work_time: timedelta | None = None) -> tuple[str, timedelta]:
-        """
-        Determine whether the given work time results in overtime or undertime by comparing it to a full work day.
+        """Determine whether the given work time results in overtime or undertime by comparing it to a full work day.
 
         A full work day is defined as 8 hours.
 
@@ -335,8 +330,7 @@ class TimeRecorder:
         return case, overtime
 
     def load_logbook(self, log_path: pathlib.Path) -> pd.DataFrame:
-        """
-        Load the logbook CSV file into a pandas DataFrame.
+        """Load the logbook CSV file into a pandas DataFrame.
 
         Parameters
         ----------
@@ -381,8 +375,7 @@ class TimeRecorder:
         return df
 
     def save_logbook(self, df: pd.DataFrame, log_path: pathlib.Path) -> None:
-        """
-        Save a pandas DataFrame to a CSV file.
+        """Save a pandas DataFrame to a CSV file.
 
         Parameters
         ----------
@@ -410,8 +403,7 @@ class TimeRecorder:
             logger.exception(f"{RED}Unexpected error saving logbook to {log_path}: {e}{RESET}")
 
     def record_into_df(self, df_path: pathlib.Path) -> None:
-        """
-        Write the time report data into a pandas dataframe.
+        """Write the time report data into a pandas dataframe.
 
         Parameters
         ----------
@@ -432,8 +424,7 @@ class TimeRecorder:
         self.save_logbook(df, df_path)
 
     def create_df(self, df_path: pathlib.Path) -> None:
-        """
-        Create a pandas dataframe file.
+        """Create a pandas dataframe file.
 
         Parameters
         ----------
@@ -446,8 +437,7 @@ class TimeRecorder:
         self.save_logbook(df, df_path)
 
     def time_report_line_to_dict(self) -> dict:
-        """
-        Convert a TimeRecorder object into a dictionary.
+        """Convert a TimeRecorder object into a dictionary.
 
         Returns
         -------
@@ -466,8 +456,7 @@ class TimeRecorder:
         }
 
     def squash_df(self, df_path: pathlib.Path) -> None:
-        """
-        Squash the DataFrame by grouping entries by date and summing work hours.
+        """Squash the DataFrame by grouping entries by date and summing work hours.
 
         This method reads a CSV file, groups the entries by date, and sums the work hours for each date.
         The result is saved back to the same CSV file.
@@ -527,8 +516,7 @@ class TimeRecorder:
         self.save_logbook(df, df_path)
 
     def find_and_add_missing_days(self, log_path: pathlib.Path) -> None:
-        """
-        Find and add missing holidays and weekend days to the log file.
+        """Find and add missing holidays and weekend days to the log file.
 
         This method checks the log file for missing entries.
         If these days are missing, it adds them with just the weekday and the date.
@@ -544,8 +532,7 @@ class TimeRecorder:
             self.add_missing_days_to_logbook(missing_days, log_path)
 
     def find_missing_days_in_logbook(self, log_path: pathlib.Path) -> list[tuple[datetime, datetime]]:
-        """
-        Find missing days in the logbook by checking for gaps between consecutive entries.
+        """Find missing days in the logbook by checking for gaps between consecutive entries.
 
         This method loads the logbook CSV file, checks for any missing days between consecutive entries,
         and returns a list of tuples representing the start and end dates of the missing periods.
@@ -587,8 +574,7 @@ class TimeRecorder:
         return missing_days
 
     def add_missing_days_to_logbook(self, missing_days: list[tuple[datetime, datetime]], log_path: pathlib.Path) -> None:
-        """
-        Add missing Saturdays, Sundays, and holidays to the logbook DataFrame for specified date ranges.
+        """Add missing Saturdays, Sundays, and holidays to the logbook DataFrame for specified date ranges.
 
         For each tuple of (start_date, end_date) in `missing_days`, this method generates all dates between the two (excluding the endpoints),
         and checks if each date is missing from the logbook. If a date is a holiday (as defined in `holidays_de_he`), Saturday, or Sunday,
@@ -667,8 +653,7 @@ class TimeRecorder:
         self.save_logbook(df, log_path)
 
     def get_weekly_hours_from_log(self, log_path: pathlib.Path) -> float:
-        """
-        Calculate the averaged weekly work hours from a log file.
+        """Calculate the averaged weekly work hours from a log file.
 
         This method reads a CSV log file containing daily work times, computes the average work hours per day
         (considering only days with recorded work time), and extrapolates this average to a standard 5-day work week.
@@ -705,8 +690,7 @@ class TimeRecorder:
         return result
 
     def __repr__(self) -> str:
-        """
-        Return a string representation of the TimeRecorder object.
+        """Return a string representation of the TimeRecorder object.
 
         Returns
         -------
@@ -721,8 +705,7 @@ class TimeRecorder:
         )
 
     def __str__(self) -> str:
-        """
-        Return a formatted string representation of work duration and overtime information.
+        """Return a formatted string representation of work duration and overtime information.
 
         Returns
         -------
