@@ -119,7 +119,9 @@ class TimeRecorder:
         Format string for parsing time (default: "%H:%M:%S").
     """
 
-    def __init__(self, date: str, start_time: str, end_time: str, lunch_break_duration: int, full_format: str = r"%d.%m.%Y %H:%M:%S") -> None:
+    def __init__(
+        self, date: str, start_time: str, end_time: str, lunch_break_duration: int, full_format: str = r"%d.%m.%Y %H:%M:%S"
+    ) -> None:
         """
         Initialize a TimeRecorder object with the provided parameters.
 
@@ -172,7 +174,9 @@ class TimeRecorder:
             try:
                 return datetime.strptime(date + " " + time, full_format)
             except ValueError as e:
-                raise ValueError(f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}")
+                raise ValueError(
+                    f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}"
+                )
 
         self.full_format = full_format
         self.date_format, self.time_format = self.full_format.split(" ")
@@ -249,9 +253,8 @@ class TimeRecorder:
 
         This method:
         1. Calculates total work duration excluding lunch break
-        2. Extracts hours, minutes, and seconds from the work duration
+        2. Calculates the overtime/undertime amount
         3. Determines if overtime or undertime was worked
-        4. Calculates the overtime/undertime amount
 
         Notes
         -----
@@ -262,8 +265,9 @@ class TimeRecorder:
         """
         self.work_time = self.calculate_work_duration()
         self.func_name = "evaluate_work_hours"
-        logger.debug(f"DEBUG information from {self.func_name}: Calculated work_time: {self.work_time}")
         self.case, self.overtime = self.calculate_overtime()
+
+        logger.debug(f"DEBUG information from {self.func_name}: Calculated work_time: {self.work_time}")
         logger.debug(f"DEBUG information from {self.func_name}: Case: {self.case}, Overtime: {self.overtime}")
 
     def calculate_work_duration(self) -> timedelta:
@@ -284,10 +288,14 @@ class TimeRecorder:
         """
         # Validate that start time is not after end time
         if self.start_time >= self.end_time:
-            raise ValueError(f"{RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{RESET}")
+            raise ValueError(
+                f"{RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{RESET}"
+            )
 
         if self.lunch_break_duration < timedelta(0):
-            raise ValueError(f"{RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{RESET}")
+            raise ValueError(
+                f"{RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{RESET}"
+            )
 
         # Calculate the total duration between start and end times
         total_duration = self.end_time - self.start_time
@@ -305,38 +313,6 @@ class TimeRecorder:
         )
 
         return work_duration
-
-    def extract_time_components(self, time: timedelta) -> tuple[int, int, int]:
-        """
-        Extract hours, minutes, and seconds from a timedelta object.
-
-        Parameters
-        ----------
-        time : timedelta
-            The timedelta object to extract time components from.
-
-        Returns
-        -------
-        tuple[int, int, int]
-            A tuple containing:
-            - hours (int): The number of complete hours
-            - minutes (int): The remaining minutes after extracting complete hours
-            - seconds (int): The remaining seconds after extracting complete minutes
-
-        Notes
-        -----
-        This function only considers the seconds component of the timedelta,
-        ignoring any days. For timedeltas longer than 24 hours, only the
-        hours within the last day will be returned.
-        """
-        hours, remainder = divmod(int(time.total_seconds()), self.sec_in_hour)
-        minutes, seconds = divmod(remainder, self.sec_in_min)
-
-        max_hours_in_day = 24
-        if hours > max_hours_in_day:
-            logger.warning(f"{RED}The timedelta exceeds {max_hours_in_day} hours. This looks like an error!{RESET}")
-
-        return hours, minutes, seconds
 
     def calculate_overtime(self, work_time: timedelta = timedelta(0)) -> tuple[str, timedelta]:
         """
@@ -358,7 +334,7 @@ class TimeRecorder:
         """
         _full_day = timedelta(hours=8, minutes=0)
 
-        if work_time == 0:
+        if work_time == timedelta(0):
             work_time = self.work_time
 
         if work_time >= _full_day:
@@ -817,7 +793,7 @@ if __name__ == "__main__":
     USE_BOOT_TIME = True  # Use system boot time as start time
     DATE = "25.07.2025"  # Date in DD.MM.YYYY format
     START_TIME = "07:00"  # Starting time in DD.MM.YYYY HH:MM format
-    END_TIME = "17:15"  # Ending time in DD.MM.YYYY HH:MM format
+    END_TIME = "18:10"  # Ending time in DD.MM.YYYY HH:MM format
     LUNCH_BREAK_DURATION = 60  # Duration of the lunch break in minutes
     LOG_PATH = pathlib.Path.cwd() / "timereport_logbook.txt"  # Path to the log file in the current directory
     LOG = False  # Set to True to log the results
