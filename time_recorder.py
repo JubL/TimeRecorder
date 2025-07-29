@@ -214,33 +214,30 @@ class TimeRecorder:
         try:
             # Get system boot time
             boot_timestamp = psutil.boot_time()
-
-            # Update start time to boot time
-            self.start_time = datetime.fromtimestamp(boot_timestamp)
-
-            # get the function name and additional debug information
-            self.func_name = "update_boot_time"
-            logger.debug(f"DEBUG information from {self.func_name}: Updated start_time to boot time: {self.start_time}")
-
-            # Adjust end time to match boot time date while keeping original time
-            try:
-                self.end_time = datetime.strptime(
-                    self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format), self.full_format
-                )
-            except ValueError as e:
-                raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}")
-
-            # Recalculate work hours
-            self.evaluate_work_hours()
-
-            # reset the date and the weekday
-            self.date = self.start_time.date().strftime(self.date_format)
-            self.weekday = datetime.strptime(self.date, self.date_format).strftime("%a")
-
         except psutil.Error as e:
             raise BootTimeError(f"{RED}Error accessing system information: {e}{RESET}")
-        except Exception as e:
-            raise BootTimeError(f"{RED}Unexpected error while updating boot time: {e}{RESET}")
+
+        # Update start time to boot time
+        self.start_time = datetime.fromtimestamp(boot_timestamp)
+
+        # get the function name and additional debug information
+        self.func_name = "update_boot_time"
+        logger.debug(f"DEBUG information from {self.func_name}: Updated start_time to boot time: {self.start_time}")
+
+        # Adjust end time to match boot time date while keeping original time
+        try:
+            self.end_time = datetime.strptime(
+                self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format), self.full_format
+            )
+        except ValueError as e:
+            raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}")
+
+        # Recalculate work hours
+        self.evaluate_work_hours()
+
+        # reset the date and the weekday
+        self.date = self.start_time.date().strftime(self.date_format)
+        self.weekday = datetime.strptime(self.date, self.date_format).strftime("%a")
 
     def evaluate_work_hours(self) -> None:
         """
@@ -309,7 +306,7 @@ class TimeRecorder:
 
         return work_duration
 
-    def calculate_overtime(self, work_time: timedelta = timedelta(0)) -> tuple[str, timedelta]:
+    def calculate_overtime(self, work_time: timedelta | None = None) -> tuple[str, timedelta]:
         """
         Determine whether the given work time results in overtime or undertime by comparing it to a full work day.
 
@@ -329,7 +326,8 @@ class TimeRecorder:
         """
         _full_day = timedelta(hours=8, minutes=0)
 
-        if work_time == timedelta(0):
+        if work_time is None:
+            # If no work_time is provided, use the instance's work_time attribute
             work_time = self.work_time
 
         if work_time >= _full_day:
