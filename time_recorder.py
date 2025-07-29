@@ -68,6 +68,7 @@ import holidays
 import pandas as pd
 import psutil
 
+# logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(funcName)s in line %(lineno)s - %(message)s")  # noqa
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
@@ -221,8 +222,7 @@ class TimeRecorder:
         self.start_time = datetime.fromtimestamp(boot_timestamp)
 
         # get the function name and additional debug information
-        self.func_name = "update_boot_time"
-        logger.debug(f"DEBUG information from {self.func_name}: Updated start_time to boot time: {self.start_time}")
+        logger.debug(f"Updated start_time to boot time: {self.start_time}")
 
         # Adjust end time to match boot time date while keeping original time
         try:
@@ -256,11 +256,10 @@ class TimeRecorder:
         - overtime
         """
         self.work_time = self.calculate_work_duration()
-        self.func_name = "evaluate_work_hours"
         self.case, self.overtime = self.calculate_overtime()
 
-        logger.debug(f"DEBUG information from {self.func_name}: Calculated work_time: {self.work_time}")
-        logger.debug(f"DEBUG information from {self.func_name}: Case: {self.case}, Overtime: {self.overtime}")
+        logger.debug(f"Calculated work_time: {self.work_time}")
+        logger.debug(f"Case: {self.case}, Overtime: {self.overtime}")
 
     def calculate_work_duration(self) -> timedelta:
         """
@@ -298,11 +297,7 @@ class TimeRecorder:
         if work_duration <= timedelta(0):
             raise ValueError(f"{RED}The work duration must be positive. Start time: {self.start_time}, End time: {self.end_time}{RESET}")
 
-        self.func_name = "calculate_work_duration"
-        logger.debug(
-            f"DEBUG information from {self.func_name}: Total duration: {total_duration}, "
-            f"Lunch break: {self.lunch_break_duration}, Work duration: {work_duration}"
-        )
+        logger.debug(f"Total duration: {total_duration}, Lunch break: {self.lunch_break_duration}, Work duration: {work_duration}")
 
         return work_duration
 
@@ -365,11 +360,11 @@ class TimeRecorder:
             df = pd.read_csv(log_path, sep=";", encoding="utf-8")  # how are empty fields read? as NaN?
             logger.debug(f"Read logbook from {log_path}")
         except FileNotFoundError:
-            logger.error(f"{RED}Log file not found: {log_path}{RESET}")
+            logger.exception(f"{RED}Log file not found: {log_path}{RESET}")
         except pd.errors.EmptyDataError:
-            logger.warning(f"{RED}Log file is empty: {log_path}{RESET}")
+            logger.exception(f"{RED}Log file is empty: {log_path}{RESET}")
         except pd.errors.ParserError as e:
-            logger.error(f"{RED}Error parsing log file: {e}{RESET}")
+            logger.exception(f"{RED}Error parsing log file: {e}{RESET}")
 
         # sanity checks
         # make sure all required coloumns are present
@@ -408,11 +403,11 @@ class TimeRecorder:
             df.to_csv(log_path, sep=";", index=False, encoding="utf-8")
             logger.debug(f"Logbook saved to {log_path}")
         except PermissionError as e:
-            logger.error(f"{RED}Permission denied when saving logbook to {log_path}: {e}{RESET}")
+            logger.exception(f"{RED}Permission denied when saving logbook to {log_path}: {e}{RESET}")
         except OSError as e:
-            logger.error(f"{RED}OS error while saving logbook to {log_path}: {e}{RESET}")
+            logger.exception(f"{RED}OS error while saving logbook to {log_path}: {e}{RESET}")
         except Exception as e:
-            logger.error(f"{RED}Unexpected error saving logbook to {log_path}: {e}{RESET}")
+            logger.exception(f"{RED}Unexpected error saving logbook to {log_path}: {e}{RESET}")
 
     def record_into_df(self, df_path: pathlib.Path) -> None:
         """
@@ -690,18 +685,17 @@ class TimeRecorder:
             Returns 0.0 if no work days are found in the log file.
         """
         result = 0.0
-        self.func_name = "get_weekly_hours_from_log"
 
         df = self.load_logbook(log_path)
 
         try:
             df["work_time"] = pd.to_timedelta(df["work_time"], unit="h")
         except (ValueError, TypeError) as e:
-            logger.error(f"{RED}Error converting 'work_time' to timedelta: {e}{RESET}")
+            logger.exception(f"{RED}Error converting 'work_time' to timedelta: {e}{RESET}")
         else:
             weekly_hours = df["work_time"].sum().total_seconds() / self.sec_in_hour
             num_days = df[df["work_time"] > pd.Timedelta(0)]["date"].nunique()
-            logger.debug(f"DEBUG information from {self.func_name}: Weekly hours: {weekly_hours}, Number of days: {num_days}")
+            logger.debug(f"Weekly hours: {weekly_hours}, Number of days: {num_days}")
             if num_days == 0:
                 logger.warning("No work days found in the log file.")
             else:
@@ -783,10 +777,12 @@ if __name__ == "__main__":
 
     # TODO: use a dict to store the parameters for the TimeRecorder object or perhaps a configuration file (yaml)
 
+    # TODO: configure logging so that the messages format is diffrent for info and debug levels
+
     USE_BOOT_TIME = True  # Use system boot time as start time
     DATE = "25.07.2025"  # Date in DD.MM.YYYY format
-    START_TIME = "07:00"  # Starting time in DD.MM.YYYY HH:MM format
-    END_TIME = "18:10"  # Ending time in DD.MM.YYYY HH:MM format
+    START_TIME = "07:00"  # Starting time in HH:MM format
+    END_TIME = "18:10"  # Ending time in HH:MM format
     LUNCH_BREAK_DURATION = 60  # Duration of the lunch break in minutes
     LOG_PATH = pathlib.Path.cwd() / "timereport_logbook.txt"  # Path to the log file in the current directory
     LOG = False  # Set to True to log the results
