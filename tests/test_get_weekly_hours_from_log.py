@@ -40,11 +40,11 @@ class TestGetWeeklyHoursFromLog:
         df.to_csv(file, sep=";", index=False, encoding="utf-8")
         with caplog.at_level("WARNING"):
             result = line.get_weekly_hours_from_log(file)
-            assert result == 0.0
+            assert result == 0
             assert "No work days found" in caplog.text
 
     @pytest.mark.fast
-    def test_returns_expected_weekly_hours(self, line: tr.TimeRecorder, tmp_path: pytest.LogCaptureFixture) -> None:
+    def test_returns_expected_weekly_hours(self, line: tr.TimeRecorder, tmp_path: pathlib.Path) -> None:
         """Should return correct weekly hours for valid log file."""
         df = pd.DataFrame(
             {
@@ -62,7 +62,7 @@ class TestGetWeeklyHoursFromLog:
         df.to_csv(file, sep=";", index=False, encoding="utf-8")
         # Average per day = (8 + 7.5 + 8 + 8.5 + 8) / 5 = 8.0, so weekly = 8.0 * 5 = 40.0
         result = line.get_weekly_hours_from_log(file)
-        assert result == 40.0
+        assert result == 40
 
     @pytest.mark.fast
     def test_ignores_zero_work_time_days(self, line: tr.TimeRecorder, tmp_path: pathlib.Path) -> None:
@@ -83,7 +83,7 @@ class TestGetWeeklyHoursFromLog:
         df.to_csv(file, sep=";", index=False, encoding="utf-8")
         # Average per day = (8+8+8)/3 = 8.0, weekly = 8.0*5 = 40.0
         result = line.get_weekly_hours_from_log(file)
-        assert result == 40.0
+        assert result == 40
 
     @pytest.mark.fast
     def test_handles_non_numeric_work_time(self, line: tr.TimeRecorder, tmp_path: pathlib.Path, caplog: pytest.LogCaptureFixture) -> None:
@@ -104,7 +104,7 @@ class TestGetWeeklyHoursFromLog:
         df.to_csv(file, sep=";", index=False, encoding="utf-8")
         with caplog.at_level("ERROR"):
             result = line.get_weekly_hours_from_log(file)
-            assert result == 0.0
+            assert result == 0
             assert "Error converting 'work_time' to timedelta" in caplog.text
 
     @pytest.mark.fast
@@ -124,6 +124,6 @@ class TestGetWeeklyHoursFromLog:
         )
         file = tmp_path / "round.csv"
         df.to_csv(file, sep=";", index=False, encoding="utf-8")
-        # Average = (7.3333+7.6666)/2 = 7.5, weekly = 7.5*5 = 37.5
+        # The average of (7.3333 + 7.6666) / 2 is 7.5, weekly = 7.5*5 = 37.5
         result = line.get_weekly_hours_from_log(file)
         assert result == 37.5

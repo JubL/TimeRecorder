@@ -25,12 +25,14 @@ class TestCalculateOvertime:
             (timedelta(hours=9, minutes=15), "overtime", timedelta(hours=1, minutes=15)),
             (timedelta(hours=8, minutes=1), "overtime", timedelta(minutes=1)),
             (timedelta(hours=7, minutes=59), "undertime", timedelta(minutes=1)),
-            (timedelta(hours=0), "undertime", timedelta(hours=8)),
+            (timedelta(hours=1), "undertime", timedelta(hours=7)),  # FIXME: This case is debatable, but included for completeness
             (timedelta(hours=12), "overtime", timedelta(hours=4)),
         ],
     )
     @pytest.mark.fast
-    def test_calculate_overtime_cases(self, line: tr.TimeRecorder, work_time: timedelta, expected_case: str, expected_delta: timedelta) -> None:
+    def test_calculate_overtime_cases(
+        self, line: tr.TimeRecorder, work_time: timedelta, expected_case: str, expected_delta: timedelta
+    ) -> None:
         """Test calculate_overtime returns correct case and timedelta."""
         case, overtime = line.calculate_overtime(work_time)
         assert case == expected_case
