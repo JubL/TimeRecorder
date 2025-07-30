@@ -118,7 +118,12 @@ class TimeRecorder:
     """
 
     def __init__(
-        self, date: str, start_time: str, end_time: str, lunch_break_duration: int, full_format: str = r"%d.%m.%Y %H:%M:%S"
+        self,
+        date: str,
+        start_time: str,
+        end_time: str,
+        lunch_break_duration: int,
+        full_format: str = r"%d.%m.%Y %H:%M:%S",
     ) -> None:
         """Initialize a TimeRecorder object with the provided parameters.
 
@@ -172,7 +177,7 @@ class TimeRecorder:
                 return datetime.strptime(date + " " + time, full_format)
             except ValueError as e:
                 raise ValueError(
-                    f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}"
+                    f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}",
                 ) from e
 
         self.full_format = full_format
@@ -225,7 +230,8 @@ class TimeRecorder:
         # Adjust end time to match boot time date while keeping original time
         try:
             self.end_time = datetime.strptime(
-                self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format), self.full_format
+                self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format),
+                self.full_format,
             )
         except ValueError as e:
             raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}") from e
@@ -276,12 +282,12 @@ class TimeRecorder:
         # Validate that start time is not after end time
         if self.start_time >= self.end_time:
             raise ValueError(
-                f"{RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{RESET}"
+                f"{RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{RESET}",
             )
 
         if self.lunch_break_duration < timedelta(0):
             raise ValueError(
-                f"{RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{RESET}"
+                f"{RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{RESET}",
             )
 
         # Calculate the total duration between start and end times
@@ -473,7 +479,7 @@ class TimeRecorder:
 
             Return empty string if work_time is missing or empty, otherwise calculate overtime.
             """
-            if not row["work_time"] or pd.isnull(row["work_time"]):
+            if not row["work_time"] or pd.isna(row["work_time"]):
                 return ""
             # Overtime is total work_time minus 8 hours (per day)
             overtime = row["work_time"] - 8
@@ -481,7 +487,7 @@ class TimeRecorder:
 
         def reevaluate_case(row: pd.Series) -> str:
             """Reevaluate the case based on the work_time."""
-            if not row["work_time"] or pd.isnull(row["work_time"]):
+            if not row["work_time"] or pd.isna(row["work_time"]):
                 return ""
             # work_time is in hours (float)
             work_time_td = timedelta(hours=row["work_time"]) if row["work_time"] else timedelta(0)
@@ -498,9 +504,9 @@ class TimeRecorder:
                 {
                     "start_time": "first",
                     "end_time": "last",
-                    "lunch_break_duration": lambda x: x.sum() if x.notnull().any() else "",
-                    "work_time": lambda x: x.sum() if x.notnull().any() else "",
-                }
+                    "lunch_break_duration": lambda x: x.sum() if x.notna().any() else "",
+                    "work_time": lambda x: x.sum() if x.notna().any() else "",
+                },
             )
             .reset_index(drop=True)
         )
@@ -567,7 +573,7 @@ class TimeRecorder:
             if (df["date"].iloc[i + 1] - df["date"].iloc[i]).days > 1:
                 logger.warning(
                     f"{RED}There are missing days in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
-                    f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{RESET}"
+                    f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{RESET}",
                 )
                 missing_days.append((df["date"].iloc[i], df["date"].iloc[i + 1]))
 
@@ -649,7 +655,7 @@ class TimeRecorder:
                     logger.info(f"Added missing Sunday on {date_str}")
 
         # Sort and save the updated DataFrame back to the log file
-        df.sort_values(by="date", inplace=True, key=lambda x: pd.to_datetime(x, format=self.date_format))
+        df = df.sort_values(by="date", key=lambda x: pd.to_datetime(x, format=self.date_format))
         self.save_logbook(df, log_path)
 
     def get_weekly_hours_from_log(self, log_path: pathlib.Path) -> float:
