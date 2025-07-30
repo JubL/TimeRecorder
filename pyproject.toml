@@ -91,3 +91,4 @@ markers = [
     "fast: mark test as fast (less than 10 sseconds)",
     "slow: mark test as slow (more than 30 seconds, deselect with '-m \"not slow\"')"
 ]
+addopts = "--cov=time_recorder --cov-report=term-missing --cov-fail-under=60"  # pytest coverage options
