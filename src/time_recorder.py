@@ -37,22 +37,15 @@ Key Features:
     - Data conversion for CSV logbook storage
 """
 
-import logging
 from datetime import datetime, timedelta
 
 import colorama
 import psutil
 
-from src.logging_utils import LevelSpecificFormatter
+from src.logging_utils import setup_logger
 
-# Configure logging with custom formatter
-handler = logging.StreamHandler()
-handler.setFormatter(LevelSpecificFormatter())
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-logger.addHandler(handler)
-logger.propagate = False  # Prevent duplicate messages
+# Set up logger with centralized configuration
+logger = setup_logger(__name__)
 
 colorama.init(autoreset=True)
 RED = colorama.Fore.RED
@@ -390,3 +383,13 @@ class TimeRecorder:
 
         # Combine all parts
         return work_duration + "\n" + overtime_amount + "\n" + decimal_str
+
+    def get_state(self) -> None:
+        """Get the stats of the TimeRecorder object.
+
+        Returns
+        -------
+        str
+            A string containing the stats of the TimeRecorder object.
+        """
+        logger.info(self)

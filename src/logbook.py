@@ -8,7 +8,6 @@ Provides a Logbook class that handles CSV-based time tracking data with features
 - Managing work duration calculations
 """
 
-import logging
 import pathlib
 from datetime import datetime, timedelta
 
@@ -16,21 +15,11 @@ import colorama
 import holidays
 import pandas as pd
 
-from src.logging_utils import LevelSpecificFormatter
+from src.logging_utils import setup_logger
 from src.time_recorder import TimeRecorder
 
-# logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(funcName)s in line %(lineno)s - %(message)s")  # noqa
-# logging.basicConfig(level=logging.INFO, format="%(message)s")  # noqa
-
-
-# Configure logging with custom formatter
-handler = logging.StreamHandler()
-handler.setFormatter(LevelSpecificFormatter())
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-logger.addHandler(handler)
-# logger.propagate = False  # Prevent duplicate messages - commented out to allow pytest caplog to work
+# Set up logger with centralized configuration
+logger = setup_logger(__name__)
 
 colorama.init(autoreset=True)
 RED = colorama.Fore.RED
@@ -184,7 +173,11 @@ class Logbook:
             case, _ = TimeRecorder.calculate_overtime(work_time_td)
             return case
 
-        df = self.load_logbook()
+        # Load original data to compare before and after squashing
+        original_df = self.load_logbook()
+        original_count = len(original_df)
+
+        df = original_df.copy()
         df["date"] = pd.to_datetime(df["date"], format=self.date_format)
 
         # Group by date and weekday, aggregate work_time and lunch_break_duration
@@ -209,8 +202,16 @@ class Logbook:
         # Format 'date' column according to self.date_format
         df["date"] = df["date"].dt.strftime(self.date_format)
         df = df[columns_order]
+
+        # Check if squashing actually occurred (rows were reduced)
+        squashed_count = len(df)
+        squashing_occurred = squashed_count < original_count
+
         self.save_logbook(df)
-        logger.info(f"{GREEN}Logbook squashed.{RESET}")
+
+        # Only log if squashing actually occurred
+        if squashing_occurred:
+            logger.info(f"{GREEN}Logbook squashed. {original_count - squashed_count} entries removed.{RESET}")
 
     def find_and_add_missing_days(self) -> None:
         """Find and add missing holidays and weekend days to the log file.
@@ -349,7 +350,7 @@ class Logbook:
         df = df.sort_values(by="date", key=lambda x: pd.to_datetime(x, format=self.date_format))
         self.save_logbook(df)
 
-    def get_weekly_hours_from_log(self) -> float:
+    def get_weekly_hours_from_log(self) -> None:
         """Calculate the averaged weekly work hours from a log file.
 
         This method reads a CSV log file containing daily work times, computes the average work hours per day
@@ -384,7 +385,8 @@ class Logbook:
                 weekly_hours /= num_days  # average work hours per day
                 weekly_hours *= 5  # assuming a 5-day work week
                 result = round(weekly_hours, 2)
-        return result
+
+        logger.info(f"Average weekly hours: {result} hours")
 
     def get_path(self) -> pathlib.Path:
         """Return the path to the logbook file."""
