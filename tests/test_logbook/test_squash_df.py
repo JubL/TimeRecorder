@@ -5,24 +5,19 @@ import pathlib
 import pandas as pd
 import pytest
 
-import time_recorder as tr
+import src.logbook as lb
 
 
 @pytest.fixture
-def line() -> tr.TimeRecorder:
-    """Fixture to create a sample TimeRecorder for squash_df tests."""
-    return tr.TimeRecorder(
-        date="24.04.2025",
-        start_time="08:00",
-        end_time="17:30",
-        lunch_break_duration=60,
-    )
+def logbook(tmp_path: pathlib.Path) -> lb.Logbook:
+    """Fixture to create a sample Logbook for testing."""
+    return lb.Logbook(log_path=tmp_path / "log.csv")
 
 
 @pytest.mark.fast
-def test_squash_df_groups_and_sums_correctly(tmp_path: pathlib.Path, line: tr.TimeRecorder) -> None:
+def test_squash_df_groups_and_sums_correctly(logbook: lb.Logbook, tmp_path: pathlib.Path) -> None:
     """Test that squash_df groups by date and sums work_time and lunch_break_duration."""
-    df_file = tmp_path / "logbook_df.csv"
+    df_file = tmp_path / "log.csv"
     # Create a DataFrame with duplicate dates and different work_time/lunch_break_duration
     df = pd.DataFrame(
         {
@@ -36,8 +31,8 @@ def test_squash_df_groups_and_sums_correctly(tmp_path: pathlib.Path, line: tr.Ti
             "overtime": [-7, 4.5, 0.0],
         },
     )
-    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    line.squash_df(df_file)
+    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")  # TODO replace with logbook.save_logbook(df)?
+    logbook.squash_df()
     result = pd.read_csv(df_file, sep=";", encoding="utf-8")
     # Should have two rows (grouped by date and weekday)
     assert len(result) == 2

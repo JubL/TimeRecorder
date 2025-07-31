@@ -1,0 +1,50 @@
+"""Fixtures for the unit tests."""
+
+import pathlib
+from datetime import datetime
+
+import pandas as pd
+import pytest
+
+import src.logbook as lb
+import src.time_recorder as tr
+
+
+@pytest.fixture
+def fake_boot_timestamp() -> float:
+    """Fixture to provide a fake boot timestamp."""
+    return datetime(2025, 4, 25, 6, 30, 0).timestamp()
+
+
+@pytest.fixture
+def line() -> tr.TimeRecorder:
+    """Fixture to create a sample TimeRecorder for calculate_overtime tests."""
+    return tr.TimeRecorder(
+        date="24.04.2025",
+        start_time="08:00",
+        end_time="16:00",
+        lunch_break_duration=0,
+    )
+
+
+@pytest.fixture
+def logbook(tmp_path: pathlib.Path) -> lb.Logbook:
+    """Fixture to create a sample Logbook for testing."""
+    return lb.Logbook(log_path=tmp_path / "log.csv")
+
+
+@pytest.fixture
+def sample_df() -> pd.DataFrame:
+    """Fixture to create a sample DataFrame with multiple entries for the same date."""
+    return pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon", "Mon", "Tue", "Tue"],
+            "date": ["24.04.2025", "24.04.2025", "24.04.2025", "25.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "11:30:00", "14:00:00", "08:00:00", "13:00:00"],
+            "end_time": ["10:00:00", "13:00:00", "17:00:00", "12:00:00", "17:00:00"],
+            "lunch_break_duration": [30, 45, 60, 60, 30],
+            "work_time": [1.5, 1.25, 3.0, 4.0, 4.0],
+            "case": ["undertime", "undertime", "undertime", "undertime", "undertime"],
+            "overtime": [-6.5, -6.75, -5.0, -4.0, -4.0],
+        },
+    )

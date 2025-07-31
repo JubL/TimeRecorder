@@ -16,7 +16,7 @@ import colorama
 import holidays
 import pandas as pd
 
-from time_recorder import TimeRecorder
+from src.time_recorder import TimeRecorder
 
 # logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(funcName)s in line %(lineno)s - %(message)s")  # noqa
 # logging.basicConfig(level=logging.INFO, format="%(message)s")  # noqa
@@ -56,7 +56,7 @@ handler.setFormatter(LevelSpecificFormatter())
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
-logger.propagate = False  # Prevent duplicate messages
+# logger.propagate = False  # Prevent duplicate messages - commented out to allow pytest caplog to work
 
 colorama.init(autoreset=True)
 RED = colorama.Fore.RED
@@ -109,10 +109,10 @@ class Logbook:
         Handles file not found, empty data, and parsing errors gracefully.
         """
         if not self.log_path.exists() or self.log_path.stat().st_size == 0:
-            self.create_df()
+            self.create_df()  # FIXME remove this functionality?
 
         try:
-            df = pd.read_csv(self.log_path, sep=";", encoding="utf-8")  # how are empty fields read? as NaN?
+            df = pd.read_csv(self.log_path, sep=";", na_values="", encoding="utf-8")  # how are empty fields read? as NaN?
             logger.debug(f"Read logbook from {self.log_path}")
         except FileNotFoundError:
             logger.exception(f"{RED}Log file not found: {self.log_path}{RESET}")
@@ -175,7 +175,6 @@ class Logbook:
 
     def create_df(self) -> None:
         """Create a pandas dataframe file."""
-        # create a pandas dataframe
         columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         df = pd.DataFrame(columns=columns)
         self.save_logbook(df)
@@ -412,3 +411,7 @@ class Logbook:
                 weekly_hours *= 5  # assuming a 5-day work week
                 result = round(weekly_hours, 2)
         return result
+
+    def get_path(self) -> pathlib.Path:
+        """Return the path to the logbook file."""
+        return self.log_path

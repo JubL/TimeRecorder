@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-import time_recorder as tr
+import src.time_recorder as tr
 
 
 @pytest.mark.parametrize(

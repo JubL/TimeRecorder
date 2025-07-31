@@ -2,18 +2,7 @@ from datetime import timedelta
 
 import pytest
 
-import time_recorder as tr
-
-
-@pytest.fixture
-def line() -> tr.TimeRecorder:
-    """Fixture to create a sample TimeRecorder for calculate_overtime tests."""
-    return tr.TimeRecorder(
-        date="24.04.2025",
-        start_time="08:00",
-        end_time="16:00",
-        lunch_break_duration=0,
-    )
+import src.time_recorder as tr
 
 
 @pytest.mark.parametrize(

@@ -366,12 +366,14 @@ class TimeRecorder:
             A semicolon-separated string containing all relevant attributes of the object.
         """
         return (
-            f"{self.weekday}; {self.date}; {self.start_time.strftime(self.time_format)}; "
-            f"{self.end_time.strftime(self.time_format)}; {int(self.lunch_break_duration.total_seconds() // self.sec_in_min)}; "
-            f"{self.work_time.total_seconds() // self.sec_in_hour}; "
-            f"{self.work_time.total_seconds() // self.sec_in_min % self.min_in_hour}; "
-            f"{self.case}; {self.overtime.total_seconds() // self.sec_in_hour}; "
-            f"{self.overtime.total_seconds() // self.sec_in_min % self.min_in_hour}"
+            f"{self.weekday};"
+            f"{self.date};"
+            f"{self.start_time.strftime(self.time_format)};"
+            f"{self.end_time.strftime(self.time_format)};"
+            f"{int(self.lunch_break_duration.total_seconds() // self.sec_in_min)};"
+            f"{round(self.work_time.total_seconds() / self.sec_in_hour, 2)};"
+            f"{self.case};"
+            f"{round(self.overtime.total_seconds() / self.sec_in_hour, 2)};"
         )
 
     def __str__(self) -> str:

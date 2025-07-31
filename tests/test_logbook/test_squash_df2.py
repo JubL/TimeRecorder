@@ -1,0 +1,298 @@
+"""Comprehensive unit tests for the squash_df method in logbook.py."""
+
+import pathlib
+
+import pandas as pd
+import pytest
+
+import src.logbook as lb
+
+
+@pytest.mark.fast
+def test_squash_df_groups_by_date_and_weekday(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df correctly groups entries by date and weekday."""
+    # Save sample data
+    df_file = tmp_path / "logbook_df.csv"
+    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+
+    # Replace logbook's path with our test file
+    logbook.log_path = df_file
+
+    # Perform squash operation
+    logbook.squash_df()
+
+    # Load result
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Should have 2 rows (grouped by unique date+weekday combinations)
+    assert len(result) == 2
+
+    # Check that we have one row for each unique date
+    unique_dates = result["date"].unique()
+    assert len(unique_dates) == 2
+    assert "24.04.2025" in unique_dates
+    assert "25.04.2025" in unique_dates
+
+
+@pytest.mark.fast
+def test_squash_df_sums_work_time_and_lunch_break(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df correctly sums work_time and lunch_break_duration."""
+    df_file = tmp_path / "logbook_df.csv"
+    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Check Monday's data (3 entries)
+    monday_row = result[result["date"] == "24.04.2025"].iloc[0]
+    assert monday_row["work_time"] == 5.75  # 1.5 + 1.25 + 3.0
+    assert monday_row["lunch_break_duration"] == 135  # 30 + 45 + 60
+
+    # Check Tuesday's data (2 entries)
+    tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
+    assert tuesday_row["work_time"] == 8.0  # 4.0 + 4.0
+    assert tuesday_row["lunch_break_duration"] == 90  # 60 + 30
+
+
+@pytest.mark.fast
+def test_squash_df_takes_first_start_time_and_last_end_time(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df takes first start_time and last end_time for each group."""
+    df_file = tmp_path / "logbook_df.csv"
+    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Check Monday's data
+    monday_row = result[result["date"] == "24.04.2025"].iloc[0]
+    assert monday_row["start_time"] == "08:00:00"  # First start time
+    assert monday_row["end_time"] == "17:00:00"  # Last end time
+
+    # Check Tuesday's data
+    tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
+    assert tuesday_row["start_time"] == "08:00:00"  # First start time
+    assert tuesday_row["end_time"] == "17:00:00"  # Last end time
+
+
+@pytest.mark.fast
+def test_squash_df_recalculates_case_and_overtime(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df recalculates case and overtime based on summed work_time."""
+    df_file = tmp_path / "logbook_df.csv"
+    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Check Monday's data (5.75 hours total - should be undertime)
+    monday_row = result[result["date"] == "24.04.2025"].iloc[0]
+    assert monday_row["case"] == "undertime"
+    assert monday_row["overtime"] == -2.25  # 5.75 - 8.0 = -2.25
+
+    # Check Tuesday's data (8.0 hours total - should be overtime)
+    tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
+    assert tuesday_row["case"] == "overtime"
+    assert tuesday_row["overtime"] == 0.0  # 8.0 - 8.0 = 0.0
+
+
+@pytest.mark.fast
+def test_squash_df_handles_empty_work_time(logbook: lb.Logbook, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df handles empty or NaN work_time values correctly."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon"],
+            "date": ["24.04.2025", "24.04.2025"],
+            "start_time": ["08:00:00", "11:00:00"],
+            "end_time": ["10:00:00", "13:00:00"],
+            "lunch_break_duration": [30, 60],
+            "work_time": ["", 4.0],  # One empty, one valid
+            "case": ["", "undertime"],
+            "overtime": ["", -4.0],
+        },
+    )
+
+    df_file = tmp_path / "logbook_df.csv"
+    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Should have one row with summed data
+    assert len(result) == 1
+    row = result.iloc[0]
+    assert row["work_time"] == 4.0  # Only the valid value
+    assert row["case"] == "undertime"  # Recalculated based on 4.0 hours
+    assert row["overtime"] == -4.0  # 4.0 - 8.0 = -4.0
+
+
+@pytest.mark.fast
+def test_squash_df_preserves_column_order(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df preserves the correct column order."""
+    df_file = tmp_path / "logbook_df.csv"
+    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Check column order
+    expected_columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
+    assert list(result.columns) == expected_columns
+
+
+@pytest.mark.fast
+def test_squash_df_formats_dates_correctly(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df formats dates according to the date_format."""
+    df_file = tmp_path / "logbook_df.csv"
+    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Check that dates are formatted correctly
+    for date in result["date"]:
+        # Should be in DD.MM.YYYY format
+        assert len(date.split(".")) == 3
+        day, month, year = date.split(".")
+        assert len(day) == 2
+        assert len(month) == 2
+        assert len(year) == 4
+
+
+@pytest.mark.fast
+def test_squash_df_with_single_entry(logbook: lb.Logbook, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df works correctly with a single entry (no grouping needed)."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon"],
+            "date": ["24.04.2025"],
+            "start_time": ["08:00:00"],
+            "end_time": ["17:00:00"],
+            "lunch_break_duration": [60],
+            "work_time": [8.0],
+            "case": ["overtime"],
+            "overtime": [0.0],
+        },
+    )
+
+    df_file = tmp_path / "logbook_df.csv"
+    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Should have one row unchanged
+    assert len(result) == 1
+    row = result.iloc[0]
+    assert row["work_time"] == 8.0
+    assert row["lunch_break_duration"] == 60
+    assert row["case"] == "overtime"
+    assert row["overtime"] == 0.0
+
+
+@pytest.mark.fast
+def test_squash_df_with_multiple_dates(logbook: lb.Logbook, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df works correctly with multiple different dates."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon", "Tue", "Tue", "Wed"],
+            "date": ["24.04.2025", "24.04.2025", "25.04.2025", "25.04.2025", "26.04.2025"],
+            "start_time": ["08:00:00", "11:00:00", "08:00:00", "13:00:00", "08:00:00"],
+            "end_time": ["10:00:00", "17:00:00", "12:00:00", "17:00:00", "17:00:00"],
+            "lunch_break_duration": [30, 60, 60, 30, 60],
+            "work_time": [1.5, 5.5, 4.0, 4.0, 8.0],
+            "case": ["undertime", "undertime", "undertime", "undertime", "overtime"],
+            "overtime": [-6.5, -2.5, -4.0, -4.0, 0.0],
+        },
+    )
+
+    df_file = tmp_path / "logbook_df.csv"
+    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Should have 3 rows (one for each unique date)
+    assert len(result) == 3
+
+    # Check each date's data
+    monday = result[result["date"] == "24.04.2025"].iloc[0]
+    assert monday["work_time"] == 7.0  # 1.5 + 5.5
+    assert monday["lunch_break_duration"] == 90  # 30 + 60
+    assert monday["case"] == "undertime"  # 7.0 < 8.0
+
+    tuesday = result[result["date"] == "25.04.2025"].iloc[0]
+    assert tuesday["work_time"] == 8.0  # 4.0 + 4.0
+    assert tuesday["lunch_break_duration"] == 90  # 60 + 30
+    assert tuesday["case"] == "overtime"  # 8.0 == 8.0
+
+    wednesday = result[result["date"] == "26.04.2025"].iloc[0]
+    assert wednesday["work_time"] == 8.0
+    assert wednesday["lunch_break_duration"] == 60
+    assert wednesday["case"] == "overtime"  # 8.0 == 8.0
+
+
+@pytest.mark.fast
+def test_squash_df_edge_case_overtime_threshold(logbook: lb.Logbook, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df correctly handles the overtime threshold (8 hours)."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon"],
+            "date": ["24.04.2025", "24.04.2025"],
+            "start_time": ["08:00:00", "13:00:00"],
+            "end_time": ["12:00:00", "17:00:00"],
+            "lunch_break_duration": [60, 60],
+            "work_time": [3.0, 4.99],  # Total: 7.99 (undertime)
+            "case": ["undertime", "undertime"],
+            "overtime": [-5.0, -3.01],
+        },
+    )
+
+    df_file = tmp_path / "logbook_df.csv"
+    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Should be undertime (7.99 < 8.0)
+    row = result.iloc[0]
+    assert row["work_time"] == 7.99
+    assert row["case"] == "undertime"
+    assert row["overtime"] == -0.01  # 7.99 - 8.0 = -0.01
+
+
+@pytest.mark.fast
+def test_squash_df_exactly_8_hours(logbook: lb.Logbook, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df correctly handles exactly 8 hours (overtime threshold)."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon"],
+            "date": ["24.04.2025", "24.04.2025"],
+            "start_time": ["08:00:00", "13:00:00"],
+            "end_time": ["12:00:00", "17:00:00"],
+            "lunch_break_duration": [60, 60],
+            "work_time": [4.0, 4.0],  # Total: 8.0 (exactly overtime threshold)
+            "case": ["undertime", "undertime"],
+            "overtime": [-4.0, -4.0],
+        },
+    )
+
+    df_file = tmp_path / "logbook_df.csv"
+    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+
+    # Should be overtime (8.0 >= 8.0)
+    row = result.iloc[0]
+    assert row["work_time"] == 8.0
+    assert row["case"] == "overtime"
+    assert row["overtime"] == 0.0  # 8.0 - 8.0 = 0.0

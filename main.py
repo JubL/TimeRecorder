@@ -9,8 +9,8 @@ and uses them to record the time and log the results.
 import logging
 import pathlib
 
-from logbook import Logbook
-from time_recorder import TimeRecorder
+from src.logbook import Logbook
+from src.time_recorder import TimeRecorder
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
@@ -26,15 +26,22 @@ if __name__ == "__main__":
 
     # TODO: put the logging functionality into a seperate file / module
 
+    # TODO: test whether the logging works with different log levels (are the logs propagated to the main module?)
+
+    # TODO: put some test from squash_df.py into squash_df2.py
+
+    # TODO: check the "--cov" flag of pytest in the pyproject.toml file
+
+    # TODO: introduce a requirements.txt file?
+
     USE_BOOT_TIME = True  # Use system boot time as start time
     DATE = "25.07.2025"  # Date in DD.MM.YYYY format
     START_TIME = "07:00"  # Starting time in HH:MM format
     END_TIME = "17:15"  # Ending time in HH:MM format
     LUNCH_BREAK_DURATION = 60  # Duration of the lunch break in minutes
-    LOG_PATH = pathlib.Path.cwd() / "timereport_logbook.txt"  # Path to the log file in the current directory
+    LOG_PATH = pathlib.Path.cwd() / ".." / "timereport_logbook.txt"  # Path to the log file in the current directory
     LOG = False  # Set to True to log the results
 
-    # Create a TimeRecorder object with parameters
     tr_line = TimeRecorder(date=DATE, start_time=START_TIME, end_time=END_TIME, lunch_break_duration=LUNCH_BREAK_DURATION)
     logbook = Logbook(log_path=LOG_PATH)
 
