@@ -38,7 +38,6 @@ select = [
     "C90",      # mccabe
     "COM",      # flake8-commas
     "D",        # pydocstyle
-    "DTZ",      # flake8-datetimez
     "E",        # pycodestyle Error
     "ERA",      # eradicate
     "EXE",      # flake8-executable
@@ -84,7 +83,7 @@ indent-style = "space"
 convention = "numpy"   # Docstring style
 
 [tool.ruff.lint.pycodestyle]
-max-line-length = 160
+max-line-length = 140
 
 [tool.pytest.ini_options]
 markers = [
