@@ -15,7 +15,9 @@ from src.time_recorder import TimeRecorder
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
-if __name__ == "__main__":
+
+def main() -> None:
+    """Run the main function of the time recorder."""
     # TODO: use argparse to parse the command line arguments
     # TODO: or use a yaml config file
 
@@ -54,3 +56,7 @@ if __name__ == "__main__":
         logbook.squash_df()
     average_weekly_hours = logbook.get_weekly_hours_from_log()
     logger.info(f"Average weekly hours: {average_weekly_hours} hours")
+
+
+if __name__ == "__main__":
+    main()
