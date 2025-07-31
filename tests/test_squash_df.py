@@ -34,7 +34,7 @@ def test_squash_df_groups_and_sums_correctly(tmp_path: pathlib.Path, line: tr.Ti
             "work_time": [1.0, 6.0, 8.0],
             "case": ["undertime", "undertime", "overtime"],
             "overtime": [-7, 4.5, 0.0],
-        }
+        },
     )
     df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
     line.squash_df(df_file)

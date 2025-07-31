@@ -29,9 +29,7 @@ def line() -> tr.TimeRecorder:
     ],
 )
 @pytest.mark.fast
-def test_calculate_overtime_cases(
-    line: tr.TimeRecorder, work_time: timedelta, expected_case: str, expected_delta: timedelta
-) -> None:
+def test_calculate_overtime_cases(line: tr.TimeRecorder, work_time: timedelta, expected_case: str, expected_delta: timedelta) -> None:
     """Test calculate_overtime returns correct case and timedelta."""
     case, overtime = line.calculate_overtime(work_time)
     assert case == expected_case

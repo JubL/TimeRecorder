@@ -26,7 +26,9 @@ def sample_line() -> tr.TimeRecorder:
 @pytest.mark.fast
 @patch("psutil.boot_time")
 def test_update_boot_time_sets_start_time_to_boot_time(
-    mock_boot_time: Mock, sample_line: tr.TimeRecorder, fake_boot_timestamp: float
+    mock_boot_time: Mock,
+    sample_line: tr.TimeRecorder,
+    fake_boot_timestamp: float,
 ) -> None:
     """Test that update_boot_time sets start_time to the system boot time."""
     mock_boot_time.return_value = fake_boot_timestamp

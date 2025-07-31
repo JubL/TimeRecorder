@@ -32,7 +32,7 @@ def test_returns_zero_if_no_work_days(line: tr.TimeRecorder, tmp_path: pathlib.P
             "work_time": [0, 0],
             "case": ["", ""],
             "overtime": ["", ""],
-        }
+        },
     )
     file = tmp_path / "no_work.csv"
     df.to_csv(file, sep=";", index=False, encoding="utf-8")
@@ -55,7 +55,7 @@ def test_returns_expected_weekly_hours(line: tr.TimeRecorder, tmp_path: pathlib.
             "work_time": [8, 7.5, 8, 8.5, 8],  # hours
             "case": ["", "", "", "", ""],
             "overtime": ["", "", "", "", ""],
-        }
+        },
     )
     file = tmp_path / "log.csv"
     df.to_csv(file, sep=";", index=False, encoding="utf-8")
@@ -77,7 +77,7 @@ def test_ignores_zero_work_time_days(line: tr.TimeRecorder, tmp_path: pathlib.Pa
             "work_time": [8, 0, 8, 0, 8],  # Only 3 days with work
             "case": ["", "", "", "", ""],
             "overtime": [0, "", 0, "", 0],
-        }
+        },
     )
     file = tmp_path / "log2.csv"
     df.to_csv(file, sep=";", index=False, encoding="utf-8")
@@ -99,7 +99,7 @@ def test_handles_non_numeric_work_time(line: tr.TimeRecorder, tmp_path: pathlib.
             "work_time": ["not_a_number"],
             "case": [""],
             "overtime": [""],
-        }
+        },
     )
     file = tmp_path / "bad_work_time.csv"
     df.to_csv(file, sep=";", index=False, encoding="utf-8")
@@ -122,7 +122,7 @@ def test_rounds_to_two_decimals(line: tr.TimeRecorder, tmp_path: pathlib.Path) -
             "work_time": [7.3333, 7.6666],
             "case": ["undertime", "undertime"],
             "overtime": ["", ""],
-        }
+        },
     )
     file = tmp_path / "round.csv"
     df.to_csv(file, sep=";", index=False, encoding="utf-8")
