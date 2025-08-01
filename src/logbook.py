@@ -66,31 +66,48 @@ class Logbook:
         pd.DataFrame
             The loaded DataFrame containing the logbook data.
 
+        Raises
+        ------
+        FileNotFoundError
+            If the logbook file does not exist and cannot be created.
+        pd.errors.EmptyDataError
+            If the logbook file is empty and cannot be processed.
+        pd.errors.ParserError
+            If the logbook file has parsing errors.
+        KeyError
+            If the logbook file is missing required columns.
+        ValueError
+            If the logbook file has an unexpected number of columns.
+
         Notes
         -----
         If the logbook file does not exist or is empty, a new DataFrame is created.
         Handles file not found, empty data, and parsing errors gracefully.
         """
+        # Create the file if it doesn't exist or is empty
         if not self.log_path.exists() or self.log_path.stat().st_size == 0:
-            self.create_df()  # FIXME remove this functionality?
+            self.create_df()
 
         try:
-            df = pd.read_csv(self.log_path, sep=";", na_values="", encoding="utf-8")  # how are empty fields read? as NaN?
+            df = pd.read_csv(self.log_path, sep=";", na_values="", encoding="utf-8")
             logger.debug(f"Read logbook from {self.log_path}")
-        except FileNotFoundError:
+        except FileNotFoundError as e:
             logger.exception(f"{RED}Log file not found: {self.log_path}{RESET}")
-        except pd.errors.EmptyDataError:
+            raise FileNotFoundError(f"Log file not found: {self.log_path}") from e
+        except pd.errors.EmptyDataError as e:
             logger.exception(f"{RED}Log file is empty: {self.log_path}{RESET}")
+            raise pd.errors.EmptyDataError(f"Log file is empty: {self.log_path}") from e
         except pd.errors.ParserError as e:
             logger.exception(f"{RED}Error parsing log file: {e}{RESET}")
+            raise pd.errors.ParserError(f"Error parsing log file: {e}") from e
 
         # sanity checks
-        # make sure all required coloumns are present
+        # make sure all required columns are present
         required_columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         if not all(col in df.columns for col in required_columns):
-            raise KeyError(f"{RED}Log file is missing required columns: {required_columns}.")
+            raise KeyError(f"{RED}Log file is missing required columns: {required_columns}.{RESET}")
 
-        # count the number of coloumns
+        # count the number of columns
         if len(df.columns) != len(required_columns):
             raise ValueError(f"{RED}Log file has an unexpected number of columns: {len(df.columns)}. Expected 8 columns.{RESET}")
 
