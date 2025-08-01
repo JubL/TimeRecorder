@@ -11,13 +11,12 @@ def test_returns_zero_if_no_work_days(logbook: lb.Logbook, caplog: pytest.LogCap
     """Should return 0.0 and a log warning if no work days are found (all work_time zero)."""
     logbook.create_df()
     with caplog.at_level("WARNING"):
-        result = logbook.get_weekly_hours_from_log()
-        assert result == 0.0
+        logbook.get_weekly_hours_from_log()
         assert "No work days found in the log file." in caplog.text
 
 
 @pytest.mark.fast
-def test_returns_expected_weekly_hours(logbook: lb.Logbook) -> None:
+def test_returns_expected_weekly_hours(logbook: lb.Logbook, caplog: pytest.LogCaptureFixture) -> None:
     """Should return correct weekly hours for valid log file."""
     df = pd.DataFrame(
         {
@@ -33,12 +32,13 @@ def test_returns_expected_weekly_hours(logbook: lb.Logbook) -> None:
     )
     logbook.save_logbook(df)
     # Average per day = (8 + 7.5 + 8 + 8.5 + 8) / 5 = 8.0, so weekly = 8.0 * 5 = 40.0
-    result = logbook.get_weekly_hours_from_log()
-    assert result == 40
+    with caplog.at_level("INFO"):
+        logbook.get_weekly_hours_from_log()
+        assert "Average weekly hours: 40.0 hours" in caplog.text
 
 
 @pytest.mark.fast
-def test_ignores_zero_work_time_days(logbook: lb.Logbook) -> None:
+def test_ignores_zero_work_time_days(logbook: lb.Logbook, caplog: pytest.LogCaptureFixture) -> None:
     """Should only average over days with work_time > 0."""
     df = pd.DataFrame(
         {
@@ -54,8 +54,9 @@ def test_ignores_zero_work_time_days(logbook: lb.Logbook) -> None:
     )
     logbook.save_logbook(df)
     # Average per day = (8+8+8)/3 = 8.0, weekly = 8.0*5 = 40.0
-    result = logbook.get_weekly_hours_from_log()
-    assert result == 40
+    with caplog.at_level("INFO"):
+        logbook.get_weekly_hours_from_log()
+        assert "Average weekly hours: 40.0 hours" in caplog.text
 
 
 @pytest.mark.fast
@@ -75,13 +76,12 @@ def test_handles_non_numeric_work_time(logbook: lb.Logbook, caplog: pytest.LogCa
     )
     logbook.save_logbook(df)
     with caplog.at_level("ERROR"):
-        result = logbook.get_weekly_hours_from_log()
-        assert result == 0
+        logbook.get_weekly_hours_from_log()
         assert "Error converting 'work_time' to timedelta" in caplog.text
 
 
 @pytest.mark.fast
-def test_rounds_to_two_decimals(logbook: lb.Logbook) -> None:
+def test_rounds_to_two_decimals(logbook: lb.Logbook, caplog: pytest.LogCaptureFixture) -> None:
     """Should round the result to two decimal places."""
     df = pd.DataFrame(
         {
@@ -97,5 +97,6 @@ def test_rounds_to_two_decimals(logbook: lb.Logbook) -> None:
     )
     logbook.save_logbook(df)
     # The average of (7.3333 + 7.6666) / 2 is 7.5, weekly = 7.5*5 = 37.5
-    result = logbook.get_weekly_hours_from_log()
-    assert result == 37.5
+    with caplog.at_level("INFO"):
+        logbook.get_weekly_hours_from_log()
+        assert "Average weekly hours: 37.5 hours" in caplog.text
