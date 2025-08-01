@@ -28,12 +28,6 @@ def main() -> None:
 
     # TODO: use a dict to store the parameters (the constants below) for the TimeRecorder object or perhaps a configuration file (yaml)
 
-    # TODO: put the logging functionality into a seperate file / module
-
-    # TODO: test whether the logging works with different log levels (are the logs propagated to the main module?)
-
-    # TODO: put some test from squash_df.py into squash_df2.py
-
     # TODO: check the "--cov" flag of pytest in the pyproject.toml file
 
     # TODO: introduce a requirements.txt file?
@@ -44,7 +38,7 @@ def main() -> None:
     END_TIME = "17:25"  # Ending time in HH:MM format
     LUNCH_BREAK_DURATION = 60  # Duration of the lunch break in minutes
     LOG_PATH = pathlib.Path.cwd() / "timereport_logbook.txt"  # Path to the log file in the current directory
-    LOG = True  # Set to True to log the results
+    LOG = False  # Set to True to log the results
 
     tr_line = TimeRecorder(date=DATE, start_time=START_TIME, end_time=END_TIME, lunch_break_duration=LUNCH_BREAK_DURATION)
     logbook = Logbook(log_path=LOG_PATH)
