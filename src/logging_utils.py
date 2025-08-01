@@ -34,7 +34,7 @@ class LevelSpecificFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def setup_logger(name: str, level: int = None) -> logging.Logger:
+def setup_logger(name: str, level: int | None = None) -> logging.Logger:
     """Set up a logger with the standard configuration.
 
     Parameters
