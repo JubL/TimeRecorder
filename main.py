@@ -27,10 +27,9 @@ def main() -> None:
     # TODO: or use a yaml config file
 
     # TODO: use a dict to store the parameters (the constants below) for the TimeRecorder object or perhaps a configuration file (yaml)
+    # TODO: make the TimeRecorder class accept a dict of parameters for the constructor
 
-    # TODO: check the "--cov" flag of pytest in the pyproject.toml file
-
-    # TODO: introduce a requirements.txt file?
+    # TODO: increase the test coverage to 100%
 
     USE_BOOT_TIME = True  # Use system boot time as start time
     DATE = "25.07.2025"  # Date in DD.MM.YYYY format
@@ -40,7 +39,15 @@ def main() -> None:
     LOG_PATH = pathlib.Path.cwd() / "timereport_logbook.txt"  # Path to the log file in the current directory
     LOG = False  # Set to True to log the results
 
-    tr_line = TimeRecorder(date=DATE, start_time=START_TIME, end_time=END_TIME, lunch_break_duration=LUNCH_BREAK_DURATION)
+    tr_line = TimeRecorder.from_dict(
+        {
+            "date": DATE,
+            "start_time": START_TIME,
+            "end_time": END_TIME,
+            "lunch_break_duration": LUNCH_BREAK_DURATION,
+            "full_format": "%d.%m.%Y %H:%M:%S",
+        },
+    )
     logbook = Logbook(log_path=LOG_PATH)
 
     if USE_BOOT_TIME:

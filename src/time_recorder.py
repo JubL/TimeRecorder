@@ -170,6 +170,24 @@ class TimeRecorder:
         self.sec_in_hour = 3600  # Number of seconds in an hour
         self.min_in_hour = 60  # Number of minutes in an hour
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "TimeRecorder":
+        """
+        Create a TimeRecorder object from a dictionary.
+
+        Parameters
+        ----------
+        data : dict
+            A dictionary containing the attributes of the TimeRecorder object.
+        """
+        return cls(
+            date=data["date"],
+            start_time=data["start_time"],
+            end_time=data["end_time"],
+            lunch_break_duration=data["lunch_break_duration"],
+            full_format=data["full_format"],
+        )
+
     def update_boot_time(self) -> None:
         """Update the start time to the system boot time.
 
