@@ -419,3 +419,8 @@ class Logbook:
     def get_path(self) -> pathlib.Path:
         """Return the path to the logbook file."""
         return self.log_path
+
+    def tail(self, n: int = 4) -> None:
+        """Print the last n lines of the logbook file."""
+        df = self.load_logbook()
+        logger.info(df.tail(n).to_string(index=False))

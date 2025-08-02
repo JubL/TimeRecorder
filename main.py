@@ -57,8 +57,6 @@ def main() -> None:
 
     # TODO: have the option to set the end time to now + 1 minute
 
-    # TODO: introduce logbook.tail()
-
     # TODO: split the test for config_utils in seperate files
 
     # Create default config if it doesn't exist
@@ -97,6 +95,9 @@ def main() -> None:
 
     if processing_config["calculate_weekly_hours"]:
         logbook.get_weekly_hours_from_log()
+
+    if processing_config["log_enabled"]:
+        logbook.tail()
 
 
 if __name__ == "__main__":

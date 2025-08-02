@@ -48,3 +48,20 @@ def sample_df() -> pd.DataFrame:
             "overtime": [-6.5, -6.75, -5.0, -4.0, -4.0],
         },
     )
+
+
+@pytest.fixture
+def sample_logbook_df() -> pd.DataFrame:
+    """Sample logbook data for testing."""
+    return pd.DataFrame(
+        {
+            "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+            "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024"],
+            "start_time": ["08:00:00", "07:30:00", "08:15:00", "07:45:00", "08:00:00"],
+            "end_time": ["17:00:00", "16:30:00", "17:15:00", "16:45:00", "17:00:00"],
+            "lunch_break_duration": ["1.0", "1.0", "1.0", "1.0", "1.0"],
+            "work_time": ["7.0", "7.0", "7.0", "7.0", "7.0"],
+            "case": ["overtime", "overtime", "overtime", "overtime", "overtime"],
+            "overtime": ["0.0", "0.0", "0.0", "0.0", "0.0"],
+        },
+    )
