@@ -22,7 +22,7 @@ def test_squash_df_groups_by_date_and_weekday(logbook: lb.Logbook, sample_df: pd
     logbook.squash_df()
 
     # Load result
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Should have 2 rows (grouped by unique date+weekday combinations)
     assert len(result) == 2
@@ -42,7 +42,7 @@ def test_squash_df_sums_work_time_and_lunch_break(logbook: lb.Logbook, sample_df
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Check Monday's data (3 entries)
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
@@ -63,7 +63,7 @@ def test_squash_df_takes_first_start_time_and_last_end_time(logbook: lb.Logbook,
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Check Monday's data
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
@@ -84,7 +84,7 @@ def test_squash_df_recalculates_case_and_overtime(logbook: lb.Logbook, sample_df
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Check Monday's data (5.75 hours total - should be undertime)
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
@@ -118,7 +118,7 @@ def test_squash_df_handles_empty_work_time(logbook: lb.Logbook, tmp_path: pathli
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Should have one row with summed data
     assert len(result) == 1
@@ -136,7 +136,7 @@ def test_squash_df_preserves_column_order(logbook: lb.Logbook, sample_df: pd.Dat
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Check column order
     expected_columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
@@ -151,7 +151,7 @@ def test_squash_df_formats_dates_correctly(logbook: lb.Logbook, sample_df: pd.Da
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Check that dates are formatted correctly
     for date in result["date"]:
@@ -184,7 +184,7 @@ def test_squash_df_with_single_entry(logbook: lb.Logbook, tmp_path: pathlib.Path
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Should have one row unchanged
     assert len(result) == 1
@@ -216,7 +216,7 @@ def test_squash_df_with_multiple_dates(logbook: lb.Logbook, tmp_path: pathlib.Pa
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Should have 3 rows (one for each unique date)
     assert len(result) == 3
@@ -259,7 +259,7 @@ def test_squash_df_edge_case_overtime_threshold(logbook: lb.Logbook, tmp_path: p
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Should be undertime (7.99 < 8.0)
     row = result.iloc[0]
@@ -289,7 +289,7 @@ def test_squash_df_exactly_8_hours(logbook: lb.Logbook, tmp_path: pathlib.Path) 
     logbook.log_path = df_file
 
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
 
     # Should be overtime (8.0 >= 8.0)
     row = result.iloc[0]
@@ -317,7 +317,7 @@ def test_squash_df_groups_and_sums_correctly(logbook: lb.Logbook, tmp_path: path
     )
     df.to_csv(df_file, sep=";", index=False, encoding="utf-8")  # TODO replace with logbook.save_logbook(df)?
     logbook.squash_df()
-    result = pd.read_csv(df_file, sep=";", encoding="utf-8")
+    result = logbook.load_logbook()
     # Should have two rows (grouped by date and weekday)
     assert len(result) == 2
     # Check that lunch_break_duration and work_time are summed for the grouped date
@@ -328,3 +328,112 @@ def test_squash_df_groups_and_sums_correctly(logbook: lb.Logbook, tmp_path: path
     # Check that start_time is 'first' and end_time is 'last'
     assert grouped.iloc[0]["start_time"] == "08:00:00"
     assert grouped.iloc[0]["end_time"] == "17:00:00"
+
+
+@pytest.mark.fast
+def test_squash_df_with_empty_work_time_values(logbook: lb.Logbook, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df handles empty work_time values correctly."""
+    # Create a DataFrame with some empty work_time values
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon", "Tue"],
+            "date": ["24.04.2025", "24.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "12:00:00", "08:00:00"],
+            "end_time": ["12:00:00", "17:00:00", "17:00:00"],
+            "lunch_break_duration": [30, 60, 60],
+            "work_time": ["", 3.0, 8.0],  # One empty work_time
+            "case": ["", "undertime", "overtime"],
+            "overtime": ["", -5.0, 0.0],
+        },
+    )
+    df_file = tmp_path / "logbook_df.csv"
+    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = logbook.load_logbook()
+
+    # Should have 2 rows (grouped by date)
+    assert len(result) == 2
+
+    # Check Monday's data (should handle empty work_time)
+    monday_row = result[result["date"] == "24.04.2025"].iloc[0]
+    assert monday_row["work_time"] == 3.0  # Only the non-empty value should be summed
+    assert monday_row["case"] == "undertime"  # Should be recalculated
+    assert monday_row["overtime"] == -5.0  # Should be recalculated
+
+    # Check Tuesday's data
+    tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
+    assert tuesday_row["work_time"] == 8.0
+    assert tuesday_row["case"] == "overtime"
+    assert tuesday_row["overtime"] == 0.0
+
+
+@pytest.mark.fast
+def test_squash_df_with_nan_work_time_values(logbook: lb.Logbook) -> None:
+    """Test that squash_df handles NaN work_time values correctly."""
+    # Create a DataFrame with some NaN work_time values
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon", "Tue"],
+            "date": ["24.04.2025", "24.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "12:00:00", "08:00:00"],
+            "end_time": ["12:00:00", "17:00:00", "17:00:00"],
+            "lunch_break_duration": [30, 60, 60],
+            "work_time": [pd.NA, 3.0, 8.0],  # One NaN work_time
+            "case": ["", "undertime", "overtime"],
+            "overtime": ["", -5.0, 0.0],
+        },
+    )
+    logbook.save_logbook(df)
+
+    logbook.squash_df()
+    result = logbook.load_logbook()
+
+    # Should have 2 rows (grouped by date)
+    assert len(result) == 2
+
+    # Check Monday's data (should handle NaN work_time)
+    monday_row = result[result["date"] == "24.04.2025"].iloc[0]
+    assert monday_row["work_time"] == 3.0  # Only the non-NaN value should be summed
+    assert monday_row["case"] == "undertime"  # Should be recalculated
+    assert monday_row["overtime"] == -5.0  # Should be recalculated
+
+    # Check Tuesday's data
+    tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
+    assert tuesday_row["work_time"] == 8.0
+    assert tuesday_row["case"] == "overtime"
+    assert tuesday_row["overtime"] == 0.0
+
+
+@pytest.mark.fast
+def test_squash_df_with_all_empty_work_time_values(logbook: lb.Logbook, tmp_path: pathlib.Path) -> None:
+    """Test that squash_df handles all empty work_time values correctly."""
+    # Create a DataFrame with all empty work_time values
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon"],
+            "date": ["24.04.2025", "24.04.2025"],
+            "start_time": ["08:00:00", "12:00:00"],
+            "end_time": ["12:00:00", "17:00:00"],
+            "lunch_break_duration": [30, 60],
+            "work_time": ["", ""],  # All empty work_time
+            "case": ["", ""],
+            "overtime": ["", ""],
+        },
+    )
+    df_file = tmp_path / "logbook_df.csv"
+    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.log_path = df_file
+
+    logbook.squash_df()
+    result = logbook.load_logbook()
+
+    # Should have 1 row (grouped by date)
+    assert len(result) == 1
+
+    # Check the result (should handle all empty work_time)
+    row = result.iloc[0]
+    assert not row["work_time"]  # Should remain empty
+    assert not row["case"]  # Should remain empty
+    assert not row["overtime"]  # Should remain empty

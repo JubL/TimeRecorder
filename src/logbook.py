@@ -89,7 +89,7 @@ class Logbook:
             self.create_df()
 
         try:
-            df = pd.read_csv(self.log_path, sep=";", na_values="", encoding="utf-8")
+            df = pd.read_csv(self.log_path, sep=";", keep_default_na=False, encoding="utf-8")
             logger.debug(f"Read logbook from {self.log_path}")
         except FileNotFoundError as e:
             logger.exception(f"{RED}Log file not found: {self.log_path}{RESET}")
@@ -135,11 +135,9 @@ class Logbook:
             df.to_csv(self.log_path, sep=";", index=False, encoding="utf-8")
             logger.debug(f"Logbook saved to {self.log_path}")
         except PermissionError as e:
-            logger.exception(f"{RED}Permission denied when saving logbook to {self.log_path}: {e}{RESET}")
+            raise PermissionError(f"Permission denied when saving logbook to {self.log_path}: {e}") from e
         except OSError as e:
-            logger.exception(f"{RED}OS error while saving logbook to {self.log_path}: {e}{RESET}")
-        except Exception as e:
-            logger.exception(f"{RED}Unexpected error saving logbook to {self.log_path}: {e}{RESET}")
+            raise OSError(f"OS error while saving logbook to {self.log_path}: {e}") from e
 
     def record_into_df(self, data: dict) -> None:
         """Write the time report data into a pandas dataframe.
@@ -176,8 +174,10 @@ class Logbook:
             """
             if not row["work_time"] or pd.isna(row["work_time"]):
                 return ""
+            # Convert work_time to float if it's a string, then calculate overtime
+            work_time_val = float(row["work_time"]) if isinstance(row["work_time"], str) else row["work_time"]
             # Overtime is total work_time minus 8 hours (per day)
-            overtime = row["work_time"] - 8
+            overtime = work_time_val - 8
             return round(overtime, 2)
 
         # FIXME: this is mostly duplicate code from time_recorder.py
@@ -185,8 +185,9 @@ class Logbook:
             """Reevaluate the case based on the work_time."""
             if not row["work_time"] or pd.isna(row["work_time"]):
                 return ""
-            # work_time is in hours (float)
-            work_time_td = timedelta(hours=row["work_time"]) if row["work_time"] else timedelta(0)
+            # Convert work_time to float if it's a string, then create timedelta
+            work_time_val = float(row["work_time"]) if isinstance(row["work_time"], str) else row["work_time"]
+            work_time_td = timedelta(hours=work_time_val) if work_time_val else timedelta(0)
             case, _ = TimeRecorder.calculate_overtime(work_time_td)
             return case
 
@@ -205,7 +206,7 @@ class Logbook:
                     "start_time": "first",
                     "end_time": "last",
                     "lunch_break_duration": lambda x: x.sum() if x.notna().any() else "",
-                    "work_time": lambda x: x.sum() if x.notna().any() else "",
+                    "work_time": lambda x: x.sum() if x.notna().any() else 0,
                 },
             )
             .reset_index(drop=True)
@@ -332,7 +333,7 @@ class Logbook:
                         "start_time": holidays_de_he[date],
                         "end_time": "",
                         "lunch_break_duration": "",
-                        "work_time": "",
+                        "work_time": "0",
                         "case": "",
                         "overtime": "",
                     }
@@ -345,7 +346,7 @@ class Logbook:
                         "start_time": "",
                         "end_time": "",
                         "lunch_break_duration": "",
-                        "work_time": "",
+                        "work_time": "0",
                         "case": "",
                         "overtime": "",
                     }
@@ -357,7 +358,7 @@ class Logbook:
                         "start_time": "",
                         "end_time": "",
                         "lunch_break_duration": "",
-                        "work_time": "",
+                        "work_time": "0",
                         "case": "",
                         "overtime": "",
                     }
@@ -389,10 +390,17 @@ class Logbook:
         df = self.load_logbook()
 
         try:
+            # Convert work_time to timedelta, handling both numeric and string values
+            # First, convert strings to numeric values where possible
+            df["work_time"] = pd.to_numeric(df["work_time"], errors="coerce")
+
+            # Check if there are any NaN values (which indicate conversion failures)
+            if df["work_time"].isna().any():
+                raise ValueError("Non-numeric work_time values found")
+
+            # Then convert to timedelta (numeric values will be treated as hours)
             df["work_time"] = pd.to_timedelta(df["work_time"], unit="h")
-        except (ValueError, TypeError) as e:
-            logger.exception(f"{RED}Error converting 'work_time' to timedelta: {e}{RESET}")
-        else:
+
             weekly_hours = df["work_time"].sum().total_seconds() / self.sec_in_hour
             num_days = df[df["work_time"] > pd.Timedelta(0)]["date"].nunique()
             logger.debug(f"Weekly hours: {weekly_hours}, Number of days: {num_days}")
@@ -402,6 +410,9 @@ class Logbook:
                 weekly_hours /= num_days  # average work hours per day
                 weekly_hours *= 5  # assuming a 5-day work week
                 result = round(weekly_hours, 2)
+        except (ValueError, TypeError) as e:
+            logger.exception(f"{RED}Error converting 'work_time' to timedelta: {e}{RESET}")
+            result = 0.0
 
         logger.info(f"Average weekly hours: {result} hours")
 

@@ -65,12 +65,12 @@ def test_add_missing_days_saturday(logbook: lb.Logbook) -> None:
         # Check that Saturday was added with correct format
         saturday_row = result_df[result_df["date"] == "06.01.2024"].iloc[0]
         assert saturday_row["weekday"] == "Sat"
-        assert pd.isna(saturday_row["start_time"])  # NaN instead of empty string
-        assert pd.isna(saturday_row["end_time"])
-        assert pd.isna(saturday_row["lunch_break_duration"])
-        assert pd.isna(saturday_row["work_time"])
-        assert pd.isna(saturday_row["case"])
-        assert pd.isna(saturday_row["overtime"])
+        assert not saturday_row["start_time"]
+        assert not saturday_row["end_time"]
+        assert not saturday_row["lunch_break_duration"]
+        assert saturday_row["work_time"] == 0.0
+        assert not saturday_row["case"]
+        assert not saturday_row["overtime"]
 
         # Verify logging
         mock_logger.info.assert_any_call("Added missing Saturday on 06.01.2024")
@@ -107,12 +107,12 @@ def test_add_missing_days_sunday(logbook: lb.Logbook) -> None:
         # Check that Sunday was added with correct format
         sunday_row = result_df[result_df["date"] == "07.01.2024"].iloc[0]
         assert sunday_row["weekday"] == "Sun"
-        assert pd.isna(sunday_row["start_time"])  # NaN instead of empty string
-        assert pd.isna(sunday_row["end_time"])
-        assert pd.isna(sunday_row["lunch_break_duration"])
-        assert pd.isna(sunday_row["work_time"])
-        assert pd.isna(sunday_row["case"])
-        assert pd.isna(sunday_row["overtime"])
+        assert not sunday_row["start_time"]
+        assert not sunday_row["end_time"]
+        assert not sunday_row["lunch_break_duration"]
+        assert sunday_row["work_time"] == 0.0
+        assert not sunday_row["case"]
+        assert not sunday_row["overtime"]
 
         # Verify logging
         mock_logger.info.assert_called_with("Added missing Sunday on 07.01.2024")
@@ -150,11 +150,11 @@ def test_add_missing_days_holiday(logbook: lb.Logbook) -> None:
         holiday_row = result_df[result_df["date"] == "01.01.2024"].iloc[0]
         assert holiday_row["weekday"] == "Mon"
         assert holiday_row["start_time"] == "New Year's Day"  # English holiday name
-        assert pd.isna(holiday_row["end_time"])
-        assert pd.isna(holiday_row["lunch_break_duration"])
-        assert pd.isna(holiday_row["work_time"])
-        assert pd.isna(holiday_row["case"])
-        assert pd.isna(holiday_row["overtime"])
+        assert not holiday_row["end_time"]
+        assert not holiday_row["lunch_break_duration"]
+        assert holiday_row["work_time"] == 0.0
+        assert not holiday_row["case"]
+        assert not holiday_row["overtime"]
 
         # Verify logging
         mock_logger.info.assert_any_call("Found a wild New Year's Day.")

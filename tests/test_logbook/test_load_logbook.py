@@ -101,7 +101,7 @@ def test_load_logbook_unexpected_number_of_columns(logbook: lb.Logbook) -> None:
 
 @pytest.mark.fast
 def test_save_logbook_permission_error(logbook: lb.Logbook) -> None:
-    """Test that save_logbook handles PermissionError gracefully."""
+    """Test that save_logbook raises PermissionError when permission is denied."""
     # Create a test DataFrame
     df = pd.DataFrame(
         {
@@ -117,17 +117,17 @@ def test_save_logbook_permission_error(logbook: lb.Logbook) -> None:
     )
 
     # Mock pd.DataFrame.to_csv to raise PermissionError
-    with patch.object(df, "to_csv", side_effect=PermissionError("Permission denied")), patch("src.logbook.logger") as mock_logger:
-        logbook.save_logbook(df)
+    with patch.object(df, "to_csv", side_effect=PermissionError("Permission denied")):
+        with pytest.raises(PermissionError) as exc_info:
+            logbook.save_logbook(df)
 
-        # Verify that the exception was logged
-        mock_logger.exception.assert_called_once()
-        assert "Permission denied when saving logbook" in mock_logger.exception.call_args[0][0]
+        # Verify that the exception message is correct
+        assert "Permission denied when saving logbook" in str(exc_info.value)
 
 
 @pytest.mark.fast
 def test_save_logbook_os_error(logbook: lb.Logbook) -> None:
-    """Test that save_logbook handles OSError gracefully."""
+    """Test that save_logbook raises OSError when OS error occurs."""
     # Create a test DataFrame
     df = pd.DataFrame(
         {
@@ -143,38 +143,12 @@ def test_save_logbook_os_error(logbook: lb.Logbook) -> None:
     )
 
     # Mock pd.DataFrame.to_csv to raise OSError
-    with patch.object(df, "to_csv", side_effect=OSError("Disk full")), patch("src.logbook.logger") as mock_logger:
-        logbook.save_logbook(df)
+    with patch.object(df, "to_csv", side_effect=OSError("Disk full")):
+        with pytest.raises(OSError, match="OS error while saving logbook") as exc_info:
+            logbook.save_logbook(df)
 
-        # Verify that the exception was logged
-        mock_logger.exception.assert_called_once()
-        assert "OS error while saving logbook" in mock_logger.exception.call_args[0][0]
-
-
-@pytest.mark.fast
-def test_save_logbook_unexpected_exception(logbook: lb.Logbook) -> None:
-    """Test that save_logbook handles unexpected exceptions gracefully."""
-    # Create a test DataFrame
-    df = pd.DataFrame(
-        {
-            "weekday": ["Mon"],
-            "date": ["01.01.2024"],
-            "start_time": ["09:00"],
-            "end_time": ["17:00"],
-            "lunch_break_duration": ["1.0"],
-            "work_time": ["8.0"],
-            "case": ["normal"],
-            "overtime": ["0.0"],
-        },
-    )
-
-    # Mock pd.DataFrame.to_csv to raise an unexpected exception
-    with patch.object(df, "to_csv", side_effect=Exception("Unexpected error")), patch("src.logbook.logger") as mock_logger:
-        logbook.save_logbook(df)
-
-        # Verify that the exception was logged
-        mock_logger.exception.assert_called_once()
-        assert "Unexpected error saving logbook" in mock_logger.exception.call_args[0][0]
+        # Verify that the exception message is correct
+        assert "OS error while saving logbook" in str(exc_info.value)
 
 
 @pytest.mark.fast

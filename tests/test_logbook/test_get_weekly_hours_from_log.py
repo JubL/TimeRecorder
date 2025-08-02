@@ -24,7 +24,7 @@ def test_returns_expected_weekly_hours(logbook: lb.Logbook, caplog: pytest.LogCa
             "date": ["2025-04-21", "2025-04-22", "2025-04-23", "2025-04-24", "2025-04-25"],
             "start_time": ["08:00", "08:00", "08:00", "08:00", "08:00"],
             "end_time": ["17:00", "16:30", "17:00", "17:30", "17:00"],
-            "lunch_break_duration": [60, 60, 60, 60, 60],  # in minutes
+            "lunch_break_duration": [60, 60, 60, 60, 60],
             "work_time": [8, 7.5, 8, 8.5, 8],  # hours
             "case": ["", "", "", "", ""],
             "overtime": ["", "", "", "", ""],
@@ -46,7 +46,7 @@ def test_ignores_zero_work_time_days(logbook: lb.Logbook, caplog: pytest.LogCapt
             "date": ["2025-04-21", "2025-04-22", "2025-04-23", "2025-04-24", "2025-04-25"],
             "start_time": ["08:00", "", "08:00", "", "08:00"],
             "end_time": ["16:00", "", "16:00", "", "16:00"],
-            "lunch_break_duration": [60, 60, 60, 60, 60],  # in minutes
+            "lunch_break_duration": [60, 60, 60, 60, 60],
             "work_time": [8, 0, 8, 0, 8],  # Only 3 days with work
             "case": ["", "", "", "", ""],
             "overtime": [0, "", 0, "", 0],
@@ -68,7 +68,7 @@ def test_handles_non_numeric_work_time(logbook: lb.Logbook, caplog: pytest.LogCa
             "date": ["2025-04-21"],
             "start_time": ["08:00"],
             "end_time": ["16:00"],
-            "lunch_break_duration": [60],  # in minutes
+            "lunch_break_duration": [60],
             "work_time": ["not_a_number"],
             "case": [""],
             "overtime": [""],
@@ -89,7 +89,7 @@ def test_rounds_to_two_decimals(logbook: lb.Logbook, caplog: pytest.LogCaptureFi
             "date": ["2025-04-21", "2025-04-22"],
             "start_time": ["08:00", "08:00"],
             "end_time": ["15:20", "16:00"],  # 7.3333 and 7.6666 hours
-            "lunch_break_duration": [60, 60],  # in minutes
+            "lunch_break_duration": [60, 60],
             "work_time": [7.3333, 7.6666],
             "case": ["undertime", "undertime"],
             "overtime": ["", ""],
