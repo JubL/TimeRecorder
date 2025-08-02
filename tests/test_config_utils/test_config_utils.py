@@ -78,7 +78,7 @@ def test_get_time_recorder_config() -> None:
 @pytest.mark.fast
 def test_get_time_recorder_config_with_defaults() -> None:
     """Test TimeRecorder configuration with missing values."""
-    config: dict[str, bool | str | int | list[int]] = {"time_tracking": {}}
+    config: dict = {"time_tracking": {}}
 
     result = cu.get_time_recorder_config(config)
 
@@ -91,7 +91,7 @@ def test_get_time_recorder_config_with_defaults() -> None:
 @pytest.mark.fast
 def test_get_logbook_config() -> None:
     """Test extraction of Logbook configuration."""
-    config: dict[str, bool | str | int | list[int]] = {
+    config: dict = {
         "logging": {
             "log_path": "test_logbook.txt",
         },
@@ -109,7 +109,7 @@ def test_get_logbook_config() -> None:
 @pytest.mark.fast
 def test_get_processing_config() -> None:
     """Test extraction of processing configuration."""
-    config: dict[str, bool | str | int | list[int]] = {
+    config: dict = {
         "time_tracking": {
             "use_boot_time": True,
         },
@@ -135,7 +135,7 @@ def test_get_processing_config() -> None:
 @pytest.mark.fast
 def test_validate_config_success() -> None:
     """Test successful configuration validation."""
-    config: dict[str, bool | str | int | list[int]] = {
+    config: dict = {
         "time_tracking": {
             "date": "25.07.2025",
             "start_time": "07:00",
@@ -156,7 +156,7 @@ def test_validate_config_success() -> None:
 @pytest.mark.fast
 def test_validate_config_missing_section() -> None:
     """Test configuration validation with missing required section."""
-    config: dict[str, bool | str | int | list[int]] = {
+    config: dict = {
         "time_tracking": {
             "date": "25.07.2025",
             "start_time": "07:00",
@@ -172,7 +172,7 @@ def test_validate_config_missing_section() -> None:
 @pytest.mark.fast
 def test_validate_config_missing_field() -> None:
     """Test configuration validation with missing required field."""
-    config: dict[str, bool | str | int | list[int]] = {
+    config: dict = {
         "time_tracking": {
             "date": "25.07.2025",
             "start_time": "07:00",
