@@ -6,7 +6,7 @@ time_tracking:
   use_boot_time: true  # Use system boot time as start time
   date: "01.08.2025"  # Date in DD.MM.YYYY format
   start_time: "07:00"  # Starting time in HH:MM format
-  end_time: "22:35"  # Ending time in HH:MM format
+  end_time: "17:15"  # Ending time in HH:MM format
   lunch_break_duration: 60  # Duration of the lunch break in minutes
   full_format: "%d.%m.%Y %H:%M:%S"  # Format string for parsing full datetime
 
