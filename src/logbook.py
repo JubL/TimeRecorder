@@ -16,7 +16,6 @@ import holidays
 import pandas as pd
 
 from src.logging_utils import setup_logger
-from src.time_recorder import TimeRecorder
 
 # Set up logger with centralized configuration
 logger = setup_logger(__name__)
@@ -157,6 +156,59 @@ class Logbook:
         df = pd.DataFrame(columns=columns)
         self.save_logbook(df)
 
+    def remove_duplicate_lines(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Remove exact duplicate rows from the logbook and log warnings about removed duplicates.
+
+        This method identifies and removes rows that are exact duplicates (all columns match),
+        keeping only the first occurrence of each duplicate set. It logs warnings about
+        what was removed without raising an error.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The DataFrame to check for and remove duplicates from.
+
+        Returns
+        -------
+        pd.DataFrame
+            The DataFrame with duplicates removed.
+
+        Notes
+        -----
+        - Uses pandas drop_duplicates() method to remove exact duplicates
+        - Logs warnings for each set of duplicates removed
+        - Does not raise exceptions, only logs warnings
+        - Includes row indices and content in the warning messages for easier identification
+        """
+        if df.empty:
+            return df
+
+        # Find exact duplicates (all columns match) before removal
+        duplicate_mask = df.duplicated(keep=False)
+        duplicate_rows = df[duplicate_mask]
+
+        if duplicate_rows.empty:
+            return df
+
+        # Group duplicates by their content to show them together
+        duplicate_groups = df[duplicate_mask].groupby(df.columns.tolist()).apply(lambda x: x.index.tolist())
+
+        # Log warnings for each set of duplicates
+        for duplicate_content, row_indices in duplicate_groups.items():
+            if len(row_indices) > 1:  # Only warn if there are actually duplicates
+                # Convert the duplicate content tuple back to a dict for better formatting
+                duplicate_dict = dict(zip(df.columns, duplicate_content, strict=False))
+
+                # Keep the first occurrence, remove the rest
+                rows_to_remove = row_indices[1:]  # All except the first
+
+                logger.warning(
+                    f"{RED}Removing {len(rows_to_remove)} duplicate(s) at row(s) {rows_to_remove}: {duplicate_dict}{RESET}",
+                )
+
+        # Remove duplicates, keeping the first occurrence
+        return df.drop_duplicates(keep="first")
+
     def squash_df(self) -> None:
         """Squash the DataFrame by grouping entries by date and summing work hours.
 
@@ -165,37 +217,52 @@ class Logbook:
 
         """
 
-        # FIXME: this is mostly duplicate code from time_recorder.py
-        def calculate_total_overtime(row: pd.Series) -> float | str:
+        def calculate_overtime_from_work_time(work_time_val: float) -> tuple[str, float]:
             """
-            Calculate total overtime for a given row.
+            Calculate overtime case and amount from work time in hours.
 
-            Return empty string if work_time is missing or empty, otherwise calculate overtime.
+            Parameters
+            ----------
+            work_time_val : float
+                Work time in hours
+
+            Returns
+            -------
+            tuple[str, float]
+                A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
+            """
+            _full_day = timedelta(hours=8, minutes=0)
+            if timedelta(hours=work_time_val) >= _full_day:
+                case = "overtime"
+            else:
+                case = "undertime"
+
+            overtime = timedelta(hours=work_time_val) - _full_day
+
+            return case, round(overtime.total_seconds() / self.sec_in_hour, 2)
+
+        def process_work_time_row(row: pd.Series) -> tuple[str, float | str]:
+            """
+            Process work time from a DataFrame row and return case and overtime.
+
+            Returns empty strings if work_time is missing or empty.
             """
             if not row["work_time"] or pd.isna(row["work_time"]):
-                return ""
-            # Convert work_time to float if it's a string, then calculate overtime
-            work_time_val = float(row["work_time"]) if isinstance(row["work_time"], str) else row["work_time"]
-            # Overtime is total work_time minus 8 hours (per day)
-            overtime = work_time_val - 8
-            return round(overtime, 2)
+                return "", ""
 
-        # FIXME: this is mostly duplicate code from time_recorder.py
-        def reevaluate_case(row: pd.Series) -> str:
-            """Reevaluate the case based on the work_time."""
-            if not row["work_time"] or pd.isna(row["work_time"]):
-                return ""
-            # Convert work_time to float if it's a string, then create timedelta
+            # Convert work_time to float if it's a string
             work_time_val = float(row["work_time"]) if isinstance(row["work_time"], str) else row["work_time"]
-            work_time_td = timedelta(hours=work_time_val) if work_time_val else timedelta(0)
-            case, _ = TimeRecorder.calculate_overtime(work_time_td)
-            return case
+            case, overtime = calculate_overtime_from_work_time(work_time_val)
+            return case, overtime
 
         # Load original data to compare before and after squashing
         original_df = self.load_logbook()
-        original_count = len(original_df)
 
-        df = original_df.copy()
+        # Remove duplicate lines and get warnings about what was removed
+        df_no_duplicates = self.remove_duplicate_lines(original_df)
+        original_count = len(df_no_duplicates)
+
+        df = df_no_duplicates.copy()
         df["date"] = pd.to_datetime(df["date"], format=self.date_format)
 
         # Group by date and weekday, aggregate work_time and lunch_break_duration
@@ -212,8 +279,8 @@ class Logbook:
             .reset_index(drop=True)
         )
 
-        df["case"] = df.apply(reevaluate_case, axis=1)
-        df["overtime"] = df.apply(calculate_total_overtime, axis=1)
+        # Apply the unified processing function
+        df[["case", "overtime"]] = df.apply(process_work_time_row, axis=1, result_type="expand")
 
         # Reorder columns so 'weekday' comes before 'date'
         columns_order = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
