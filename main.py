@@ -34,26 +34,15 @@ def main() -> None:
     # TODO: use argparse to parse the command line arguments
     # TODO: if only the end time is given, then the start time is the boot time, etc.
 
-    # TODO: increase the test coverage to 100%
+    # TODO: increase the test coverage to 95%
 
     # TODO: introduce integration tests
 
-    # TODO: tidy up duplicate code in squash_df method of Logbook class
-
-    # TODO: squash_df needs to identifiy duplicate entries and not squash those together
-
     # TODO: add timezones to the logged time?
 
-    # TODO: improve the documentation
-
-    # TODO: add_missing_days shall add missing days that are not weekend days nor holidays in a specific format
-    # TODO: (e.g. Mon;30.06.2025;cluster meeting MNR;;;;;) -> (weekday;date;tag;;;;;)
-
-    # TODO: introduce outlier detection, consistency checks?
-
     # TODO: visualization of work hours per day, week, month, year
-
     # TODO: calc overtime mean and std dev
+    # TODO: introduce outlier detection, consistency checks?
 
     # TODO: have the option to set the end time to now + 1 minute
 

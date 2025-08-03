@@ -98,7 +98,8 @@ class TimeRecorder:
         lunch_break_duration: int,
         full_format: str = r"%d.%m.%Y %H:%M:%S",
     ) -> None:
-        """Initialize a TimeRecorder object with the provided parameters.
+        """
+        Initialize a TimeRecorder object with the provided parameters.
 
         Parameters
         ----------
@@ -178,7 +179,17 @@ class TimeRecorder:
         Parameters
         ----------
         data : dict
-            A dictionary containing the attributes of the TimeRecorder object.
+            A dictionary containing the required TimeRecorder attributes:
+            - date: str
+            - start_time: str
+            - end_time: str
+            - lunch_break_duration: int
+            - full_format: str (optional)
+
+        Returns
+        -------
+        TimeRecorder
+            A new TimeRecorder instance created from the dictionary data.
         """
         return cls(
             date=data["date"],
@@ -189,7 +200,8 @@ class TimeRecorder:
         )
 
     def update_boot_time(self) -> None:
-        """Update the start time to the system boot time.
+        """
+        Update the start time to the system boot time.
 
         This method retrieves the system boot time using psutil and updates
         the object's start_time attribute. The end_time is adjusted to match
@@ -235,19 +247,21 @@ class TimeRecorder:
         self.weekday = datetime.strptime(self.date, self.date_format).strftime("%a")
 
     def evaluate_work_hours(self) -> None:
-        """Evaluate the total work hours and calculate overtime/undertime.
+        """
+        Evaluate the total work hours and calculate overtime/undertime.
 
-        This method:
+        This method performs the core calculation logic:
         1. Calculates total work duration excluding lunch break
         2. Calculates the overtime/undertime amount
         3. Determines if overtime or undertime was worked
+        4. Updates the object's work_time, case, and overtime attributes
 
         Notes
         -----
         Updates the following attributes:
-        - work_time
-        - case ('overtime' or 'undertime')
-        - overtime
+        - work_time: timedelta - Total work duration excluding lunch break
+        - case: str - Either 'overtime' or 'undertime'
+        - overtime: timedelta - Amount of overtime or undertime
         """
         self.work_time = self.calculate_work_duration()
         self.case, self.overtime = self.calculate_overtime(self.work_time)
@@ -256,7 +270,8 @@ class TimeRecorder:
         logger.debug(f"Case: {self.case}, Overtime: {self.overtime}")
 
     def calculate_work_duration(self) -> timedelta:
-        """Calculate the work duration by subtracting lunch break from total time between start and end.
+        """
+        Calculate the work duration by subtracting lunch break from total time between start and end.
 
         Returns
         -------
@@ -296,7 +311,8 @@ class TimeRecorder:
 
     @staticmethod
     def calculate_overtime(work_time: timedelta) -> tuple[str, timedelta]:
-        """Determine whether the given work time results in overtime or undertime by comparing it to a full work day.
+        """
+        Determine whether the given work time results in overtime or undertime by comparing it to a full work day.
 
         A full work day is defined as 8 hours.
 
@@ -324,7 +340,8 @@ class TimeRecorder:
         return case, overtime
 
     def time_report_line_to_dict(self) -> dict:
-        """Convert a TimeRecorder object into a dictionary.
+        """
+        Convert a TimeRecorder object into a dictionary.
 
         Returns
         -------
@@ -343,7 +360,8 @@ class TimeRecorder:
         }
 
     def __repr__(self) -> str:
-        """Return a string representation of the TimeRecorder object.
+        """
+        Return a string representation of the TimeRecorder object.
 
         Returns
         -------
@@ -362,7 +380,8 @@ class TimeRecorder:
         )
 
     def __str__(self) -> str:
-        """Return a formatted string representation of work duration and overtime information.
+        """
+        Return a formatted string representation of work duration and overtime information.
 
         Returns
         -------
@@ -403,7 +422,8 @@ class TimeRecorder:
         return work_duration + "\n" + overtime_amount + "\n" + decimal_str
 
     def get_state(self) -> None:
-        """Get the stats of the TimeRecorder object.
+        """
+        Get the stats of the TimeRecorder object.
 
         Returns
         -------

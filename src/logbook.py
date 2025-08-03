@@ -1,11 +1,45 @@
 """
 Logbook module for managing work time records.
 
-Provides a Logbook class that handles CSV-based time tracking data with features for:
-- Loading and saving logbook data
-- Adding missing days to the logbook
-- Calculating weekly work hours and overtime
-- Managing work duration calculations
+This module provides comprehensive functionality for managing CSV-based time tracking data.
+The Logbook class handles all aspects of work time record management including data
+loading, saving, validation, and processing operations.
+
+Key Features:
+    - CSV-based logbook file management with automatic creation
+    - Duplicate detection and removal with detailed logging
+    - Data squashing/aggregation by date with work hour calculations
+    - Missing day detection and automatic weekend/holiday insertion
+    - Weekly work hour calculations and overtime analysis
+    - Comprehensive error handling and validation
+
+Dependencies:
+    - pandas: For DataFrame operations and CSV handling
+    - pathlib: For file path operations
+    - datetime, timedelta: For date/time calculations
+    - colorama: For colored terminal output
+    - holidays: For holiday detection (German Hesse region)
+    - logging: For structured logging
+
+Classes:
+    Logbook: Main class for logbook management. Handles:
+        - CSV file loading and saving with error handling
+        - Data validation and integrity checks
+        - Duplicate detection and removal
+        - Data aggregation and squashing operations
+        - Missing day detection and insertion
+        - Weekly work hour calculations
+
+File Format:
+    The logbook uses CSV format with semicolon (;) separator and UTF-8 encoding.
+    Required columns: weekday, date, start_time, end_time, lunch_break_duration,
+    work_time, case, overtime.
+
+Error Handling:
+    - Graceful handling of missing files (creates new file)
+    - Validation of required columns and data types
+    - Detailed error messages with color coding
+    - Non-blocking duplicate warnings
 """
 
 import pathlib
@@ -29,14 +63,35 @@ holidays_de_he = holidays.country_holidays("DE", subdiv="HE")
 
 
 class Logbook:
-    """Represents a logbook of work hours.
+    """
+    Represents a logbook of work hours with comprehensive data management capabilities.
 
     This class provides functionality to load, save, and manipulate a logbook of work hours.
+    It handles CSV-based time tracking data with features for data validation, duplicate
+    removal, aggregation, and analysis.
 
     Attributes
     ----------
     log_path : pathlib.Path
-        Path to the logbook file.
+        Path to the logbook CSV file.
+    full_format : str
+        Format string for parsing full datetime (default: "%d.%m.%Y %H:%M:%S").
+    date_format : str
+        Format string for parsing date (default: "%d.%m.%Y").
+    time_format : str
+        Format string for parsing time (default: "%H:%M:%S").
+    sec_in_min : int
+        Number of seconds in a minute (60).
+    sec_in_hour : int
+        Number of seconds in an hour (3600).
+    min_in_hour : int
+        Number of minutes in an hour (60).
+
+    Notes
+    -----
+    The logbook file uses CSV format with semicolon (;) separator and UTF-8 encoding.
+    Required columns: weekday, date, start_time, end_time, lunch_break_duration,
+    work_time, case, overtime.
     """
 
     def __init__(self, log_path: pathlib.Path, full_format: str = r"%d.%m.%Y %H:%M:%S") -> None:
@@ -139,19 +194,42 @@ class Logbook:
             raise OSError(f"OS error while saving logbook to {self.log_path}: {e}") from e
 
     def record_into_df(self, data: dict) -> None:
-        """Write the time report data into a pandas dataframe.
+        """
+        Write the time report data into the logbook DataFrame.
+
+        This method loads the current logbook, appends the new data as a row,
+        and saves the updated DataFrame back to the CSV file.
 
         Parameters
         ----------
         data : dict
-            The data to be written to the logbook.
+            The time report data to be written. Must contain all required columns:
+            weekday, date, start_time, end_time, lunch_break_duration, work_time,
+            case, overtime.
+
+        Notes
+        -----
+        The data is appended as a new row to the existing logbook.
+        The DataFrame is automatically saved after the operation.
         """
         df = self.load_logbook()
         df.loc[len(df)] = data
         self.save_logbook(df)
 
     def create_df(self) -> None:
-        """Create a pandas dataframe file."""
+        """
+        Create a new empty logbook DataFrame and save it to the CSV file.
+
+        This method creates a new DataFrame with the required column structure
+        and saves it to the logbook file path. Used when the logbook file
+        doesn't exist or is empty.
+
+        Notes
+        -----
+        Creates a DataFrame with columns: weekday, date, start_time, end_time,
+        lunch_break_duration, work_time, case, overtime.
+        The file is saved using semicolon (;) separator and UTF-8 encoding.
+        """
         columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         df = pd.DataFrame(columns=columns)
         self.save_logbook(df)
@@ -436,21 +514,19 @@ class Logbook:
         self.save_logbook(df)
 
     def get_weekly_hours_from_log(self) -> None:
-        """Calculate the averaged weekly work hours from a log file.
+        """
+        Calculate the averaged weekly work hours from the logbook.
 
-        This method reads a CSV log file containing daily work times, computes the average work hours per day
+        This method reads the logbook file containing daily work times, computes the average work hours per day
         (considering only days with recorded work time), and extrapolates this average to a standard 5-day work week.
 
-        Parameters
-        ----------
-        log_path : pathlib.Path
-            The file path to the CSV log file. The file must contain a 'work_time' column (in hours) and a 'date' column.
-
-        Returns
-        -------
-        float
-            The estimated total work hours for a standard 5-day week, rounded to two decimal places.
-            Returns 0.0 if no work days are found in the log file.
+        Notes
+        -----
+        - Only considers days with work_time > 0 for averaging
+        - Assumes a 5-day work week for extrapolation
+        - Handles both numeric and string work_time values
+        - Logs the result and any warnings about data quality
+        - Returns 0.0 if no work days are found or if conversion errors occur
         """
         result = 0.0
 
@@ -484,10 +560,32 @@ class Logbook:
         logger.info(f"Average weekly hours: {result} hours")
 
     def get_path(self) -> pathlib.Path:
-        """Return the path to the logbook file."""
+        """
+        Return the path to the logbook file.
+
+        Returns
+        -------
+        pathlib.Path
+            The file path to the logbook CSV file.
+        """
         return self.log_path
 
     def tail(self, n: int = 4) -> None:
-        """Print the last n lines of the logbook file."""
+        """
+        Print the last n lines of the logbook file.
+
+        This method loads the logbook and displays the last n rows
+        in a formatted table without row indices.
+
+        Parameters
+        ----------
+        n : int, default 4
+            Number of last rows to display.
+
+        Notes
+        -----
+        The output is logged using the logger and displayed without
+        DataFrame row indices for cleaner formatting.
+        """
         df = self.load_logbook()
         logger.info(df.tail(n).to_string(index=False))
