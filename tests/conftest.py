@@ -5,6 +5,7 @@ from datetime import datetime
 
 import pandas as pd
 import pytest
+import pytz
 
 import src.logbook as lb
 import src.time_recorder as tr
@@ -17,6 +18,12 @@ def fake_boot_timestamp() -> float:
 
 
 @pytest.fixture
+def fake_boot_timestamp_with_timezone() -> float:
+    """Fixture to provide a fake boot timestamp with timezone."""
+    return datetime(2025, 4, 25, 6, 30, 0, tzinfo=pytz.timezone("Europe/Berlin")).timestamp()
+
+
+@pytest.fixture
 def line() -> tr.TimeRecorder:
     """Fixture to create a sample TimeRecorder for calculate_overtime tests."""
     return tr.TimeRecorder(
@@ -24,6 +31,7 @@ def line() -> tr.TimeRecorder:
         start_time="08:00",
         end_time="16:00",
         lunch_break_duration=0,
+        timezone="Europe/Berlin",
     )
 
 

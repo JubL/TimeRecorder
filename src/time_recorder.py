@@ -12,6 +12,7 @@ Dependencies:
     - datetime, timedelta: For date/time manipulation and calculations
     - colorama: For colored terminal output (red/green for overtime/undertime)
     - psutil: For system boot time retrieval
+    - pytz: For timezone handling
 
 Classes:
     TimeRecorder: Main class representing a single time report entry. Handles:
@@ -35,12 +36,14 @@ Key Features:
     - Colored output for overtime (green) and undertime (red)
     - Detailed logging with level-specific formatting
     - Data conversion for CSV logbook storage
+    - Timezone-aware datetime handling
 """
 
 from datetime import datetime, timedelta
 
 import colorama
 import psutil
+import pytz
 
 from src.logging_utils import setup_logger
 
@@ -97,6 +100,7 @@ class TimeRecorder:
         end_time: str,
         lunch_break_duration: int,
         full_format: str = r"%d.%m.%Y %H:%M:%S",
+        timezone: str = "Europe/Berlin",
     ) -> None:
         """
         Initialize a TimeRecorder object with the provided parameters.
@@ -113,13 +117,16 @@ class TimeRecorder:
             Duration of the lunch break in minutes.
         full_format : str, optional
             Format string for parsing full datetime (default: "%d.%m.%Y %H:%M:%S").
+        timezone : str, optional
+            Timezone identifier (default: "Europe/Berlin").
 
         Notes
         -----
         - Time strings without seconds will have ":00" appended automatically.
+        - Times are interpreted in the specified timezone.
         """
 
-        def _parse_datetime(date: str, time: str, full_format: str) -> datetime:
+        def _parse_datetime(date: str, time: str, full_format: str, tz: str) -> datetime:
             """
             Parse a datetime string, handling cases where seconds are missing.
 
@@ -131,11 +138,13 @@ class TimeRecorder:
                 Time string, which may or may not include seconds.
             full_format : str
                 The expected format string for the complete datetime.
+            tz : str
+                Timezone identifier.
 
             Returns
             -------
             datetime
-                A datetime object parsed from the input strings.
+                A timezone-aware datetime object parsed from the input strings.
 
             Notes
             -----
@@ -148,19 +157,28 @@ class TimeRecorder:
                 time += ":00"
 
             try:
-                return datetime.strptime(date + " " + time, full_format)
+                # Parse as naive datetime first
+                naive_dt = datetime.strptime(date + " " + time, full_format)
+                # Make it timezone-aware
+                tz_obj = pytz.timezone(tz)
+                return tz_obj.localize(naive_dt)
             except ValueError as e:
                 raise ValueError(
                     f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}",
+                ) from e
+            except pytz.UnknownTimeZoneError as e:
+                raise ValueError(
+                    f"{RED}Unknown timezone '{tz}': {e}{RESET}",
                 ) from e
 
         self.full_format = full_format
         self.date_format, self.time_format = self.full_format.split(" ")
 
         self.date = date
+        self.timezone = timezone
 
-        self.start_time = _parse_datetime(date, start_time, full_format)  # Start time as a datetime object
-        self.end_time = _parse_datetime(date, end_time, full_format)  # End time as a datetime object
+        self.start_time = _parse_datetime(date, start_time, full_format, timezone)  # Start time as a timezone-aware datetime object
+        self.end_time = _parse_datetime(date, end_time, full_format, timezone)  # End time as a timezone-aware datetime object
         self.lunch_break_duration = timedelta(minutes=lunch_break_duration)  # Duration of the lunch break in minutes
 
         self.weekday = self.start_time.strftime("%a")
@@ -185,6 +203,7 @@ class TimeRecorder:
             - end_time: str
             - lunch_break_duration: int
             - full_format: str (optional)
+            - timezone: str (optional, default: "Europe/Berlin")
 
         Returns
         -------
@@ -196,7 +215,8 @@ class TimeRecorder:
             start_time=data["start_time"],
             end_time=data["end_time"],
             lunch_break_duration=data["lunch_break_duration"],
-            full_format=data["full_format"],
+            full_format=data.get("full_format", "%d.%m.%Y %H:%M:%S"),
+            timezone=data.get("timezone", "Europe/Berlin"),
         )
 
     def update_boot_time(self) -> None:
@@ -224,18 +244,21 @@ class TimeRecorder:
         except psutil.Error as e:
             raise BootTimeError(f"{RED}Error accessing system information: {e}{RESET}") from e
 
-        # Update start time to boot time
-        self.start_time = datetime.fromtimestamp(boot_timestamp)
+        # Update start time to boot time (convert to timezone-aware)
+        tz_obj = pytz.timezone(self.timezone)
+        self.start_time = tz_obj.localize(datetime.fromtimestamp(boot_timestamp))
 
         # get the function name and additional debug information
         logger.debug(f"Updated start_time to boot time: {self.start_time}")
 
         # Adjust end time to match boot time date while keeping original time
         try:
-            self.end_time = datetime.strptime(
+            # Parse end time in the same timezone
+            naive_end_time = datetime.strptime(
                 self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format),
                 self.full_format,
             )
+            self.end_time = tz_obj.localize(naive_end_time)
         except ValueError as e:
             raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}") from e
 
@@ -357,6 +380,7 @@ class TimeRecorder:
             "work_time": round(self.work_time.total_seconds() / self.sec_in_hour, 2),
             "case": self.case,
             "overtime": round(self.overtime.total_seconds() / self.sec_in_hour, 2),
+            "timezone": self.timezone,
         }
 
     def __repr__(self) -> str:
@@ -377,6 +401,7 @@ class TimeRecorder:
             f"{round(self.work_time.total_seconds() / self.sec_in_hour, 2)};"
             f"{self.case};"
             f"{round(self.overtime.total_seconds() / self.sec_in_hour, 2)};"
+            f"{self.timezone};"
         )
 
     def __str__(self) -> str:

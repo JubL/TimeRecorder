@@ -75,6 +75,7 @@ def get_time_recorder_config(config: dict) -> dict:
         "end_time": time_tracking.get("end_time", "17:25"),
         "lunch_break_duration": time_tracking.get("lunch_break_duration", 60),
         "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
+        "timezone": config.get("work_schedule", {}).get("timezone", "Europe/Berlin"),
     }
 
 

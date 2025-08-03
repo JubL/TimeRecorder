@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 import pytest
+import pytz
 
 import src.time_recorder as tr
 
@@ -11,18 +12,18 @@ import src.time_recorder as tr
 def test_update_boot_time_sets_start_time_to_boot_time(
     mock_boot_time: Mock,
     line: tr.TimeRecorder,
-    fake_boot_timestamp: float,
+    fake_boot_timestamp_with_timezone: float,
 ) -> None:
     """Test that update_boot_time sets start_time to the system boot time."""
-    mock_boot_time.return_value = fake_boot_timestamp
+    mock_boot_time.return_value = fake_boot_timestamp_with_timezone
 
     old_end_time = line.end_time
 
     line.update_boot_time()
 
-    assert line.start_time == datetime.fromtimestamp(fake_boot_timestamp)
+    assert line.start_time == pytz.timezone(line.timezone).localize(datetime.fromtimestamp(fake_boot_timestamp_with_timezone))
     # End time should have the same date as boot time, but same time as before
-    assert line.end_time.date() == datetime.fromtimestamp(fake_boot_timestamp).date()
+    assert line.end_time.date() == datetime.fromtimestamp(fake_boot_timestamp_with_timezone).date()
     assert line.end_time.time() == old_end_time.time()
     # Work hours and overtime should be recalculated
     assert isinstance(line.work_time, timedelta)

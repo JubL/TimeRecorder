@@ -15,6 +15,7 @@ dependencies = [
     "pandas",
     "pathlib",
     "psutil",
+    "pytz",
     "pytest",
     "pytest-cov",
     "pytest-mock",
