@@ -8,9 +8,10 @@ import src.time_recorder as tr
 @pytest.mark.parametrize(
     ("work_time", "expected_case", "expected_delta"),
     [
-        (timedelta(hours=0), "undertime", timedelta(hours=8)),
-        (timedelta(hours=1), "undertime", timedelta(hours=7)),
-        (timedelta(hours=7, minutes=59), "undertime", timedelta(minutes=1)),
+        (timedelta(hours=-1), "undertime", timedelta(hours=-9)),
+        (timedelta(hours=0), "undertime", timedelta(hours=-8)),
+        (timedelta(hours=1), "undertime", timedelta(hours=-7)),
+        (timedelta(hours=7, minutes=59), "undertime", timedelta(minutes=-1)),
         (timedelta(hours=8), "overtime", timedelta(hours=0)),
         (timedelta(hours=8, minutes=1), "overtime", timedelta(minutes=1)),
         (timedelta(hours=9, minutes=15), "overtime", timedelta(hours=1, minutes=15)),
@@ -30,7 +31,7 @@ def test_calculate_overtime_negative_work_time(line: tr.TimeRecorder) -> None:
     """Test calculate_overtime with negative work_time returns undertime with increased delta."""
     case, overtime = line.calculate_overtime(timedelta(hours=-2))
     assert case == "undertime"
-    assert overtime == timedelta(hours=10)
+    assert overtime == timedelta(hours=-10)
 
 
 @pytest.mark.fast

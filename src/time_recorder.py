@@ -316,10 +316,10 @@ class TimeRecorder:
 
         if work_time >= _full_day:
             case = "overtime"
-            overtime = work_time - _full_day
         else:
             case = "undertime"
-            overtime = _full_day - work_time
+
+        overtime = work_time - _full_day
 
         return case, overtime
 

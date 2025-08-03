@@ -359,8 +359,8 @@ def test_squash_df_with_empty_work_time_values(logbook: lb.Logbook, tmp_path: pa
     # Check Monday's data (should handle empty work_time)
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
     assert monday_row["work_time"] == 3.0  # Only the non-empty value should be summed
-    assert monday_row["case"] == "undertime"  # Should be recalculated
-    assert monday_row["overtime"] == -5.0  # Should be recalculated
+    assert monday_row["case"] == "undertime"
+    assert monday_row["overtime"] == -5.0
 
     # Check Tuesday's data
     tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
