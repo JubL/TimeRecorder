@@ -44,12 +44,12 @@ def main() -> None:
     args = ap.run_arg_parser()  # TODO
 
     # Create default config if it doesn't exist
-    config_path = pathlib.Path("config.yaml")
+    config_path = pathlib.Path(args.config or "config.yaml")
     if not config_path.exists():
         cu.create_default_config(config_path)
 
     config = cu.load_config(config_path)
-    if not config.validate_config(config):
+    if not cu.validate_config(config):
         logger.error("Configuration validation failed")
         return
 

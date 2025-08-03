@@ -43,7 +43,7 @@ class TimeRecorderArgumentParser:
         self.parser.add_argument("--no_squash", action="store_false", help="Do not squash the logbook")
         self.parser.add_argument("--no_missing", action="store_false", help="Do not add missing days to the logbook")
         self.parser.add_argument("--no_weekly", action="store_false", help="Do not calculate weekly hours")
-        self.parser.add_argument("--no_tail", action="store_false", help="Do not show the last n lines of the logbook")
+        self.parser.add_argument("--tail", type=int, default=4, help="Show the last n lines of the logbook. Default: 4")
 
         # Configuration arguments
         self.parser.add_argument("--config", type=str, help="Path to the config file", default="config.yaml")
