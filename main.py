@@ -9,14 +9,8 @@ and uses them to record the time and log the results.
 import logging
 import pathlib
 
-from src.config_utils import (
-    create_default_config,
-    get_logbook_config,
-    get_processing_config,
-    get_time_recorder_config,
-    load_config,
-    validate_config,
-)
+import src.arg_parser as ap
+import src.config_utils as cu
 from src.logbook import Logbook
 from src.logging_utils import set_global_log_level, setup_logger
 from src.time_recorder import TimeRecorder
@@ -31,8 +25,7 @@ logger = setup_logger(__name__)
 
 def main() -> None:
     """Run the main function of the time recorder."""
-    # TODO: use argparse to parse the command line arguments
-    # TODO: if only the end time is given, then the start time is the boot time, etc.
+    # TODO: develop argparse to parse the command line arguments further
 
     # TODO: increase the test coverage to 95%
 
@@ -48,20 +41,22 @@ def main() -> None:
 
     # TODO: split the test for config_utils in seperate files
 
+    args = ap.run_arg_parser()  # TODO
+
     # Create default config if it doesn't exist
     config_path = pathlib.Path("config.yaml")
     if not config_path.exists():
-        create_default_config(config_path)
+        cu.create_default_config(config_path)
 
-    config = load_config(config_path)
-    if not validate_config(config):
+    config = cu.load_config(config_path)
+    if not config.validate_config(config):
         logger.error("Configuration validation failed")
         return
 
     # Extract configuration sections
-    time_recorder_config = get_time_recorder_config(config)
-    logbook_config = get_logbook_config(config)
-    processing_config = get_processing_config(config)
+    time_recorder_config = cu.get_time_recorder_config(config)
+    logbook_config = cu.get_logbook_config(config)
+    processing_config = cu.get_processing_config(config)
     logger.debug("Configuration loaded successfully")
 
     # Create TimeRecorder object from configuration
