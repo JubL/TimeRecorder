@@ -36,6 +36,7 @@ data_processing:
 
 # Output settings
 output:
+  show_tail: 4  # Show the last n lines of the logbook
   colored_output: true  # Use colored terminal output
   show_statistics: true  # Show overtime/undertime statistics
   export_format: "csv"  # Export format: csv, json, excel

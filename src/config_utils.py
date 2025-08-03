@@ -5,6 +5,7 @@ This module provides functionality to load and parse YAML configuration files,
 with support for default values and configuration validation.
 """
 
+import argparse
 import pathlib
 
 import yaml
@@ -221,3 +222,64 @@ def create_default_config(config_path: pathlib.Path) -> None:
     except yaml.YAMLError as e:
         logger.error(f"Error creating default configuration file: {e}")
         raise
+
+
+def update_config(config: dict, args: argparse.Namespace) -> dict:
+    """
+    Update the configuration dictionary with the values from the command line arguments.
+
+    Parameters
+    ----------
+    config : dict
+        The original configuration dictionary.
+    args : argparse.Namespace
+        Parsed command line arguments.
+
+    Returns
+    -------
+    dict
+        Updated configuration dictionary with command line argument values merged in.
+    """
+    # Create a copy of the config to avoid modifying the original
+    updated_config = config.copy()
+
+    # Define argument mappings: (arg_name, config_path, transform_function)
+    # transform_function can be None for direct assignment, or a function for custom logic
+    arg_mappings = [
+        # Time tracking settings
+        ("boot", "time_tracking.use_boot_time"),
+        ("date", "time_tracking.date"),
+        ("start", "time_tracking.start_time"),
+        ("end", "time_tracking.end_time"),
+        ("lunch", "time_tracking.lunch_break_duration"),
+        # Logging settings
+        ("log", "logging.enabled"),
+        ("logbook", "logging.log_path"),
+        # Data processing settings
+        ("no_squash", "data_processing.auto_squash"),
+        ("no_missing", "data_processing.add_missing_days"),
+        ("no_weekly", "data_processing.calculate_weekly_hours"),
+        ("tail", "output.show_tail"),
+    ]
+
+    def _set_nested_value(config_dict: dict, path: str, value: str | int | bool) -> None:  # noqa: FBT001
+        """Set a value in a nested dictionary using dot notation."""
+        keys = path.split(".")
+        current = config_dict
+
+        # Navigate to the parent of the target key
+        for key in keys[:-1]:
+            current = current.setdefault(key, {})
+
+        # Set the final value
+        current[keys[-1]] = value
+
+    # Process each argument mapping
+    for arg_name, config_path in arg_mappings:
+        if hasattr(args, arg_name) and getattr(args, arg_name) is not None:
+            value = getattr(args, arg_name)
+
+            _set_nested_value(updated_config, config_path, value)
+
+    logger.debug("Configuration updated with command line arguments")
+    return updated_config

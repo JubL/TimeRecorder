@@ -25,8 +25,6 @@ logger = setup_logger(__name__)
 
 def main() -> None:
     """Run the main function of the time recorder."""
-    # TODO: develop argparse to parse the command line arguments further
-
     # TODO: increase the test coverage to 95%
 
     # TODO: introduce integration tests
@@ -41,7 +39,7 @@ def main() -> None:
 
     # TODO: split the test for config_utils in seperate files
 
-    args = ap.run_arg_parser()  # TODO
+    args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
     config_path = pathlib.Path(args.config or "config.yaml")
@@ -52,6 +50,9 @@ def main() -> None:
     if not cu.validate_config(config):
         logger.error("Configuration validation failed")
         return
+
+    # Update the config with the command line arguments
+    config = cu.update_config(config, args)
 
     # Extract configuration sections
     time_recorder_config = cu.get_time_recorder_config(config)
