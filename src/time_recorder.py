@@ -374,8 +374,8 @@ class TimeRecorder:
         return {
             "weekday": self.weekday,
             "date": self.date,
-            "start_time": self.start_time.strftime(self.time_format),
-            "end_time": self.end_time.strftime(self.time_format),
+            "start_time": self.start_time.strftime(self.time_format),  # TODO: put timezone information in here
+            "end_time": self.end_time.strftime(self.time_format),  # TODO: put timezone information in here
             "lunch_break_duration": int(self.lunch_break_duration.total_seconds() // self.sec_in_min),
             "work_time": round(self.work_time.total_seconds() / self.sec_in_hour, 2),
             "case": self.case,

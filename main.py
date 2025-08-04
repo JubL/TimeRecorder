@@ -29,7 +29,9 @@ def main() -> None:
 
     # TODO: introduce integration tests
 
-    # TODO: add timezones to the logged time?
+    # TODO use zoneinfo package over pytz package
+    # TODO: reactivate ruffs timezone checks
+    # TODO: timezoned were added to the logged time, but they do not show up in the log yet (see line 377 in timerecorder.py)
 
     # TODO: visualization of work hours per day, week, month, year
     # TODO: calc overtime mean and std dev
@@ -38,6 +40,16 @@ def main() -> None:
     # TODO: have the option to set the end time to now + 1 minute
 
     # TODO: split the test for config_utils in seperate files
+
+    # TODO set up CI/CD workflows on GitHub
+
+    # TODO: use dtype arg in read_csv?
+
+    # TODO: use pytests approx to compare with float in unit tests, also set the precision to a small value, like 1e-9.
+
+    # TODO: set up bash completion (https://docs.pytest.org/en/stable/how-to/bash-completion.html)
+
+    # TODO: set up a launch.json for debugging and also for normal execution
 
     args = ap.run_arg_parser()
 
