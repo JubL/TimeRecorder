@@ -67,7 +67,8 @@ class TimeRecorderArgumentParser:
         self._validate_time_arguments(args)
         return args
 
-    def _validate_time_arguments(self, args: argparse.Namespace) -> None:
+    @staticmethod
+    def _validate_time_arguments(args: argparse.Namespace) -> None:
         """
         Validate that the time arguments follow the required logic.
 

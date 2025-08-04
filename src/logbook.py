@@ -234,7 +234,8 @@ class Logbook:
         df = pd.DataFrame(columns=columns)
         self.save_logbook(df)
 
-    def remove_duplicate_lines(self, df: pd.DataFrame) -> pd.DataFrame:
+    @staticmethod
+    def remove_duplicate_lines(df: pd.DataFrame) -> pd.DataFrame:
         """Remove exact duplicate rows from the logbook and log warnings about removed duplicates.
 
         This method identifies and removes rows that are exact duplicates (all columns match),
