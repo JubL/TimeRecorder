@@ -68,7 +68,7 @@ def test_add_missing_days_saturday(logbook: lb.Logbook) -> None:
         assert not saturday_row["start_time"]
         assert not saturday_row["end_time"]
         assert not saturday_row["lunch_break_duration"]
-        assert saturday_row["work_time"] == 0.0
+        assert saturday_row["work_time"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
         assert not saturday_row["case"]
         assert not saturday_row["overtime"]
 
@@ -110,7 +110,7 @@ def test_add_missing_days_sunday(logbook: lb.Logbook) -> None:
         assert not sunday_row["start_time"]
         assert not sunday_row["end_time"]
         assert not sunday_row["lunch_break_duration"]
-        assert sunday_row["work_time"] == 0.0
+        assert sunday_row["work_time"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
         assert not sunday_row["case"]
         assert not sunday_row["overtime"]
 
@@ -152,7 +152,7 @@ def test_add_missing_days_holiday(logbook: lb.Logbook) -> None:
         assert holiday_row["start_time"] == "New Year's Day"  # English holiday name
         assert not holiday_row["end_time"]
         assert not holiday_row["lunch_break_duration"]
-        assert holiday_row["work_time"] == 0.0
+        assert holiday_row["work_time"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
         assert not holiday_row["case"]
         assert not holiday_row["overtime"]
 

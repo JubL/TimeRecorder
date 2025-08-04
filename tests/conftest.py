@@ -11,6 +11,11 @@ import src.logbook as lb
 import src.time_recorder as tr
 
 
+def pytest_configure() -> None:
+    """Configure pytest."""
+    pytest.RELATIVE_PRECISION = 1e-12
+
+
 @pytest.fixture
 def fake_boot_timestamp() -> float:
     """Fixture to provide a fake boot timestamp."""

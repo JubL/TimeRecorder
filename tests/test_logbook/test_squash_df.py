@@ -46,12 +46,12 @@ def test_squash_df_sums_work_time_and_lunch_break(logbook: lb.Logbook, sample_df
 
     # Check Monday's data (3 entries)
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
-    assert monday_row["work_time"] == 5.75  # 1.5 + 1.25 + 3.0
+    assert monday_row["work_time"] == pytest.approx(5.75, rel=pytest.RELATIVE_PRECISION)  # 1.5 + 1.25 + 3.0
     assert monday_row["lunch_break_duration"] == 135  # 30 + 45 + 60
 
     # Check Tuesday's data (2 entries)
     tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
-    assert tuesday_row["work_time"] == 8.0  # 4.0 + 4.0
+    assert tuesday_row["work_time"] == pytest.approx(8.0, rel=pytest.RELATIVE_PRECISION)  # 4.0 + 4.0
     assert tuesday_row["lunch_break_duration"] == 90  # 60 + 30
 
 
@@ -89,12 +89,12 @@ def test_squash_df_recalculates_case_and_overtime(logbook: lb.Logbook, sample_df
     # Check Monday's data (5.75 hours total - should be undertime)
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
     assert monday_row["case"] == "undertime"
-    assert monday_row["overtime"] == -2.25  # 5.75 - 8.0 = -2.25
+    assert monday_row["overtime"] == pytest.approx(-2.25, rel=pytest.RELATIVE_PRECISION)  # 5.75 - 8.0 = -2.25
 
     # Check Tuesday's data (8.0 hours total - should be overtime)
     tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
     assert tuesday_row["case"] == "overtime"
-    assert tuesday_row["overtime"] == 0.0  # 8.0 - 8.0 = 0.0
+    assert tuesday_row["overtime"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)  # 8.0 - 8.0 = 0.0
 
 
 @pytest.mark.fast
@@ -123,9 +123,9 @@ def test_squash_df_handles_empty_work_time(logbook: lb.Logbook, tmp_path: pathli
     # Should have one row with summed data
     assert len(result) == 1
     row = result.iloc[0]
-    assert row["work_time"] == 4.0  # Only the valid value
+    assert row["work_time"] == pytest.approx(4.0, rel=pytest.RELATIVE_PRECISION)  # Only the valid value
     assert row["case"] == "undertime"  # Recalculated based on 4.0 hours
-    assert row["overtime"] == -4.0  # 4.0 - 8.0 = -4.0
+    assert row["overtime"] == pytest.approx(-4.0, rel=pytest.RELATIVE_PRECISION)  # 4.0 - 8.0 = -4.0
 
 
 @pytest.mark.fast
@@ -189,10 +189,10 @@ def test_squash_df_with_single_entry(logbook: lb.Logbook, tmp_path: pathlib.Path
     # Should have one row unchanged
     assert len(result) == 1
     row = result.iloc[0]
-    assert row["work_time"] == 8.0
+    assert row["work_time"] == pytest.approx(8.0, rel=pytest.RELATIVE_PRECISION)
     assert row["lunch_break_duration"] == 60
     assert row["case"] == "overtime"
-    assert row["overtime"] == 0.0
+    assert row["overtime"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
 
 
 @pytest.mark.fast
@@ -223,17 +223,17 @@ def test_squash_df_with_multiple_dates(logbook: lb.Logbook, tmp_path: pathlib.Pa
 
     # Check each date's data
     monday = result[result["date"] == "24.04.2025"].iloc[0]
-    assert monday["work_time"] == 7.0  # 1.5 + 5.5
+    assert monday["work_time"] == pytest.approx(7.0, rel=pytest.RELATIVE_PRECISION)  # 1.5 + 5.5
     assert monday["lunch_break_duration"] == 90  # 30 + 60
     assert monday["case"] == "undertime"  # 7.0 < 8.0
 
     tuesday = result[result["date"] == "25.04.2025"].iloc[0]
-    assert tuesday["work_time"] == 8.0  # 4.0 + 4.0
+    assert tuesday["work_time"] == pytest.approx(8.0, rel=pytest.RELATIVE_PRECISION)  # 4.0 + 4.0
     assert tuesday["lunch_break_duration"] == 90  # 60 + 30
     assert tuesday["case"] == "overtime"  # 8.0 == 8.0
 
     wednesday = result[result["date"] == "26.04.2025"].iloc[0]
-    assert wednesday["work_time"] == 8.0
+    assert wednesday["work_time"] == pytest.approx(8.0, rel=pytest.RELATIVE_PRECISION)
     assert wednesday["lunch_break_duration"] == 60
     assert wednesday["case"] == "overtime"  # 8.0 == 8.0
 
@@ -263,9 +263,9 @@ def test_squash_df_edge_case_overtime_threshold(logbook: lb.Logbook, tmp_path: p
 
     # Should be undertime (7.99 < 8.0)
     row = result.iloc[0]
-    assert row["work_time"] == 7.99
+    assert row["work_time"] == pytest.approx(7.99, rel=pytest.RELATIVE_PRECISION)
     assert row["case"] == "undertime"
-    assert row["overtime"] == -0.01  # 7.99 - 8.0 = -0.01
+    assert row["overtime"] == pytest.approx(-0.01, rel=pytest.RELATIVE_PRECISION)  # 7.99 - 8.0 = -0.01
 
 
 @pytest.mark.fast
@@ -293,9 +293,9 @@ def test_squash_df_exactly_8_hours(logbook: lb.Logbook, tmp_path: pathlib.Path) 
 
     # Should be overtime (8.0 >= 8.0)
     row = result.iloc[0]
-    assert row["work_time"] == 8.0
+    assert row["work_time"] == pytest.approx(8.0, rel=pytest.RELATIVE_PRECISION)
     assert row["case"] == "overtime"
-    assert row["overtime"] == 0.0  # 8.0 - 8.0 = 0.0
+    assert row["overtime"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)  # 8.0 - 8.0 = 0.0
 
 
 @pytest.mark.fast
@@ -324,7 +324,7 @@ def test_squash_df_groups_and_sums_correctly(logbook: lb.Logbook, tmp_path: path
     grouped = result[result["date"] == "24.04.2025"]
     assert not grouped.empty, "No rows found for date '24.04.2025'"
     assert grouped.iloc[0]["lunch_break_duration"] == 61  # 1 + 60
-    assert grouped.iloc[0]["work_time"] == 7  # 1.0 + 6.0
+    assert grouped.iloc[0]["work_time"] == pytest.approx(7.0, rel=pytest.RELATIVE_PRECISION)  # 1.0 + 6.0
     # Check that start_time is 'first' and end_time is 'last'
     assert grouped.iloc[0]["start_time"] == "08:00:00"
     assert grouped.iloc[0]["end_time"] == "17:00:00"
@@ -358,15 +358,15 @@ def test_squash_df_with_empty_work_time_values(logbook: lb.Logbook, tmp_path: pa
 
     # Check Monday's data (should handle empty work_time)
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
-    assert monday_row["work_time"] == 3.0  # Only the non-empty value should be summed
+    assert monday_row["work_time"] == pytest.approx(3.0, rel=pytest.RELATIVE_PRECISION)  # Only the non-empty value should be summed
     assert monday_row["case"] == "undertime"
-    assert monday_row["overtime"] == -5.0
+    assert monday_row["overtime"] == pytest.approx(-5.0, rel=pytest.RELATIVE_PRECISION)
 
     # Check Tuesday's data
     tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
-    assert tuesday_row["work_time"] == 8.0
+    assert tuesday_row["work_time"] == pytest.approx(8.0, rel=pytest.RELATIVE_PRECISION)
     assert tuesday_row["case"] == "overtime"
-    assert tuesday_row["overtime"] == 0.0
+    assert tuesday_row["overtime"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
 
 
 @pytest.mark.fast
@@ -395,15 +395,15 @@ def test_squash_df_with_nan_work_time_values(logbook: lb.Logbook) -> None:
 
     # Check Monday's data (should handle NaN work_time)
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
-    assert monday_row["work_time"] == 3.0  # Only the non-NaN value should be summed
+    assert monday_row["work_time"] == pytest.approx(3.0, rel=pytest.RELATIVE_PRECISION)  # Only the non-NaN value should be summed
     assert monday_row["case"] == "undertime"  # Should be recalculated
-    assert monday_row["overtime"] == -5.0  # Should be recalculated
+    assert monday_row["overtime"] == pytest.approx(-5.0, rel=pytest.RELATIVE_PRECISION)  # Should be recalculated
 
     # Check Tuesday's data
     tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
-    assert tuesday_row["work_time"] == 8.0
+    assert tuesday_row["work_time"] == pytest.approx(8.0, rel=pytest.RELATIVE_PRECISION)
     assert tuesday_row["case"] == "overtime"
-    assert tuesday_row["overtime"] == 0.0
+    assert tuesday_row["overtime"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
 
 
 @pytest.mark.fast

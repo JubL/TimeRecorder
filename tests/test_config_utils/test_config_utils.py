@@ -41,7 +41,7 @@ def test_load_config_success() -> None:
         config = cu.load_config(pathlib.Path(config_path))
         assert config["time_tracking"]["date"] == "25.07.2025"
         assert config["logging"]["enabled"] is False
-        assert config["work_schedule"]["standard_work_hours"] == 8
+        assert config["work_schedule"]["standard_work_hours"] == pytest.approx(8, rel=pytest.RELATIVE_PRECISION)
     finally:
         pathlib.Path(config_path).unlink()
 
@@ -71,7 +71,7 @@ def test_get_time_recorder_config() -> None:
     assert result["date"] == "25.07.2025"
     assert result["start_time"] == "07:00"
     assert result["end_time"] == "17:25"
-    assert result["lunch_break_duration"] == 60
+    assert result["lunch_break_duration"] == pytest.approx(60, rel=pytest.RELATIVE_PRECISION)
     assert result["full_format"] == "%d.%m.%Y %H:%M:%S"
 
 
@@ -82,10 +82,10 @@ def test_get_time_recorder_config_with_defaults() -> None:
 
     result = cu.get_time_recorder_config(config)
 
-    assert result["date"] == "01.08.2025"  # default value
-    assert result["start_time"] == "07:00"  # default value
-    assert result["end_time"] == "17:25"  # default value
-    assert result["lunch_break_duration"] == 60  # default value
+    assert result["date"] == "01.08.2025"
+    assert result["start_time"] == "07:00"
+    assert result["end_time"] == "17:25"
+    assert result["lunch_break_duration"] == pytest.approx(60, rel=pytest.RELATIVE_PRECISION)
 
 
 @pytest.mark.fast
