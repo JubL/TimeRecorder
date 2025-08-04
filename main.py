@@ -39,7 +39,7 @@ def main() -> None:
 
     # TODO: have the option to set the end time to now + 1 minute
 
-    # TODO: split the test for config_utils in seperate files
+    # TODO: split the test for config_utils into separate files
 
     # TODO set up CI/CD workflows on GitHub
 
