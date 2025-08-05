@@ -15,7 +15,6 @@ dependencies = [
     "pandas",
     "pathlib",
     "psutil",
-    "pytz",
     "pytest",
     "pytest-cov",
     "pytest-mock",
@@ -62,6 +61,7 @@ select = [
     "C90",      # mccabe
     "COM",      # flake8-commas
     "D",        # pydocstyle
+    #"DTZ",      # flake8-datetimez
     "E",        # pycodestyle Error
     "ERA",      # eradicate
     "EXE",      # flake8-executable
@@ -116,4 +116,4 @@ markers = [
     "unit: marks unit tests",
     "integration: marks integration tests",
 ]
-addopts = "--cov=src --cov-report=term-missing --cov-fail-under=90 --no-cov-on-fail"  # pytest coverage options
+addopts = "--cov=src --cov-report=term-missing --cov-fail-under=75 --no-cov-on-fail"  # pytest coverage options

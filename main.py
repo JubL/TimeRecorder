@@ -29,7 +29,6 @@ def main() -> None:
 
     # TODO: introduce integration tests
 
-    # TODO use zoneinfo package over pytz package
     # TODO: reactivate ruffs timezone checks
     # TODO: timezoned were added to the logged time, but they do not show up in the log yet (see line 377 in timerecorder.py)
 
@@ -50,6 +49,8 @@ def main() -> None:
     # TODO: set up bash completion (https://docs.pytest.org/en/stable/how-to/bash-completion.html)
 
     # TODO: set up a launch.json for debugging and also for normal execution
+
+    # TODO: executing test via the IDE does produce the german names of the holidays, but not when running the tests via pytest.
 
     args = ap.run_arg_parser()
 

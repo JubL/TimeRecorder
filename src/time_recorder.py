@@ -12,7 +12,7 @@ Dependencies:
     - datetime, timedelta: For date/time manipulation and calculations
     - colorama: For colored terminal output (red/green for overtime/undertime)
     - psutil: For system boot time retrieval
-    - pytz: For timezone handling
+    - zoneinfo: For timezone handling
 
 Classes:
     TimeRecorder: Main class representing a single time report entry. Handles:
@@ -40,10 +40,10 @@ Key Features:
 """
 
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import colorama
 import psutil
-import pytz
 
 from src.logging_utils import setup_logger
 
@@ -160,15 +160,10 @@ class TimeRecorder:
                 # Parse as naive datetime first
                 naive_dt = datetime.strptime(date + " " + time, full_format)
                 # Make it timezone-aware
-                tz_obj = pytz.timezone(tz)
-                return tz_obj.localize(naive_dt)
+                return naive_dt.replace(tzinfo=ZoneInfo(tz))
             except ValueError as e:
                 raise ValueError(
                     f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}",
-                ) from e
-            except pytz.UnknownTimeZoneError as e:
-                raise ValueError(
-                    f"{RED}Unknown timezone '{tz}': {e}{RESET}",
                 ) from e
 
         self.full_format = full_format
@@ -245,8 +240,7 @@ class TimeRecorder:
             raise BootTimeError(f"{RED}Error accessing system information: {e}{RESET}") from e
 
         # Update start time to boot time (convert to timezone-aware)
-        tz_obj = pytz.timezone(self.timezone)
-        self.start_time = tz_obj.localize(datetime.fromtimestamp(boot_timestamp))
+        self.start_time = datetime.fromtimestamp(boot_timestamp, tz=ZoneInfo(self.timezone))
 
         # get the function name and additional debug information
         logger.debug(f"Updated start_time to boot time: {self.start_time}")
@@ -258,7 +252,7 @@ class TimeRecorder:
                 self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format),
                 self.full_format,
             )
-            self.end_time = tz_obj.localize(naive_end_time)
+            self.end_time = naive_end_time.replace(tzinfo=ZoneInfo(self.timezone))
         except ValueError as e:
             raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}") from e
 

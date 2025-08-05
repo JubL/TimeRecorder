@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import pytest
-import pytz
 
 import src.time_recorder as tr
 
@@ -16,8 +16,8 @@ import src.time_recorder as tr
             "lunch_break_duration": 60,
             "full_format": "%d.%m.%Y %H:%M:%S",
             "expected_date": "24.04.2025",
-            "expected_start": pytz.timezone("Europe/Berlin").localize(datetime.strptime("24.04.2025 07:32:00", "%d.%m.%Y %H:%M:%S")),
-            "expected_end": pytz.timezone("Europe/Berlin").localize(datetime.strptime("24.04.2025 15:40:00", "%d.%m.%Y %H:%M:%S")),
+            "expected_start": datetime.strptime("24.04.2025 07:32:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin")),
+            "expected_end": datetime.strptime("24.04.2025 15:40:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin")),
             "expected_lunch": timedelta(minutes=60),
         },
         {
@@ -27,8 +27,8 @@ import src.time_recorder as tr
             "lunch_break_duration": 45,
             "full_format": "%Y-%m-%d %H:%M:%S",
             "expected_date": "2025-04-24",
-            "expected_start": pytz.timezone("Europe/Berlin").localize(datetime.strptime("2025-04-24 07:32:00", "%Y-%m-%d %H:%M:%S")),
-            "expected_end": pytz.timezone("Europe/Berlin").localize(datetime.strptime("2025-04-24 15:40:00", "%Y-%m-%d %H:%M:%S")),
+            "expected_start": datetime.strptime("2025-04-24 07:32:00", "%Y-%m-%d %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin")),
+            "expected_end": datetime.strptime("2025-04-24 15:40:00", "%Y-%m-%d %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin")),
             "expected_lunch": timedelta(minutes=45),
         },
     ],
@@ -68,8 +68,8 @@ def test_init_missing_seconds_in_time() -> None:
         lunch_break_duration=30,
         timezone="Europe/Berlin",
     )
-    assert line.start_time == pytz.timezone("Europe/Berlin").localize(datetime.strptime("24.04.2025 08:00:00", "%d.%m.%Y %H:%M:%S"))
-    assert line.end_time == pytz.timezone("Europe/Berlin").localize(datetime.strptime("24.04.2025 16:00:00", "%d.%m.%Y %H:%M:%S"))
+    assert line.start_time == datetime.strptime("24.04.2025 08:00:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin"))
+    assert line.end_time == datetime.strptime("24.04.2025 16:00:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin"))
 
 
 @pytest.mark.fast

@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
+from zoneinfo import ZoneInfo
 
 import pytest
-import pytz
 
 import src.time_recorder as tr
 
@@ -21,7 +21,7 @@ def test_update_boot_time_sets_start_time_to_boot_time(
 
     line.update_boot_time()
 
-    assert line.start_time == pytz.timezone(line.timezone).localize(datetime.fromtimestamp(fake_boot_timestamp_with_timezone))
+    assert line.start_time == datetime.fromtimestamp(fake_boot_timestamp_with_timezone, tz=ZoneInfo(line.timezone))
     # End time should have the same date as boot time, but same time as before
     assert line.end_time.date() == datetime.fromtimestamp(fake_boot_timestamp_with_timezone).date()
     assert line.end_time.time() == old_end_time.time()

@@ -2,10 +2,10 @@
 
 import pathlib
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pytest
-import pytz
 
 import src.logbook as lb
 import src.time_recorder as tr
@@ -25,7 +25,7 @@ def fake_boot_timestamp() -> float:
 @pytest.fixture
 def fake_boot_timestamp_with_timezone() -> float:
     """Fixture to provide a fake boot timestamp with timezone."""
-    return datetime(2025, 4, 25, 6, 30, 0, tzinfo=pytz.timezone("Europe/Berlin")).timestamp()
+    return datetime(2025, 4, 25, 6, 30, 0, tzinfo=ZoneInfo("Europe/Berlin")).timestamp()
 
 
 @pytest.fixture
