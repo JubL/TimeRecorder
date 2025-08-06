@@ -9,16 +9,15 @@ import src.config_utils as cu
 def test_get_processing_config() -> None:
     """Test extraction of processing configuration."""
     config: dict = {
-        "time_tracking": {
-            "use_boot_time": True,
-        },
-        "logging": {
-            "enabled": True,
-        },
         "data_processing": {
+            "use_boot_time": True,
+            "enabled": True,
             "auto_squash": True,
             "add_missing_days": True,
+        },
+        "display": {
             "calculate_weekly_hours": True,
+            "calculate_daily_overhours": True,
         },
     }
 

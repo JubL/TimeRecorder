@@ -10,11 +10,14 @@ import src.time_recorder as tr
     [
         (
             tr.TimeRecorder(
-                date="24.04.2025",
-                start_time="08:00",
-                end_time="16:00",
-                lunch_break_duration=30,
-                timezone="Europe/Berlin",
+                {
+                    "date": "24.04.2025",
+                    "start_time": "08:00",
+                    "end_time": "16:00",
+                    "lunch_break_duration": 30,
+                    "timezone": "Europe/Berlin",
+                    "full_format": "%d.%m.%Y %H:%M:%S",
+                },
             ),
             {
                 "weekday": "Thu",  # 24.04.2025 is a Thursday
@@ -27,11 +30,14 @@ import src.time_recorder as tr
         ),
         (
             tr.TimeRecorder(
-                date="29.07.2025",
-                start_time="07:00",
-                end_time="17:20",
-                lunch_break_duration=60,
-                timezone="Europe/Berlin",
+                {
+                    "date": "29.07.2025",
+                    "start_time": "07:00",
+                    "end_time": "17:20",
+                    "lunch_break_duration": 60,
+                    "timezone": "Europe/Berlin",
+                    "full_format": "%d.%m.%Y %H:%M:%S",
+                },
             ),
             {
                 "weekday": "Tue",

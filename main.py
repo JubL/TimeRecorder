@@ -40,8 +40,6 @@ def main() -> None:
 
     # TODO: CLI input should not be mandatory, but if used, just change the values read from the config.yaml
 
-    # TODO: split the test for config_utils into separate files
-
     # TODO set up CI/CD workflows on GitHub
 
     # TODO: set up bash completion (https://docs.pytest.org/en/stable/how-to/bash-completion.html)
@@ -54,6 +52,15 @@ def main() -> None:
     # TODO: put the holidays into the logbook object
 
     # TODO: initialize timerecorder with its config
+
+    # TODO: have a README.md file for the git repo readme
+
+    # TODO: use log level from config.yaml. put the logger into the main?
+    # TODO: use standard_work_hours from config.yaml in the timerecorder object
+    # TODO: use work_days from config.yaml in the logbook class
+    # TODO: use holidays from config.yaml in the logbook class
+
+    # TODO: show averaged daily overtime in the terminal output next to the weekly work hours
 
     args = ap.run_arg_parser()
 
@@ -74,6 +81,7 @@ def main() -> None:
     time_recorder_config = cu.get_time_recorder_config(config)
     logbook_config = cu.get_logbook_config(config)
     processing_config = cu.get_processing_config(config)
+    display_config = cu.get_display_config(config)
     logger.debug("Configuration loaded successfully")
 
     # Create TimeRecorder object from configuration
@@ -99,7 +107,7 @@ def main() -> None:
         logbook.get_weekly_hours_from_log()
 
     if processing_config["log_enabled"]:
-        logbook.tail()
+        logbook.tail(display_config["show_tail"])
 
 
 if __name__ == "__main__":

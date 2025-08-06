@@ -93,16 +93,7 @@ class TimeRecorder:
         Format string for parsing time (default: "%H:%M:%S").
     """
 
-    def __init__(  # noqa: PLR0913
-        self,
-        date: str,
-        start_time: str,
-        end_time: str,
-        lunch_break_duration: int,
-        *,
-        full_format: str = r"%d.%m.%Y %H:%M:%S",
-        timezone: str = "Europe/Berlin",
-    ) -> None:
+    def __init__(self, data: dict) -> None:
         """
         Initialize a TimeRecorder object with the provided parameters.
 
@@ -167,15 +158,17 @@ class TimeRecorder:
                     f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}",
                 ) from e
 
-        self.full_format = full_format
+        self.full_format = data["full_format"]
         self.date_format, self.time_format = self.full_format.split(" ")
 
-        self.date = date
-        self.timezone = timezone
+        self.date = data["date"]
+        self.timezone = data["timezone"]
 
-        self.start_time = _parse_datetime(date, start_time, full_format, timezone)  # Start time as a timezone-aware datetime object
-        self.end_time = _parse_datetime(date, end_time, full_format, timezone)  # End time as a timezone-aware datetime object
-        self.lunch_break_duration = timedelta(minutes=lunch_break_duration)  # Duration of the lunch break in minutes
+        # Start time as a timezone-aware datetime object
+        self.start_time = _parse_datetime(data["date"], data["start_time"], self.full_format, self.timezone)
+        # End time as a timezone-aware datetime object
+        self.end_time = _parse_datetime(data["date"], data["end_time"], self.full_format, self.timezone)
+        self.lunch_break_duration = timedelta(minutes=data["lunch_break_duration"])  # Duration of the lunch break in minutes
 
         self.weekday = self.start_time.strftime("%a")
 

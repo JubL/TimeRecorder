@@ -68,6 +68,7 @@ def get_time_recorder_config(config: dict) -> dict:
         Dictionary containing TimeRecorder parameters.
     """
     time_tracking = config.get("time_tracking", {})
+    work_schedule = config.get("work_schedule", {})
 
     return {
         "date": time_tracking.get("date", "01.08.2025"),
@@ -75,7 +76,7 @@ def get_time_recorder_config(config: dict) -> dict:
         "end_time": time_tracking.get("end_time", "17:25"),
         "lunch_break_duration": time_tracking.get("lunch_break_duration", 60),
         "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
-        "timezone": config.get("work_schedule", {}).get("timezone", "Europe/Berlin"),
+        "timezone": work_schedule.get("timezone", "Europe/Berlin"),
     }
 
 
@@ -94,10 +95,40 @@ def get_logbook_config(config: dict) -> dict:
         Dictionary containing Logbook parameters.
     """
     logging_config = config.get("logging", {})
+    time_tracking = config.get("time_tracking", {})
+    holidays = config.get("holidays", {})
 
     return {
         "log_path": pathlib.Path.cwd() / logging_config.get("log_path", "timereport_logbook.txt"),
-        "full_format": config.get("time_tracking", {}).get("full_format", "%d.%m.%Y %H:%M:%S"),
+        "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
+        "holidays": holidays.get("country", "DE"),
+        "subdivision": holidays.get("subdivision", "HE"),
+        "include_holidays": holidays.get("include_holidays", True),
+    }
+
+
+def get_display_config(config: dict) -> dict:
+    """
+    Extract output configuration from the main config.
+
+    Parameters
+    ----------
+    config : Dict[str, Any]
+        The main configuration dictionary.
+
+    Returns
+    -------
+    Dict[str, Any]
+        Dictionary containing output parameters.
+    """
+    output_config = config.get("output", {})
+
+    return {
+        "colored_output": output_config.get("colored_output", True),
+        "show_statistics": output_config.get("show_statistics", True),
+        "export_format": output_config.get("export_format", "csv"),
+        "show_tail": output_config.get("show_tail", 4),
+        "calculate_weekly_hours": output_config.get("calculate_weekly_hours", True),
     }
 
 
@@ -116,14 +147,15 @@ def get_processing_config(config: dict) -> dict:
         Dictionary containing processing parameters.
     """
     data_processing = config.get("data_processing", {})
-    logging_config = config.get("logging", {})
+    display = config.get("display", {})
 
     return {
-        "use_boot_time": config.get("time_tracking", {}).get("use_boot_time", True),
-        "log_enabled": logging_config.get("enabled", False),
+        "use_boot_time": data_processing.get("use_boot_time", True),
+        "log_enabled": data_processing.get("enabled", False),
         "auto_squash": data_processing.get("auto_squash", True),
         "add_missing_days": data_processing.get("add_missing_days", True),
-        "calculate_weekly_hours": data_processing.get("calculate_weekly_hours", True),
+        "calculate_weekly_hours": display.get("calculate_weekly_hours", True),
+        "calculate_daily_overhours": display.get("calculate_daily_overhours", True),
     }
 
 

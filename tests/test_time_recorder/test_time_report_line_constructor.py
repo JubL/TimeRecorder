@@ -37,12 +37,14 @@ import src.time_recorder as tr
 def test_init_valid(case: dict) -> None:
     """Test valid initialization of TimeRecorder with various formats."""
     line = tr.TimeRecorder(
-        date=case["date"],
-        start_time=case["start_time"],
-        end_time=case["end_time"],
-        lunch_break_duration=case["lunch_break_duration"],
-        full_format=case["full_format"],
-        timezone="Europe/Berlin",
+        {
+            "date": case["date"],
+            "start_time": case["start_time"],
+            "end_time": case["end_time"],
+            "lunch_break_duration": case["lunch_break_duration"],
+            "full_format": case["full_format"],
+            "timezone": "Europe/Berlin",
+        },
     )
     assert line.date == case["expected_date"]
     assert line.start_time == case["expected_start"]
@@ -62,11 +64,14 @@ def test_init_missing_seconds_in_time() -> None:
     """Test that missing seconds in time strings are handled by appending ':00'."""
     # Should append ":00" to time strings missing seconds
     line = tr.TimeRecorder(
-        date="24.04.2025",
-        start_time="08:00",
-        end_time="16:00",
-        lunch_break_duration=30,
-        timezone="Europe/Berlin",
+        {
+            "date": "24.04.2025",
+            "start_time": "08:00",
+            "end_time": "16:00",
+            "lunch_break_duration": 30,
+            "timezone": "Europe/Berlin",
+            "full_format": "%d.%m.%Y %H:%M:%S",
+        },
     )
     assert line.start_time == datetime.strptime("24.04.2025 08:00:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin"))
     assert line.end_time == datetime.strptime("24.04.2025 16:00:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin"))
@@ -77,10 +82,14 @@ def test_init_invalid_time_format_raises() -> None:
     """Test that invalid time format raises a ValueError."""
     with pytest.raises(ValueError, match="time data|does not match format|invalid"):
         tr.TimeRecorder(
-            date="24.04.2025",
-            start_time="invalid",
-            end_time="16:00",
-            lunch_break_duration=30,
+            {
+                "date": "24.04.2025",
+                "start_time": "invalid",
+                "end_time": "16:00",
+                "lunch_break_duration": 30,
+                "timezone": "Europe/Berlin",
+                "full_format": "%d.%m.%Y %H:%M:%S",
+            },
         )
 
 
@@ -89,10 +98,14 @@ def test_init_start_time_after_end_time_raises() -> None:
     """Test that providing a start time after the end time raises a ValueError."""
     with pytest.raises(ValueError, match="The start time must be before the end time."):
         tr.TimeRecorder(
-            date="24.04.2025",
-            start_time="18:00",
-            end_time="16:00",
-            lunch_break_duration=30,
+            {
+                "date": "24.04.2025",
+                "start_time": "18:00",
+                "end_time": "16:00",
+                "lunch_break_duration": 30,
+                "timezone": "Europe/Berlin",
+                "full_format": "%d.%m.%Y %H:%M:%S",
+            },
         )
 
 
@@ -101,10 +114,14 @@ def test_init_negative_lunch_break_raises() -> None:
     """Test that a negative lunch break duration raises a ValueError."""
     with pytest.raises(ValueError, match="The lunch break duration must be a non-negative integer."):
         tr.TimeRecorder(
-            date="24.04.2025",
-            start_time="08:00",
-            end_time="16:00",
-            lunch_break_duration=-10,
+            {
+                "date": "24.04.2025",
+                "start_time": "08:00",
+                "end_time": "16:00",
+                "lunch_break_duration": -10,
+                "timezone": "Europe/Berlin",
+                "full_format": "%d.%m.%Y %H:%M:%S",
+            },
         )
 
 
@@ -113,8 +130,12 @@ def test_init_zero_duration_raises() -> None:
     """Test that a zero work duration raises a ValueError."""
     with pytest.raises(ValueError, match="The work duration must be positive."):
         tr.TimeRecorder(
-            date="24.04.2025",
-            start_time="08:00",
-            end_time="08:01",
-            lunch_break_duration=2,
+            {
+                "date": "24.04.2025",
+                "start_time": "08:00",
+                "end_time": "08:01",
+                "lunch_break_duration": 2,
+                "timezone": "Europe/Berlin",
+                "full_format": "%d.%m.%Y %H:%M:%S",
+            },
         )
