@@ -142,15 +142,16 @@ TimeRecorder/
 ├── main.py                # Main application entry point
 ├── config.yaml            # Configuration file (auto-generated)
 ├── src/                   # Source code
-│   ├── time_recorder.py   # Core time tracking functionality
-│   ├── logbook.py         # CSV logbook management
-│   ├── config_utils.py    # Configuration utilities
 │   ├── arg_parser.py      # Command line argument parsing
-│   └── logging_utils.py   # Logging configuration
+│   ├── config_utils.py    # Configuration utilities
+│   ├── logbook.py         # CSV logbook management
+│   ├── logging_utils.py   # Logging configuration
+│   └── time_recorder.py   # Core time tracking functionality
 ├── tests/                 # Test suite
-│   ├── test_time_recorder/
+│   ├── test_config_utils/
 │   ├── test_logbook/
-│   └── test_config_utils/
+│   ├── test_logging_utils/
+│   └── test_time_recorder/
 └── pyproject.toml         # Project configuration
 ```
 
