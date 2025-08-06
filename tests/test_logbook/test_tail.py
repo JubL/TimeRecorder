@@ -36,6 +36,7 @@ def test_tail_custom_parameter(logbook: Logbook, sample_logbook_df: pd.DataFrame
 
         logged_output = mock_logger.info.call_args[0][0]
         # Should contain only last 2 rows
+        assert len(logged_output.split("\n")) == 3  # 2 rows of content plus one row for the header
         assert "Thu" in logged_output
         assert "Fri" in logged_output
         assert "Wed" not in logged_output
