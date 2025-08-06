@@ -11,7 +11,7 @@ import src.config_utils as cu
 
 
 @pytest.mark.fast
-def test_load_config_success() -> None:
+def test_load_config_success(relative_precision: float) -> None:
     """Test successful configuration loading."""
     with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False, encoding="utf-8") as f:
         config_data = {
@@ -41,7 +41,7 @@ def test_load_config_success() -> None:
         config = cu.load_config(pathlib.Path(config_path))
         assert config["time_tracking"]["date"] == "25.07.2025"
         assert config["logging"]["enabled"] is False
-        assert config["work_schedule"]["standard_work_hours"] == pytest.approx(8, rel=pytest.RELATIVE_PRECISION)
+        assert config["work_schedule"]["standard_work_hours"] == pytest.approx(8, rel=relative_precision)
     finally:
         pathlib.Path(config_path).unlink()
 
@@ -54,7 +54,7 @@ def test_load_config_file_not_found() -> None:
 
 
 @pytest.mark.fast
-def test_get_time_recorder_config() -> None:
+def test_get_time_recorder_config(relative_precision: float) -> None:
     """Test extraction of TimeRecorder configuration."""
     config = {
         "time_tracking": {
@@ -71,12 +71,12 @@ def test_get_time_recorder_config() -> None:
     assert result["date"] == "25.07.2025"
     assert result["start_time"] == "07:00"
     assert result["end_time"] == "17:25"
-    assert result["lunch_break_duration"] == pytest.approx(60, rel=pytest.RELATIVE_PRECISION)
+    assert result["lunch_break_duration"] == pytest.approx(60, rel=relative_precision)
     assert result["full_format"] == "%d.%m.%Y %H:%M:%S"
 
 
 @pytest.mark.fast
-def test_get_time_recorder_config_with_defaults() -> None:
+def test_get_time_recorder_config_with_defaults(relative_precision: float) -> None:
     """Test TimeRecorder configuration with missing values."""
     config: dict = {"time_tracking": {}}
 
@@ -85,7 +85,7 @@ def test_get_time_recorder_config_with_defaults() -> None:
     assert result["date"] == "01.08.2025"
     assert result["start_time"] == "07:00"
     assert result["end_time"] == "17:25"
-    assert result["lunch_break_duration"] == pytest.approx(60, rel=pytest.RELATIVE_PRECISION)
+    assert result["lunch_break_duration"] == pytest.approx(60, rel=relative_precision)
 
 
 @pytest.mark.fast

@@ -35,7 +35,7 @@ def test_add_missing_days_empty_missing_days(logbook: lb.Logbook) -> None:
 
 
 @pytest.mark.fast
-def test_add_missing_days_saturday(logbook: lb.Logbook) -> None:
+def test_add_missing_days_saturday(logbook: lb.Logbook, relative_precision: float) -> None:
     """Test that add_missing_days_to_logbook adds missing Saturday."""
     # Create a logbook with gap that includes a Saturday
     df = pd.DataFrame(
@@ -68,7 +68,7 @@ def test_add_missing_days_saturday(logbook: lb.Logbook) -> None:
         assert not saturday_row["start_time"]
         assert not saturday_row["end_time"]
         assert not saturday_row["lunch_break_duration"]
-        assert saturday_row["work_time"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
+        assert saturday_row["work_time"] == pytest.approx(0.0, rel=relative_precision)
         assert not saturday_row["case"]
         assert not saturday_row["overtime"]
 
@@ -77,7 +77,7 @@ def test_add_missing_days_saturday(logbook: lb.Logbook) -> None:
 
 
 @pytest.mark.fast
-def test_add_missing_days_sunday(logbook: lb.Logbook) -> None:
+def test_add_missing_days_sunday(logbook: lb.Logbook, relative_precision: float) -> None:
     """Test that add_missing_days_to_logbook adds missing Sunday."""
     # Create a logbook with gap that includes a Sunday
     df = pd.DataFrame(
@@ -110,7 +110,7 @@ def test_add_missing_days_sunday(logbook: lb.Logbook) -> None:
         assert not sunday_row["start_time"]
         assert not sunday_row["end_time"]
         assert not sunday_row["lunch_break_duration"]
-        assert sunday_row["work_time"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
+        assert sunday_row["work_time"] == pytest.approx(0.0, rel=relative_precision)
         assert not sunday_row["case"]
         assert not sunday_row["overtime"]
 
@@ -119,7 +119,7 @@ def test_add_missing_days_sunday(logbook: lb.Logbook) -> None:
 
 
 @pytest.mark.fast
-def test_add_missing_days_holiday(logbook: lb.Logbook) -> None:
+def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float) -> None:
     """Test that add_missing_days_to_logbook adds missing holiday."""
     # Create a logbook with gap that includes a holiday (New Year's Day)
     df = pd.DataFrame(
@@ -153,7 +153,7 @@ def test_add_missing_days_holiday(logbook: lb.Logbook) -> None:
         assert holiday_row["start_time"] == "New Year's Day"  # English holiday name
         assert not holiday_row["end_time"]
         assert not holiday_row["lunch_break_duration"]
-        assert holiday_row["work_time"] == pytest.approx(0.0, rel=pytest.RELATIVE_PRECISION)
+        assert holiday_row["work_time"] == pytest.approx(0.0, rel=relative_precision)
         assert not holiday_row["case"]
         assert not holiday_row["overtime"]
 

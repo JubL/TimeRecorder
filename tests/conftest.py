@@ -11,9 +11,10 @@ import src.logbook as lb
 import src.time_recorder as tr
 
 
-def pytest_configure() -> None:
-    """Configure pytest."""
-    pytest.RELATIVE_PRECISION = 1e-12
+@pytest.fixture
+def relative_precision() -> float:
+    """Fixture to provide a relative precision for pytest."""
+    return 1e-12  # TODO: make this a parameter
 
 
 @pytest.fixture
