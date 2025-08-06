@@ -1,11 +1,18 @@
 # TimeRecorder Configuration File
 # This file contains all configurable parameters for the TimeRecorder application
 
+# Data processing settings
+data_processing:
+  use_boot_time: true  # Use system boot time as start time
+  logging_enabled: false  # Set to True to log the results
+  auto_squash: true  # Automatically squash duplicate entries
+  add_missing_days: true  # Add missing days to logbook
+
 # Time tracking settings
 time_tracking:
   date: "01.08.2025"  # Date in DD.MM.YYYY format
   start_time: "07:00"  # Starting time in HH:MM format
-  end_time: "17:15"  # Ending time in HH:MM format
+  end_time: "23:15"  # Ending time in HH:MM format
   lunch_break_duration: 60  # Duration of the lunch break in minutes
   full_format: "%d.%m.%Y %H:%M:%S"  # Format string for parsing full datetime
 
@@ -25,14 +32,7 @@ holidays:
   country: "DE"  # Country code for holidays
   subdivision: "HE"  # State/province subdivision
 
-# Data processing settings
-data_processing:
-  use_boot_time: true  # Use system boot time as start time
-  enabled: false  # Set to True to log the results
-  auto_squash: true  # Automatically squash duplicate entries
-  add_missing_days: true  # Add missing days to logbook
-
-# Output settings
+# Display settings
 display:
   calculate_weekly_hours: true  # Calculate weekly hours from log
   calculate_daily_overhours: true  # Calculate daily overhours from log

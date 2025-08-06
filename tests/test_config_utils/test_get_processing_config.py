@@ -11,7 +11,7 @@ def test_get_processing_config() -> None:
     config: dict = {
         "data_processing": {
             "use_boot_time": True,
-            "enabled": True,
+            "logging_enabled": True,
             "auto_squash": True,
             "add_missing_days": True,
         },

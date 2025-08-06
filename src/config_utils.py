@@ -103,7 +103,6 @@ def get_logbook_config(config: dict) -> dict:
         "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
         "holidays": holidays.get("country", "DE"),
         "subdivision": holidays.get("subdivision", "HE"),
-        "include_holidays": holidays.get("include_holidays", True),
     }
 
 
@@ -151,7 +150,7 @@ def get_processing_config(config: dict) -> dict:
 
     return {
         "use_boot_time": data_processing.get("use_boot_time", True),
-        "log_enabled": data_processing.get("enabled", False),
+        "log_enabled": data_processing.get("logging_enabled", False),
         "auto_squash": data_processing.get("auto_squash", True),
         "add_missing_days": data_processing.get("add_missing_days", True),
         "calculate_weekly_hours": display.get("calculate_weekly_hours", True),
@@ -214,7 +213,6 @@ def create_default_config(config_path: pathlib.Path) -> None:
 
     default_config: dict = {
         "time_tracking": {
-            "use_boot_time": True,
             "date": "01.08.2025",
             "start_time": "07:30",
             "end_time": "17:25",
@@ -222,7 +220,6 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "full_format": "%d.%m.%Y %H:%M:%S",
         },
         "logging": {
-            "enabled": False,
             "log_path": "timereport_logbook.txt",
             "log_level": "INFO",
         },
@@ -234,17 +231,17 @@ def create_default_config(config_path: pathlib.Path) -> None:
         "holidays": {
             "country": "DE",
             "subdivision": "HE",
-            "include_holidays": True,
         },
         "data_processing": {
+            "use_boot_time": True,
+            "logging_enabled": False,
             "auto_squash": True,
             "add_missing_days": True,
-            "calculate_weekly_hours": True,
         },
         "output": {
-            "colored_output": True,
-            "show_statistics": True,
-            "export_format": "csv",
+            "calculate_weekly_hours": True,
+            "calculate_daily_overhours": True,
+            "show_tail": 4,
         },
     }
 
