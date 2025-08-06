@@ -44,13 +44,16 @@ def main() -> None:
 
     # TODO set up CI/CD workflows on GitHub
 
-    # TODO: use pytests approx to compare with float in unit tests, also set the precision to a small value, like 1e-9.
-
     # TODO: set up bash completion (https://docs.pytest.org/en/stable/how-to/bash-completion.html)
 
-    # TODO: set up a launch.json for debugging and also for normal execution
+    # TODO: set up a launch.json for debugging and also for normal execution?
 
     # TODO: executing test via the IDE does produce the german names of the holidays, but not when running the tests via pytest.
+
+    # TODO: initialize logbook with its config
+    # TODO: put the holidays into the logbook object
+
+    # TODO: initialize timerecorder with its config
 
     args = ap.run_arg_parser()
 

@@ -32,11 +32,8 @@ holidays:
 data_processing:
   auto_squash: true  # Automatically squash duplicate entries
   add_missing_days: true  # Add missing days to logbook
-  calculate_weekly_hours: true  # Calculate weekly hours from log
 
 # Output settings
 output:
+  calculate_weekly_hours: true  # Calculate weekly hours from log
   show_tail: 4  # Show the last n lines of the logbook
-  colored_output: true  # Use colored terminal output
-  show_statistics: true  # Show overtime/undertime statistics
-  export_format: "csv"  # Export format: csv, json, excel
