@@ -11,16 +11,16 @@ import pathlib
 
 import src.arg_parser as ap
 import src.config_utils as cu
+import src.logging_utils as lu
 from src.logbook import Logbook
-from src.logging_utils import set_global_log_level, setup_logger
 from src.time_recorder import TimeRecorder
 
 # Set global log level first (change this to control all logging)
 # Options: logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR
-set_global_log_level(logging.INFO)
+lu.set_global_log_level(logging.INFO)
 
 # Set up main logger
-logger = setup_logger(__name__)
+logger = lu.setup_logger(__name__)
 
 
 def main() -> None:

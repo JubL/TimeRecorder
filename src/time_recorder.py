@@ -45,10 +45,10 @@ from zoneinfo import ZoneInfo
 import colorama
 import psutil
 
-from src.logging_utils import setup_logger
+import src.logging_utils as lu
 
 # Set up logger with centralized configuration
-logger = setup_logger(__name__)
+logger = lu.setup_logger(__name__)
 
 colorama.init(autoreset=True)
 RED = colorama.Fore.RED

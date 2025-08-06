@@ -10,10 +10,10 @@ import pathlib
 
 import yaml
 
-from src.logging_utils import setup_logger
+import src.logging_utils as lu
 
 # Set up logger
-logger = setup_logger(__name__)
+logger = lu.setup_logger(__name__)
 
 
 def load_config(config_path: pathlib.Path) -> dict:
