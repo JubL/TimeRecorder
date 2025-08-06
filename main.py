@@ -46,10 +46,8 @@ def main() -> None:
 
     # TODO: executing test via the IDE does produce the german names of the holidays, but not when running the tests via pytest.
 
-    # TODO: initialize logbook with its config
+    # TODO: initialize logbook with its config? no
     # TODO: put the holidays into the logbook object
-
-    # TODO: initialize timerecorder with its config
 
     # TODO: have a README.md file for the git repo readme
 
@@ -70,7 +68,7 @@ def main() -> None:
     config = cu.load_config(config_path)
     if not cu.validate_config(config):
         logger.error("Configuration validation failed")
-        return
+        raise SystemExit(1)
 
     # Update the config with the command line arguments
     config = cu.update_config(config, args)
