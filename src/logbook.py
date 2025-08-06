@@ -94,7 +94,7 @@ class Logbook:
     work_time, case, overtime.
     """
 
-    def __init__(self, log_path: pathlib.Path, full_format: str = r"%d.%m.%Y %H:%M:%S") -> None:
+    def __init__(self, log_path: pathlib.Path, *, full_format: str = r"%d.%m.%Y %H:%M:%S") -> None:
         """Initialize a Logbook object with the provided parameters.
 
         Parameters
