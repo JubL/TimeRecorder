@@ -49,8 +49,6 @@ def main() -> None:
     # TODO: initialize logbook with its config? no
     # TODO: put the holidays into the logbook object
 
-    # TODO: have a README.md file for the git repo readme
-
     # TODO: use log level from config.yaml. put the logger into the main?
     # TODO: use standard_work_hours from config.yaml in the timerecorder object
     # TODO: use work_days from config.yaml in the logbook class
