@@ -42,6 +42,7 @@ class TimeRecorderArgumentParser:
 
         # Time completion arguments
         self.parser.add_argument("--end", type=str, help="End time (HH:MM:SS)")
+        self.parser.add_argument("--end_now", action="store_true", help="End time is one minute from now.")
         self.parser.add_argument("--lunch", type=int, help="Lunch break duration in minutes")
 
         # Processing control arguments
@@ -96,6 +97,9 @@ class TimeRecorderArgumentParser:
         has_date = isinstance(args.date, str) and args.date is not None
         has_start = isinstance(args.start, str) and args.start is not None
 
+        has_end = isinstance(args.end, str) and args.end is not None
+        has_end_now = args.end_now
+
         # Case 1: --boot is selected (no --date or --start should be provided)
         if has_boot:
             if has_date or has_start:
@@ -109,6 +113,10 @@ class TimeRecorderArgumentParser:
             logger.warning(
                 "When not using --boot, both --date and --start must be provided. Use either --boot OR both --date and --start together.",
             )
+
+        # Case 3: Both end and end_now were specified
+        if has_end and has_end_now:
+            logger.warning("The usage of --end and --end_now together does not make much sense. Use either --end OR --end_now.")
 
     def get_help_text(self) -> str:
         """

@@ -36,8 +36,6 @@ def main() -> None:
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
 
-    # TODO: have the option to set the end time to now + 1 minute
-
     # TODO: CLI input should not be mandatory, but if used, just change the values read from the config.yaml
 
     # TODO set up CI/CD workflows on GitHub

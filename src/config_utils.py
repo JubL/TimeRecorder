@@ -74,6 +74,7 @@ def get_time_recorder_config(config: dict) -> dict:
         "date": time_tracking.get("date", "01.08.2025"),
         "start_time": time_tracking.get("start_time", "07:00"),
         "end_time": time_tracking.get("end_time", "17:25"),
+        "end_now": time_tracking.get("end_now", False),
         "lunch_break_duration": time_tracking.get("lunch_break_duration", 60),
         "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
         "timezone": work_schedule.get("timezone", "Europe/Berlin"),
@@ -281,6 +282,7 @@ def update_config(config: dict, args: argparse.Namespace) -> dict:
         ("date", "time_tracking.date"),
         ("start", "time_tracking.start_time"),
         ("end", "time_tracking.end_time"),
+        ("end_now", "time_tracking.end_now"),
         ("lunch", "time_tracking.lunch_break_duration"),
         # Logging settings
         ("log", "logging.enabled"),

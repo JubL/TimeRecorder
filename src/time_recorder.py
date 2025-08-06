@@ -167,6 +167,8 @@ class TimeRecorder:
         # Start time as a timezone-aware datetime object
         self.start_time = _parse_datetime(data["date"], data["start_time"], self.full_format, self.timezone)
         # End time as a timezone-aware datetime object
+        if data["end_now"]:
+            data["end_time"] = (datetime.now(tz=ZoneInfo(self.timezone)) + timedelta(minutes=1)).strftime(self.time_format)
         self.end_time = _parse_datetime(data["date"], data["end_time"], self.full_format, self.timezone)
         self.lunch_break_duration = timedelta(minutes=data["lunch_break_duration"])  # Duration of the lunch break in minutes
 
