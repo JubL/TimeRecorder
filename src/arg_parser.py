@@ -7,6 +7,7 @@ and validation for the time recorder application.
 """
 
 import argparse
+import pathlib
 
 
 class TimeRecorderArgumentParser:
@@ -48,6 +49,9 @@ class TimeRecorderArgumentParser:
         # Configuration arguments
         self.parser.add_argument("--config", type=str, help="Path to the config file", default="config.yaml")
         self.parser.add_argument("--logbook", type=str, help="Path to the logbook file", default="timereport_logbook.txt")
+
+        # Version argument
+        self.parser.add_argument("--version", action="version", version=f"Version: {self.get_project_version()}")
 
     def parse_args(self) -> argparse.Namespace:
         """
@@ -127,6 +131,15 @@ class TimeRecorderArgumentParser:
     def print_usage(self) -> None:
         """Print the usage text to stdout."""
         self.parser.print_usage()
+
+    @staticmethod
+    def get_project_version() -> str:
+        """Get the project version from the pyproject.toml file."""
+        with pathlib.Path("pyproject.toml").open(encoding="utf-8") as file:
+            for line in file:
+                if "version" in line:
+                    return line.split("=")[1].strip().strip('"')
+        return "unknown"
 
 
 def run_arg_parser() -> argparse.Namespace:
