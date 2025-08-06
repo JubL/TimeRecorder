@@ -9,6 +9,11 @@ and validation for the time recorder application.
 import argparse
 import pathlib
 
+import src.logging_utils as lu
+
+# Set up logger with centralized configuration
+logger = lu.setup_logger(__name__)
+
 
 class TimeRecorderArgumentParser:
     """Argument parser for the time recorder application.
@@ -88,29 +93,21 @@ class TimeRecorderArgumentParser:
         """
         # Check if any time specification method is provided
         has_boot = args.boot
-        has_date = args.date is not None
-        has_start = args.start is not None
+        has_date = isinstance(args.date, str) and args.date is not None
+        has_start = isinstance(args.start, str) and args.start is not None
 
         # Case 1: --boot is selected (no --date or --start should be provided)
         if has_boot:
             if has_date or has_start:
-                raise SystemExit(
-                    "Error: --boot cannot be used together with --date or --start. "
+                logger.warning(
+                    "The usage of --boot together with --date or --start does not make much sense."
                     "Use either --boot OR both --date and --start together.",
                 )
 
         # Case 2: Manual time specification (both --date and --start must be provided)
-        elif has_date or has_start:
-            if not (has_date and has_start):
-                raise SystemExit(
-                    "Error: When not using --boot, both --date and --start must be provided. "
-                    "Use either --boot OR both --date and --start together.",
-                )
-
-        # Case 3: No time specification method provided
-        else:
-            raise SystemExit(
-                "Error: You must specify either --boot OR both --date and --start. No time specification method was provided.",
+        elif (has_date or has_start) and not (has_date and has_start):
+            logger.warning(
+                "When not using --boot, both --date and --start must be provided. Use either --boot OR both --date and --start together.",
             )
 
     def get_help_text(self) -> str:
