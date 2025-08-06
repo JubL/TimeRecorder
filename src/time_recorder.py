@@ -93,12 +93,13 @@ class TimeRecorder:
         Format string for parsing time (default: "%H:%M:%S").
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         date: str,
         start_time: str,
         end_time: str,
         lunch_break_duration: int,
+        *,
         full_format: str = r"%d.%m.%Y %H:%M:%S",
         timezone: str = "Europe/Berlin",
     ) -> None:

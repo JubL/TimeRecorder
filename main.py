@@ -38,11 +38,11 @@ def main() -> None:
 
     # TODO: have the option to set the end time to now + 1 minute
 
+    # TODO: CLI input should not be mandatory, but if used, just change the values read from the config.yaml
+
     # TODO: split the test for config_utils into separate files
 
     # TODO set up CI/CD workflows on GitHub
-
-    # TODO: use dtype arg in read_csv?
 
     # TODO: use pytests approx to compare with float in unit tests, also set the precision to a small value, like 1e-9.
 
@@ -83,7 +83,8 @@ def main() -> None:
         tr_line.get_state()
 
     if processing_config["log_enabled"]:
-        logbook.record_into_df(tr_line.time_report_line_to_dict())
+        tr_dict = tr_line.time_report_line_to_dict()
+        logbook.record_into_df(tr_dict)
 
         if processing_config["add_missing_days"]:
             logbook.find_and_add_missing_days()
