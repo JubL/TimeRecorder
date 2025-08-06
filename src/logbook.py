@@ -143,29 +143,42 @@ class Logbook:
             self.create_df()
 
         try:
+            # Read CSV without dtype to handle empty strings properly
             df = pd.read_csv(self.log_path, sep=";", keep_default_na=False, encoding="utf-8")
             logger.debug(f"Read logbook from {self.log_path}")
-        except FileNotFoundError as e:
-            logger.exception(f"{RED}Log file not found: {self.log_path}{RESET}")
-            raise FileNotFoundError(f"Log file not found: {self.log_path}") from e
         except pd.errors.EmptyDataError as e:
             logger.exception(f"{RED}Log file is empty: {self.log_path}{RESET}")
             raise pd.errors.EmptyDataError(f"Log file is empty: {self.log_path}") from e
         except pd.errors.ParserError as e:
             logger.exception(f"{RED}Error parsing log file: {e}{RESET}")
             raise pd.errors.ParserError(f"Error parsing log file: {e}") from e
+        except FileNotFoundError as e:
+            logger.exception(f"{RED}Log file not found: {self.log_path}{RESET}")
+            raise FileNotFoundError(f"Log file not found: {self.log_path}") from e
 
         # sanity checks
         # make sure all required columns are present
         required_columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         if not all(col in df.columns for col in required_columns):
-            raise KeyError(f"{RED}Log file is missing required columns: {required_columns}.{RESET}")
+            raise KeyError(f"Log file is missing required columns: {required_columns}.")
 
         # count the number of columns
         if len(df.columns) != len(required_columns):
             raise ValueError(f"{RED}Log file has an unexpected number of columns: {len(df.columns)}. Expected 8 columns.{RESET}")
 
-        # TODO: Check if the columns are in the correct format (e.g., date as datetime, time as str)
+        # Convert columns to their expected types after validation
+        df["weekday"] = df["weekday"].astype("string")
+        df["date"] = df["date"].astype("string")
+        df["start_time"] = df["start_time"].astype("string")
+        df["end_time"] = df["end_time"].astype("string")
+        df["lunch_break_duration"] = pd.to_numeric(df["lunch_break_duration"], errors="coerce").fillna("").astype("object")
+        df["work_time"] = pd.to_numeric(df["work_time"], errors="coerce")
+        df["case"] = df["case"].astype("string")
+        df["overtime"] = pd.to_numeric(df["overtime"], errors="coerce").fillna("").astype("object")
+
+        # case is one of three values
+        if not all(df["case"].isin(["overtime", "undertime", ""])):
+            raise ValueError(f"{RED}Log file has invalid case values: {df['case'].unique()}.{RESET}")  # TODO add test for this
 
         return df
 

@@ -44,10 +44,10 @@ def test_add_missing_days_saturday(logbook: lb.Logbook) -> None:
             "date": ["05.01.2024", "08.01.2024"],  # Fri to Mon (Sat is 06.01.2024)
             "start_time": ["08:00", "08:00"],
             "end_time": ["17:00", "17:00"],
-            "lunch_break_duration": ["60", "60"],
-            "work_time": ["8.0", "8.0"],
+            "lunch_break_duration": [60, 60],
+            "work_time": [8.0, 8.0],
             "case": ["overtime", "overtime"],
-            "overtime": ["0.0", "0.0"],
+            "overtime": [0.0, 0.0],
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
@@ -86,10 +86,10 @@ def test_add_missing_days_sunday(logbook: lb.Logbook) -> None:
             "date": ["06.01.2024", "08.01.2024"],  # Sat to Mon (Sun is 07.01.2024)
             "start_time": ["08:00", "08:00"],
             "end_time": ["17:00", "17:00"],
-            "lunch_break_duration": ["60", "60"],
-            "work_time": ["8.0", "8.0"],
+            "lunch_break_duration": [60, 60],
+            "work_time": [8.0, 8.0],
             "case": ["overtime", "overtime"],
-            "overtime": ["0.0", "0.0"],
+            "overtime": [0.0, 0.0],
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
@@ -128,10 +128,10 @@ def test_add_missing_days_holiday(logbook: lb.Logbook) -> None:
             "date": ["31.12.2023", "02.01.2024"],  # Sun to Tue (Mon is 01.01.2024 - New Year's Day)
             "start_time": ["08:00", "08:00"],
             "end_time": ["17:00", "17:00"],
-            "lunch_break_duration": ["60", "60"],
-            "work_time": ["8.0", "8.0"],
+            "lunch_break_duration": [60, 60],
+            "work_time": [8.0, 8.0],
             "case": ["overtime", "overtime"],
-            "overtime": ["0.0", "0.0"],
+            "overtime": [0.0, 0.0],
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
@@ -148,6 +148,7 @@ def test_add_missing_days_holiday(logbook: lb.Logbook) -> None:
 
         # Check that holiday was added with correct format
         holiday_row = result_df[result_df["date"] == "01.01.2024"].iloc[0]
+        print(holiday_row)
         assert holiday_row["weekday"] == "Mon"
         assert holiday_row["start_time"] == "New Year's Day"  # English holiday name
         assert not holiday_row["end_time"]
@@ -171,10 +172,10 @@ def test_add_missing_days_multiple_days(logbook: lb.Logbook) -> None:
             "date": ["05.01.2024", "10.01.2024"],  # Fri to Wed
             "start_time": ["09:00", "09:00"],
             "end_time": ["17:00", "17:00"],
-            "lunch_break_duration": ["60", "60"],
-            "work_time": ["8.0", "8.0"],
+            "lunch_break_duration": [60, 60],
+            "work_time": [8.0, 8.0],
             "case": ["overtime", "overtime"],
-            "overtime": ["0.0", "0.0"],
+            "overtime": [0.0, 0.0],
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
@@ -212,10 +213,10 @@ def test_add_missing_days_already_exists(logbook: lb.Logbook) -> None:
             "date": ["05.01.2024", "06.01.2024", "08.01.2024"],
             "start_time": ["09:00", "09:00", "09:00"],
             "end_time": ["17:00", "17:00", "17:00"],
-            "lunch_break_duration": ["60", "60", "60"],
-            "work_time": ["8.0", "8.0", "8.0"],
+            "lunch_break_duration": [60, 60, 60],
+            "work_time": [8.0, 8.0, 8.0],
             "case": ["overtime", "overtime", "overtime"],
-            "overtime": ["0.0", "0.0", "0.0"],
+            "overtime": [0.0, 0.0, 0.0],
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
@@ -245,10 +246,10 @@ def test_add_missing_days_multiple_ranges(logbook: lb.Logbook) -> None:
             "date": ["01.01.2024", "03.01.2024", "05.01.2024"],
             "start_time": ["09:00", "09:00", "09:00"],
             "end_time": ["17:00", "17:00", "17:00"],
-            "lunch_break_duration": ["60", "60", "60"],
-            "work_time": ["8.0", "8.0", "8.0"],
+            "lunch_break_duration": [60, 60, 60],
+            "work_time": [8.0, 8.0, 8.0],
             "case": ["overtime", "overtime", "overtime"],
-            "overtime": ["0.0", "0.0", "0.0"],
+            "overtime": [0.0, 0.0, 0.0],
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)

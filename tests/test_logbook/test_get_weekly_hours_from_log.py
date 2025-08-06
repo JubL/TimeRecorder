@@ -26,8 +26,8 @@ def test_returns_expected_weekly_hours(logbook: lb.Logbook, caplog: pytest.LogCa
             "end_time": ["17:00", "16:30", "17:00", "17:30", "17:00"],
             "lunch_break_duration": [60, 60, 60, 60, 60],
             "work_time": [8, 7.5, 8, 8.5, 8],  # hours
-            "case": ["", "", "", "", ""],
-            "overtime": ["", "", "", "", ""],
+            "case": ["overtime", "undertime", "overtime", "overtime", "overtime"],
+            "overtime": [0.0, -0.5, 0.0, 0.5, 0.0],
         },
     )
     logbook.save_logbook(df)
@@ -45,11 +45,11 @@ def test_ignores_zero_work_time_days(logbook: lb.Logbook, caplog: pytest.LogCapt
             "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri"],
             "date": ["2025-04-21", "2025-04-22", "2025-04-23", "2025-04-24", "2025-04-25"],
             "start_time": ["08:00", "", "08:00", "", "08:00"],
-            "end_time": ["16:00", "", "16:00", "", "16:00"],
+            "end_time": ["17:00", "", "17:00", "", "17:00"],
             "lunch_break_duration": [60, 60, 60, 60, 60],
             "work_time": [8, 0, 8, 0, 8],  # Only 3 days with work
-            "case": ["", "", "", "", ""],
-            "overtime": [0, "", 0, "", 0],
+            "case": ["overtime", "", "overtime", "", "overtime"],
+            "overtime": [0.0, 0.0, 0.0, 0.0, 0.0],
         },
     )
     logbook.save_logbook(df)
@@ -67,11 +67,11 @@ def test_handles_non_numeric_work_time(logbook: lb.Logbook, caplog: pytest.LogCa
             "weekday": ["Mon"],
             "date": ["2025-04-21"],
             "start_time": ["08:00"],
-            "end_time": ["16:00"],
+            "end_time": ["17:00"],
             "lunch_break_duration": [60],
             "work_time": ["not_a_number"],
-            "case": [""],
-            "overtime": [""],
+            "case": ["overtime"],
+            "overtime": [0.0],
         },
     )
     logbook.save_logbook(df)
@@ -92,7 +92,7 @@ def test_rounds_to_two_decimals(logbook: lb.Logbook, caplog: pytest.LogCaptureFi
             "lunch_break_duration": [60, 60],
             "work_time": [7.3333, 7.6666],
             "case": ["undertime", "undertime"],
-            "overtime": ["", ""],
+            "overtime": [-0.6667, -0.3333],
         },
     )
     logbook.save_logbook(df)
