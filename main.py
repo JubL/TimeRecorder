@@ -85,7 +85,7 @@ def main() -> None:
     logger.debug("Configuration loaded successfully")
 
     # Create TimeRecorder object from configuration
-    tr_line = TimeRecorder.from_dict(time_recorder_config)
+    tr_line = TimeRecorder(time_recorder_config)
     logbook = Logbook(log_path=logbook_config["log_path"])
 
     # Process based on configuration
