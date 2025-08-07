@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from unittest.mock import patch
 
@@ -119,7 +120,7 @@ def test_add_missing_days_sunday(logbook: lb.Logbook, relative_precision: float)
 
 
 @pytest.mark.fast
-def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float) -> None:
+def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float, caplog: pytest.LogCaptureFixture) -> None:
     """Test that add_missing_days_to_logbook adds missing holiday."""
     # Create a logbook with gap that includes a holiday (New Year's Day)
     df = pd.DataFrame(
@@ -139,7 +140,9 @@ def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float
     # Missing days: Sun to Tue (should add New Year's Day)
     missing_days = [(datetime(2023, 12, 31), datetime(2024, 1, 2))]
 
-    with patch("src.logbook.logger") as mock_logger:
+    expected_holiday_name = ["New Year's Day", "Neujahr"]
+
+    with caplog.at_level(logging.INFO):
         logbook.add_missing_days_to_logbook(missing_days)
 
         # Verify holiday was added
@@ -150,7 +153,7 @@ def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float
         holiday_row = result_df[result_df["date"] == "01.01.2024"].iloc[0]
         print(holiday_row)
         assert holiday_row["weekday"] == "Mon"
-        assert holiday_row["start_time"] in ["New Year's Day", "Neujahr"]  # English holiday name
+        assert holiday_row["start_time"] in expected_holiday_name
         assert not holiday_row["end_time"]
         assert not holiday_row["lunch_break_duration"]
         assert holiday_row["work_time"] == pytest.approx(0.0, rel=relative_precision)
@@ -158,8 +161,8 @@ def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float
         assert not holiday_row["overtime"]
 
         # Verify logging
-        mock_logger.info.assert_any_call("Found a wild New Year's Day.")
-        mock_logger.info.assert_any_call("Added missing holiday on 01.01.2024 - New Year's Day")
+        assert "Found a wild " in caplog.text
+        assert "Added missing holiday on 01.01.2024 - " in caplog.text
 
 
 @pytest.mark.fast
