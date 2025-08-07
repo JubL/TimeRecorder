@@ -60,6 +60,10 @@ def main() -> None:
 
     # TODO: lunch break duration in logbook is float again. change to int.
 
+    # TODO: add the option to save and load the timereport_logbook in different formats, e.g. csv, json, yaml, parquet, etc.
+    # TODO: add a method to determine the file format
+    # TODO: make the load and save methods choose from a ariety of submethods, e.g. load_csv, load_parquet, etc
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist

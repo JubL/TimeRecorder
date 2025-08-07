@@ -14,7 +14,7 @@ import src.time_recorder as tr
 @pytest.fixture
 def relative_precision() -> float:
     """Fixture to provide a relative precision for pytest."""
-    return 1e-12  # TODO: make this a parameter
+    return 1e-12
 
 
 @pytest.fixture

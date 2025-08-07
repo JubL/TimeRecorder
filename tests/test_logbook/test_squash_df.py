@@ -74,12 +74,12 @@ def test_squash_df_recalculates_case_and_overtime(logbook: lb.Logbook, sample_df
     # Check Monday's data (5.75 hours total - should be undertime)
     monday_row = result[result["date"] == "24.04.2025"].iloc[0]
     assert monday_row["case"] == "undertime"
-    assert monday_row["overtime"] == pytest.approx(-2.25, rel=relative_precision)  # 5.75 - 8.0 = -2.25
+    assert monday_row["overtime"] == pytest.approx(-2.25, rel=relative_precision)
 
     # Check Tuesday's data (8.0 hours total - should be overtime)
     tuesday_row = result[result["date"] == "25.04.2025"].iloc[0]
     assert tuesday_row["case"] == "overtime"
-    assert tuesday_row["overtime"] == pytest.approx(0.0, rel=relative_precision)  # 8.0 - 8.0 = 0.0
+    assert tuesday_row["overtime"] == pytest.approx(0.0, rel=relative_precision)
 
 
 @pytest.mark.fast
@@ -209,7 +209,7 @@ def test_squash_df_edge_case_overtime_threshold(logbook: lb.Logbook, relative_pr
     row = result.iloc[0]
     assert row["work_time"] == pytest.approx(7.99, rel=relative_precision)
     assert row["case"] == "undertime"
-    assert row["overtime"] == pytest.approx(-0.01, rel=relative_precision)  # 7.99 - 8.0 = -0.01
+    assert row["overtime"] == pytest.approx(-0.01, rel=relative_precision)
 
 
 @pytest.mark.fast
@@ -237,7 +237,7 @@ def test_squash_df_exactly_8_hours(logbook: lb.Logbook, relative_precision: floa
     row = result.iloc[0]
     assert row["work_time"] == pytest.approx(8.0, rel=relative_precision)
     assert row["case"] == "overtime"
-    assert row["overtime"] == pytest.approx(0.0, rel=relative_precision)  # 8.0 - 8.0 = 0.0
+    assert row["overtime"] == pytest.approx(0.0, rel=relative_precision)
 
 
 @pytest.mark.fast
