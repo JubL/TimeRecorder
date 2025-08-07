@@ -269,3 +269,32 @@ def test_squash_df_groups_and_sums_correctly(logbook: lb.Logbook, relative_preci
     # Check that start_time is 'first' and end_time is 'last'
     assert grouped.iloc[0]["start_time"] == "08:00:00"
     assert grouped.iloc[0]["end_time"] == "17:00:00"
+
+
+@pytest.mark.fast
+def test_squash_df_missing_work_time(logbook: lb.Logbook) -> None:
+    """Test that squash_df handles missing/empty work_time correctly (line 343)."""
+    # Create a DataFrame with missing work_time values
+    df_with_missing_work_time = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Tue", "Wed"],
+            "date": ["24.04.2025", "25.04.2025", "26.04.2025"],
+            "start_time": ["08:00:00", "09:00:00", "08:30:00"],
+            "end_time": ["17:00:00", "18:00:00", "17:30:00"],
+            "lunch_break_duration": [30, 45, 60],
+            "work_time": ["", pd.NA, 8.0],  # Missing/empty work_time values
+            "case": ["overtime", "overtime", "overtime"],
+            "overtime": [0.5, 0.25, 0.0],
+        },
+    )
+
+    # Save the DataFrame to the logbook file
+    logbook.save_logbook(df_with_missing_work_time)
+
+    # Test that squash_df handles missing work_time without errors
+    # The process_work_time_row function should return ("", "") for missing work_time
+    logbook.squash_df()
+
+    # Verify the result was saved correctly
+    result_df = logbook.load_logbook()
+    assert len(result_df) > 0  # Should have processed the data without errors

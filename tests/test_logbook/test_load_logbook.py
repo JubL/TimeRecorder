@@ -178,3 +178,54 @@ def test_save_logbook_with_timestamp_date_column(logbook: lb.Logbook) -> None:
         # Verify that the date column was converted to string format
         # The date should be in the format specified by logbook.date_format
         assert isinstance(df["date"].iloc[0], str)
+
+
+@pytest.mark.fast
+def test_load_logbook_invalid_case_values(logbook: lb.Logbook) -> None:
+    """Test that load_logbook raises ValueError when invalid case values are found (line 181)."""
+    # Create a CSV file with invalid case values
+    invalid_df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Tue"],
+            "date": ["24.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "09:00:00"],
+            "end_time": ["17:00:00", "18:00:00"],
+            "lunch_break_duration": [30, 45],
+            "work_time": [8.5, 8.25],
+            "case": ["invalid_case", "overtime"],  # Invalid case value
+            "overtime": [0.5, 0.25],
+        },
+    )
+
+    # Save the invalid DataFrame to the logbook file
+    logbook.save_logbook(invalid_df)
+
+    # Test that load_logbook raises ValueError for invalid case values
+    with pytest.raises(ValueError, match="Log file has invalid case values"):
+        logbook.load_logbook()
+
+
+@pytest.mark.fast
+def test_load_logbook_valid_case_values(logbook: lb.Logbook) -> None:
+    """Test that load_logbook works correctly with valid case values and covers the return statement."""
+    # Create a CSV file with valid case values
+    valid_df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Tue"],
+            "date": ["24.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "09:00:00"],
+            "end_time": ["17:00:00", "18:00:00"],
+            "lunch_break_duration": [30, 45],
+            "work_time": [8.5, 8.25],
+            "case": ["overtime", "undertime"],  # Valid case values
+            "overtime": [0.5, 0.25],
+        },
+    )
+
+    # Save the valid DataFrame to the logbook file
+    logbook.save_logbook(valid_df)
+
+    # Test that load_logbook works correctly with valid case values
+    result = logbook.load_logbook()
+    assert len(result) == 2
+    assert list(result["case"]) == ["overtime", "undertime"]
