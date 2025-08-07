@@ -311,14 +311,14 @@ class TimeRecorder:
             - str: Case indicating 'overtime' or 'undertime'
             - timedelta: The amount of overtime or undertime calculated as a difference from a full work day
         """
-        _full_day = timedelta(hours=8, minutes=0)
+        full_day_ = timedelta(hours=8, minutes=0)
 
-        if work_time >= _full_day:
+        if work_time >= full_day_:
             case = "overtime"
         else:
             case = "undertime"
 
-        overtime = work_time - _full_day
+        overtime = work_time - full_day_
 
         return case, overtime
 

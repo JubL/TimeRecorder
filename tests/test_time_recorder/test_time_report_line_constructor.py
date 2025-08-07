@@ -86,7 +86,7 @@ def test_init_missing_seconds_in_time() -> None:
 @pytest.mark.fast
 def test_init_invalid_time_format_raises() -> None:
     """Test that invalid time format raises a ValueError."""
-    with pytest.raises(ValueError, match="time data|does not match format|invalid"):
+    with pytest.raises(ValueError, match=r"time data|does not match format|invalid"):
         tr.TimeRecorder(
             {
                 "date": "24.04.2025",
@@ -103,7 +103,7 @@ def test_init_invalid_time_format_raises() -> None:
 @pytest.mark.fast
 def test_init_start_time_after_end_time_raises() -> None:
     """Test that providing a start time after the end time raises a ValueError."""
-    with pytest.raises(ValueError, match="The start time must be before the end time."):
+    with pytest.raises(ValueError, match=r"The start time must be before the end time."):
         tr.TimeRecorder(
             {
                 "date": "24.04.2025",
@@ -120,7 +120,7 @@ def test_init_start_time_after_end_time_raises() -> None:
 @pytest.mark.fast
 def test_init_negative_lunch_break_raises() -> None:
     """Test that a negative lunch break duration raises a ValueError."""
-    with pytest.raises(ValueError, match="The lunch break duration must be a non-negative integer."):
+    with pytest.raises(ValueError, match=r"The lunch break duration must be a non-negative integer."):
         tr.TimeRecorder(
             {
                 "date": "24.04.2025",
@@ -137,7 +137,7 @@ def test_init_negative_lunch_break_raises() -> None:
 @pytest.mark.fast
 def test_init_zero_duration_raises() -> None:
     """Test that a zero work duration raises a ValueError."""
-    with pytest.raises(ValueError, match="The work duration must be positive."):
+    with pytest.raises(ValueError, match=r"The work duration must be positive."):
         tr.TimeRecorder(
             {
                 "date": "24.04.2025",

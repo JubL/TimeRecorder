@@ -43,14 +43,15 @@ def load_config(config_path: pathlib.Path) -> dict:
     try:
         with config_path.open(encoding="utf-8") as file:
             config = yaml.safe_load(file)
+    except yaml.YAMLError:
+        logger.exception(f"Error parsing YAML file {config_path}")
+        raise
+    except Exception:
+        logger.exception(f"Error loading configuration file {config_path}")
+        raise
+    else:
         logger.debug(f"Configuration loaded from {config_path}")
         return config
-    except yaml.YAMLError as e:
-        logger.error(f"Error parsing YAML file {config_path}: {e}")
-        raise
-    except Exception as e:
-        logger.error(f"Error loading configuration file {config_path}: {e}")
-        raise
 
 
 def get_time_recorder_config(config: dict) -> dict:
@@ -250,8 +251,8 @@ def create_default_config(config_path: pathlib.Path) -> None:
         with config_path.open("w", encoding="utf-8") as file:
             yaml.dump(default_config, file, default_flow_style=False, sort_keys=False)
         logger.debug(f"Default configuration file created: {config_path}")
-    except yaml.YAMLError as e:
-        logger.error(f"Error creating default configuration file: {e}")
+    except yaml.YAMLError:
+        logger.exception("Error creating default configuration file")
         raise
 
 

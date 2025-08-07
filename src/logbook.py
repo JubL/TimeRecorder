@@ -150,7 +150,7 @@ class Logbook:
             logger.exception(f"{RED}Log file is empty: {self.log_path}{RESET}")
             raise pd.errors.EmptyDataError(f"Log file is empty: {self.log_path}") from e
         except pd.errors.ParserError as e:
-            logger.exception(f"{RED}Error parsing log file: {e}{RESET}")
+            logger.exception(f"{RED}Error parsing log file{RESET}")
             raise pd.errors.ParserError(f"Error parsing log file: {e}") from e
         except FileNotFoundError as e:
             logger.exception(f"{RED}Log file not found: {self.log_path}{RESET}")
@@ -323,13 +323,13 @@ class Logbook:
             tuple[str, float]
                 A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
             """
-            _full_day = timedelta(hours=8, minutes=0)
-            if timedelta(hours=work_time_val) >= _full_day:
+            full_day_ = timedelta(hours=8, minutes=0)
+            if timedelta(hours=work_time_val) >= full_day_:
                 case = "overtime"
             else:
                 case = "undertime"
 
-            overtime = timedelta(hours=work_time_val) - _full_day
+            overtime = timedelta(hours=work_time_val) - full_day_
 
             return case, round(overtime.total_seconds() / self.sec_in_hour, 2)
 
@@ -567,8 +567,8 @@ class Logbook:
                 weekly_hours /= num_days  # average work hours per day
                 weekly_hours *= 5  # assuming a 5-day work week
                 result = round(weekly_hours, 2)
-        except (ValueError, TypeError) as e:
-            logger.exception(f"{RED}Error converting 'work_time' to timedelta: {e}{RESET}")
+        except (ValueError, TypeError):
+            logger.exception(f"{RED}Error converting 'work_time' to timedelta{RESET}")
             result = 0.0
 
         logger.info(f"Average weekly hours: {result} hours")

@@ -38,7 +38,7 @@ def test_start_time_after_end_time_raises(line: tr.TimeRecorder) -> None:
     """Test that providing a start time after the end time raises a ValueError."""
     line.start_time = datetime.strptime("24.04.2025 18:00:00", "%d.%m.%Y %H:%M:%S")
     line.end_time = datetime.strptime("24.04.2025 16:00:00", "%d.%m.%Y %H:%M:%S")
-    with pytest.raises(ValueError, match="The start time must be before the end time."):
+    with pytest.raises(ValueError, match=r"The start time must be before the end time."):
         line.calculate_work_duration()
 
 
@@ -46,7 +46,7 @@ def test_start_time_after_end_time_raises(line: tr.TimeRecorder) -> None:
 def test_negative_lunch_break_raises(line: tr.TimeRecorder) -> None:
     """Test that a negative lunch break duration raises a ValueError."""
     line.lunch_break_duration = timedelta(minutes=-10)
-    with pytest.raises(ValueError, match="The lunch break duration must be a non-negative integer."):
+    with pytest.raises(ValueError, match=r"The lunch break duration must be a non-negative integer."):
         line.calculate_work_duration()
 
 
@@ -56,10 +56,10 @@ def test_zero_or_negative_work_duration_raises(line: tr.TimeRecorder) -> None:
     line.start_time = datetime.strptime("24.04.2025 08:00:00", "%d.%m.%Y %H:%M:%S")
     line.end_time = datetime.strptime("24.04.2025 08:30:00", "%d.%m.%Y %H:%M:%S")
     line.lunch_break_duration = timedelta(minutes=30)
-    with pytest.raises(ValueError, match="The work duration must be positive."):
+    with pytest.raises(ValueError, match=r"The work duration must be positive."):
         line.calculate_work_duration()
 
     line.end_time = datetime.strptime("24.04.2025 08:20:00", "%d.%m.%Y %H:%M:%S")
     line.lunch_break_duration = timedelta(minutes=30)
-    with pytest.raises(ValueError, match="The work duration must be positive."):
+    with pytest.raises(ValueError, match=r"The work duration must be positive."):
         line.calculate_work_duration()

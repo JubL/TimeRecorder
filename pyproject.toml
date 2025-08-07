@@ -74,7 +74,7 @@ select = [
     "INP",      # flake8-no-pep420
     "INT",      # flake8-gettext
     "ISC",      # flake8-implicit-str-concat
-    #"G",        # flake8-logging-format
+    "G",        # flake8-logging-format
     "LOG",      # flake8-logging
     "N",        # pep8-naming
     "NPY",      # NumPy specific rules
@@ -84,14 +84,16 @@ select = [
     "PL",       # pylint
     "PT",       # flake8-pytest-style
     "PTH",      # flake8-use-pathlib
-    "RSE",      # flake8-raise
     "RET",      # flake8-return
+    "RSE",      # flake8-raise
+    "RUF",      # ruff-specific rules
     "S",        # flake8-bandit
     "SIM",      # flake8-simplify
     "SLF",      # flake8-self
     "T10",      # flake8-debugger
     "T20",      # flake8-print
     "TC",       # flake8-type-checking
+    "TRY",      # tryceratops
     "UP",       # pyupgrade
     "Q",        # flake8-quotes
     "W",        # pycodestyle Warning
