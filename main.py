@@ -56,6 +56,10 @@ def main() -> None:
 
     # TODO: show averaged daily overtime in the terminal output next to the weekly work hours
 
+    # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
+
+    # TODO: lunch break duration in logbook is float again. change to int.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
@@ -85,7 +89,7 @@ def main() -> None:
     # Process based on configuration
     if processing_config["use_boot_time"]:
         tr_line.update_boot_time()
-        tr_line.get_state()
+        tr_line.print_state()
 
     if processing_config["log_enabled"]:
         tr_dict = tr_line.time_report_line_to_dict()
