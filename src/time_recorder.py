@@ -406,7 +406,7 @@ class TimeRecorder:
         # Combine all parts
         return work_duration + "\n" + overtime_amount + "\n" + decimal_str
 
-    def get_state(self) -> None:
+    def print_state(self) -> None:
         """
         Get the stats of the TimeRecorder object.
 
