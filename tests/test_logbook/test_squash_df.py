@@ -1,7 +1,5 @@
 """Comprehensive unit tests for the squash_df method in logbook.py."""
 
-import pathlib
-
 import pandas as pd
 import pytest
 
@@ -9,22 +7,15 @@ import src.logbook as lb
 
 
 @pytest.mark.fast
-def test_squash_df_groups_by_date_and_weekday(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+def test_squash_df_groups_by_date_and_weekday(logbook: lb.Logbook, sample_df: pd.DataFrame) -> None:
     """Test that squash_df correctly groups entries by date and weekday."""
-    # Save sample data
-    df_file = tmp_path / "logbook_df.csv"
-    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
+    logbook.save_logbook(sample_df)
 
-    # Replace logbook's path with our test file
-    logbook.log_path = df_file
-
-    # Perform squash operation
     logbook.squash_df()
 
-    # Load result
     result = logbook.load_logbook()
 
-    # Should have 2 rows (grouped by unique date+weekday combinations)
+    # Should have 2 rows (grouped by unique date + weekday combinations)
     assert len(result) == 2
 
     # Check that we have one row for each unique date
@@ -35,16 +26,9 @@ def test_squash_df_groups_by_date_and_weekday(logbook: lb.Logbook, sample_df: pd
 
 
 @pytest.mark.fast
-def test_squash_df_sums_work_time_and_lunch_break(
-    logbook: lb.Logbook,
-    sample_df: pd.DataFrame,
-    tmp_path: pathlib.Path,
-    relative_precision: float,
-) -> None:
+def test_squash_df_sums_work_time_and_lunch_break(logbook: lb.Logbook, sample_df: pd.DataFrame, relative_precision: float) -> None:
     """Test that squash_df correctly sums work_time and lunch_break_duration."""
-    df_file = tmp_path / "logbook_df.csv"
-    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(sample_df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -61,11 +45,9 @@ def test_squash_df_sums_work_time_and_lunch_break(
 
 
 @pytest.mark.fast
-def test_squash_df_takes_first_start_time_and_last_end_time(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+def test_squash_df_takes_first_start_time_and_last_end_time(logbook: lb.Logbook, sample_df: pd.DataFrame) -> None:
     """Test that squash_df takes first start_time and last end_time for each group."""
-    df_file = tmp_path / "logbook_df.csv"
-    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(sample_df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -82,16 +64,9 @@ def test_squash_df_takes_first_start_time_and_last_end_time(logbook: lb.Logbook,
 
 
 @pytest.mark.fast
-def test_squash_df_recalculates_case_and_overtime(
-    logbook: lb.Logbook,
-    sample_df: pd.DataFrame,
-    tmp_path: pathlib.Path,
-    relative_precision: float,
-) -> None:
+def test_squash_df_recalculates_case_and_overtime(logbook: lb.Logbook, sample_df: pd.DataFrame, relative_precision: float) -> None:
     """Test that squash_df recalculates case and overtime based on summed work_time."""
-    df_file = tmp_path / "logbook_df.csv"
-    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(sample_df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -108,11 +83,9 @@ def test_squash_df_recalculates_case_and_overtime(
 
 
 @pytest.mark.fast
-def test_squash_df_preserves_column_order(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+def test_squash_df_preserves_column_order(logbook: lb.Logbook, sample_df: pd.DataFrame) -> None:
     """Test that squash_df preserves the correct column order."""
-    df_file = tmp_path / "logbook_df.csv"
-    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(sample_df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -123,11 +96,9 @@ def test_squash_df_preserves_column_order(logbook: lb.Logbook, sample_df: pd.Dat
 
 
 @pytest.mark.fast
-def test_squash_df_formats_dates_correctly(logbook: lb.Logbook, sample_df: pd.DataFrame, tmp_path: pathlib.Path) -> None:
+def test_squash_df_formats_dates_correctly(logbook: lb.Logbook, sample_df: pd.DataFrame) -> None:
     """Test that squash_df formats dates according to the date_format."""
-    df_file = tmp_path / "logbook_df.csv"
-    sample_df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(sample_df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -143,7 +114,7 @@ def test_squash_df_formats_dates_correctly(logbook: lb.Logbook, sample_df: pd.Da
 
 
 @pytest.mark.fast
-def test_squash_df_with_single_entry(logbook: lb.Logbook, tmp_path: pathlib.Path, relative_precision: float) -> None:
+def test_squash_df_with_single_entry(logbook: lb.Logbook, relative_precision: float) -> None:
     """Test that squash_df works correctly with a single entry (no grouping needed)."""
     df = pd.DataFrame(
         {
@@ -158,9 +129,7 @@ def test_squash_df_with_single_entry(logbook: lb.Logbook, tmp_path: pathlib.Path
         },
     )
 
-    df_file = tmp_path / "logbook_df.csv"
-    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -175,7 +144,7 @@ def test_squash_df_with_single_entry(logbook: lb.Logbook, tmp_path: pathlib.Path
 
 
 @pytest.mark.fast
-def test_squash_df_with_multiple_dates(logbook: lb.Logbook, tmp_path: pathlib.Path, relative_precision: float) -> None:
+def test_squash_df_with_multiple_dates(logbook: lb.Logbook, relative_precision: float) -> None:
     """Test that squash_df works correctly with multiple different dates."""
     df = pd.DataFrame(
         {
@@ -190,9 +159,7 @@ def test_squash_df_with_multiple_dates(logbook: lb.Logbook, tmp_path: pathlib.Pa
         },
     )
 
-    df_file = tmp_path / "logbook_df.csv"
-    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -218,7 +185,7 @@ def test_squash_df_with_multiple_dates(logbook: lb.Logbook, tmp_path: pathlib.Pa
 
 
 @pytest.mark.fast
-def test_squash_df_edge_case_overtime_threshold(logbook: lb.Logbook, tmp_path: pathlib.Path, relative_precision: float) -> None:
+def test_squash_df_edge_case_overtime_threshold(logbook: lb.Logbook, relative_precision: float) -> None:
     """Test that squash_df correctly handles the overtime threshold (8 hours)."""
     df = pd.DataFrame(
         {
@@ -233,9 +200,7 @@ def test_squash_df_edge_case_overtime_threshold(logbook: lb.Logbook, tmp_path: p
         },
     )
 
-    df_file = tmp_path / "logbook_df.csv"
-    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -248,7 +213,7 @@ def test_squash_df_edge_case_overtime_threshold(logbook: lb.Logbook, tmp_path: p
 
 
 @pytest.mark.fast
-def test_squash_df_exactly_8_hours(logbook: lb.Logbook, tmp_path: pathlib.Path, relative_precision: float) -> None:
+def test_squash_df_exactly_8_hours(logbook: lb.Logbook, relative_precision: float) -> None:
     """Test that squash_df correctly handles exactly 8 hours (overtime threshold)."""
     df = pd.DataFrame(
         {
@@ -263,9 +228,7 @@ def test_squash_df_exactly_8_hours(logbook: lb.Logbook, tmp_path: pathlib.Path, 
         },
     )
 
-    df_file = tmp_path / "logbook_df.csv"
-    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")
-    logbook.log_path = df_file
+    logbook.save_logbook(df)
 
     logbook.squash_df()
     result = logbook.load_logbook()
@@ -278,9 +241,8 @@ def test_squash_df_exactly_8_hours(logbook: lb.Logbook, tmp_path: pathlib.Path, 
 
 
 @pytest.mark.fast
-def test_squash_df_groups_and_sums_correctly(logbook: lb.Logbook, tmp_path: pathlib.Path, relative_precision: float) -> None:
+def test_squash_df_groups_and_sums_correctly(logbook: lb.Logbook, relative_precision: float) -> None:
     """Test that squash_df groups by date and sums work_time and lunch_break_duration."""
-    df_file = tmp_path / "log.csv"
     # Create a DataFrame with duplicate dates and different work_time/lunch_break_duration
     df = pd.DataFrame(
         {
@@ -294,7 +256,7 @@ def test_squash_df_groups_and_sums_correctly(logbook: lb.Logbook, tmp_path: path
             "overtime": [-7, 4.5, 0.0],
         },
     )
-    df.to_csv(df_file, sep=";", index=False, encoding="utf-8")  # TODO replace with logbook.save_logbook(df)?
+    logbook.save_logbook(df)
     logbook.squash_df()
     result = logbook.load_logbook()
     # Should have two rows (grouped by date and weekday)
