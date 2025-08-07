@@ -278,21 +278,23 @@ def update_config(config: dict, args: argparse.Namespace) -> dict:
     # Define argument mappings: (arg_name, config_path, transform_function)
     # transform_function can be None for direct assignment, or a function for custom logic
     arg_mappings = [
+        # Data processing settings
+        ("boot", "data_processing.use_boot_time"),
+        ("log", "data_processing.logging_enabled"),
+        ("no_squash", "data_processing.auto_squash"),
+        ("no_missing", "data_processing.add_missing_days"),
         # Time tracking settings
-        ("boot", "time_tracking.use_boot_time"),
         ("date", "time_tracking.date"),
         ("start", "time_tracking.start_time"),
         ("end", "time_tracking.end_time"),
-        ("end_now", "time_tracking.end_now"),
+        ("end_now", "time_tracking.end_now"),  # TODO: Is this correct? This does not appear in the config.yaml
         ("lunch", "time_tracking.lunch_break_duration"),
         # Logging settings
-        ("log", "logging.enabled"),
         ("logbook", "logging.log_path"),
-        # Data processing settings
-        ("no_squash", "data_processing.auto_squash"),
-        ("no_missing", "data_processing.add_missing_days"),
-        ("no_weekly", "data_processing.calculate_weekly_hours"),
-        ("tail", "output.show_tail"),
+        # Display settings
+        ("no_weekly", "display.calculate_weekly_hours"),
+        ("no_overhours", "display.calculate_daily_overhours"),
+        ("tail", "display.show_tail"),
     ]
 
     def _set_nested_value(config_dict: dict, path: str, value: str | int | bool) -> None:  # noqa: FBT001
