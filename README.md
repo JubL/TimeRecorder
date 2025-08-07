@@ -10,13 +10,13 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 
 - **🕐 Automatic Time Tracking**: Record work hours with start/end times and lunch breaks
 - **⚡ System Boot Integration**: Automatically detect work start time from system boot
-- **📊 Overtime Calculations**: Calculate overtime/undertime based on standard 8-hour work days
+- **📊 Overtime Calculations**: Calculate overtime/undertime based on standard eight-hour work days (configurable)
 - **📈 Weekly Reports**: Generate weekly work hour summaries with detailed analysis
 - **🎨 Colored Output**: Visual feedback with color-coded overtime (green) and undertime (red)
 - **📝 CSV Logbook**: Persistent storage of all time records in CSV format
 - **🔧 Flexible Configuration**: YAML-based configuration system for easy customization
-- **🌍 Holiday Support**: Automatic holiday detection for German Hesse region
-- **📱 Missing Day Detection**: Automatically add missing work days to your logbook
+- **🌍 Holiday Support**: Automatic holiday detection
+- **📱 Missing Day Detection**: Automatically add missing work days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 
 ## 🚀 Quick Start
