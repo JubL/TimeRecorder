@@ -11,7 +11,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 
 ## ✨ Features
 
-- **🕐 Automatic Time Tracking**: Record work hours with start/end times and lunch breaks
+- **🕐 Time Tracking**: Record work hours with start/end times and lunch breaks
 - **⚡ System Boot Integration**: Automatically detect work start time from system boot
 - **📊 Overtime Calculations**: Calculate overtime/undertime based on standard eight-hour work days (configurable)
 - **📈 Weekly Reports**: Generate weekly work hour summaries with detailed analysis
@@ -246,10 +246,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/TimeRecorder/issues)
+- **Issues**: [GitHub Issues](https://github.com/JubL/TimeRecorder/issues)
 - **Documentation**: [CONFIGURATION.md](CONFIGURATION.md)
 - **Email**: jubin@lirawi.de
 
 ---
 
-**Made with ⏰ by [Jubin Lirawi](https://github.com/yourusername)**
+**Made with ⏰ by [Jubin Lirawi](https://github.com/JubL)**
