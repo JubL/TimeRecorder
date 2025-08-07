@@ -59,7 +59,7 @@ RED = colorama.Fore.RED
 GREEN = colorama.Fore.GREEN
 RESET = colorama.Style.RESET_ALL
 
-holidays_de_he = holidays.country_holidays("DE", subdiv="HE")
+holidays_de_he = holidays.country_holidays("DE", subdiv="HE", language="en")
 
 
 class Logbook:
