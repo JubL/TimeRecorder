@@ -44,6 +44,7 @@ indent-width = 4  # use 4 spaces for indentation
 # ignore following rules
 ignore = [
     "D104",     # undocumented-public-package
+    "G004",     # logging-f-string
     "PD901",    # pandas-df-variable-name
     "SIM108",   # if-else-block-instead-of-if-exp
     "S101",     # assert-used
