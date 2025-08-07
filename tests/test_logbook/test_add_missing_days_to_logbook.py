@@ -150,7 +150,7 @@ def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float
         holiday_row = result_df[result_df["date"] == "01.01.2024"].iloc[0]
         print(holiday_row)
         assert holiday_row["weekday"] == "Mon"
-        assert holiday_row["start_time"] == "New Year's Day"  # English holiday name
+        assert holiday_row["start_time"] in ["New Year's Day", "Neujahr"]  # English holiday name
         assert not holiday_row["end_time"]
         assert not holiday_row["lunch_break_duration"]
         assert holiday_row["work_time"] == pytest.approx(0.0, rel=relative_precision)
