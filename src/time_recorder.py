@@ -398,8 +398,8 @@ class TimeRecorder:
 
         title = "\nTime Recorder - Work Hours calculator\n=====================================\n"
         date = f"📅 Date: {self.weekday}, {self.date}"
-        start_time = f"⏰ Start time: {self.start_time.strftime("%H:%M")}"
-        end_time = f"⏰ End time: {self.end_time.strftime("%H:%M")}"
+        start_time = f"⏰ Start time: {self.start_time.strftime('%H:%M')}"
+        end_time = f"⏰ End time: {self.end_time.strftime('%H:%M')}"
         lunch_break_duration = f"🍽️  Lunch break: {int(self.lunch_break_duration.total_seconds() // self.sec_in_min)}m"
         work_duration = f"⏱️  Work duration: {work_hours}h and {work_minutes}m ({work_hours_decimal_representation}h)"
         color = GREEN if self.case == "overtime" else RED
