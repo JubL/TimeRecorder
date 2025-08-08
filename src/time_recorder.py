@@ -316,14 +316,9 @@ class TimeRecorder:
         """
         full_day_ = timedelta(hours=8, minutes=0)
 
-        if work_time >= full_day_:
-            case = "overtime"
-        else:
-            case = "undertime"
+        case = "overtime" if work_time >= full_day_ else "undertime"
 
-        overtime = work_time - full_day_
-
-        return case, overtime
+        return case, work_time - full_day_
 
     def time_report_line_to_dict(self) -> dict:
         """

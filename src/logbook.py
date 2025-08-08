@@ -337,10 +337,7 @@ class Logbook:
                 A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
             """
             full_day_ = timedelta(hours=8, minutes=0)
-            if timedelta(hours=work_time_val) >= full_day_:
-                case = "overtime"
-            else:
-                case = "undertime"
+            case = "overtime" if timedelta(hours=work_time_val) >= full_day_ else "undertime"
 
             overtime = timedelta(hours=work_time_val) - full_day_
 
