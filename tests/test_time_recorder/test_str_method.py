@@ -203,7 +203,7 @@ def test_str_empty_case_raises_value_error() -> None:
     # Manually set an empty case
     line.case = ""
 
-    with pytest.raises(ValueError, match="Unexpected value for case: . Expected 'overtime' or 'undertime'."):
+    with pytest.raises(ValueError, match=r"Unexpected value for case: . Expected 'overtime' or 'undertime'."):
         str(line)
 
 

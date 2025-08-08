@@ -296,12 +296,12 @@ def test_repr_format_consistency() -> None:
 
         # Should have all required fields
         assert len(parts) >= 8  # At least 8 non-empty parts
-        assert parts[0] != ""  # weekday
-        assert parts[1] != ""  # date
-        assert parts[2] != ""  # start_time
-        assert parts[3] != ""  # end_time
-        assert parts[4] != ""  # lunch_break_duration
-        assert parts[5] != ""  # work_time
-        assert parts[6] != ""  # case
-        assert parts[7] != ""  # overtime
-        assert parts[8] != ""  # timezone
+        assert parts[0]  # != ""  # weekday
+        assert parts[1]  # != ""  # date
+        assert parts[2]  # != ""  # start_time
+        assert parts[3]  # != ""  # end_time
+        assert parts[4]  # != ""  # lunch_break_duration
+        assert parts[5]  # != ""  # work_time
+        assert parts[6]  # != ""  # case
+        assert parts[7]  # != ""  # overtime
+        assert parts[8]  # != ""  # timezone
