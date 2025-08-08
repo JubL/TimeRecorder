@@ -396,14 +396,20 @@ class TimeRecorder:
         overtime_minutes = int(self.overtime.total_seconds() // self.sec_in_min % self.min_in_hour)
         overtime_decimal_representation = round(self.overtime.total_seconds() / self.sec_in_hour, 2)
 
-        work_duration = f"Total work duration: {work_hours} hours and {work_minutes} minutes ({work_hours_decimal_representation})."
-        overtime_amount = f"Total {self.case}: {overtime_hours} hours and {overtime_minutes} minutes."
-
+        title = "\nTime Recorder - Work Hours calculator\n=====================================\n"
+        date = f"📅 Date: {self.weekday}, {self.date}"
+        start_time = f"⏰ Start time: {self.start_time.strftime("%H:%M")}"
+        end_time = f"⏰ End time: {self.end_time.strftime("%H:%M")}"
+        lunch_break_duration = f"🍽️  Lunch break: {int(self.lunch_break_duration.total_seconds() // self.sec_in_min)}m"
+        work_duration = f"⏱️  Work duration: {work_hours}h and {work_minutes}m ({work_hours_decimal_representation}h)"
         color = GREEN if self.case == "overtime" else RED
-        decimal_str = f"Decimal representation of {color}{self.case}{RESET} is {overtime_decimal_representation}."
+        overtime_amount = (
+            f"📈 Status: {color}{self.case}{RESET} {overtime_hours}h and {overtime_minutes}m ({overtime_decimal_representation}h)"
+        )
 
         # Combine all parts
-        return work_duration + "\n" + overtime_amount + "\n" + decimal_str
+        items = [title, date, start_time, end_time, lunch_break_duration, work_duration, overtime_amount]
+        return "\n".join(items)
 
     def print_state(self) -> None:
         """Print the stats of the TimeRecorder object."""

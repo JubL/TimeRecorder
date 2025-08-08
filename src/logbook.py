@@ -640,4 +640,6 @@ class Logbook:
         DataFrame row indices for cleaner formatting.
         """
         df = self.load_logbook()
-        logger.info(df.tail(n).to_string(index=False))
+
+        title = "\nRecent Entries\n===============\n"
+        logger.info(title + df.tail(n).to_string(index=False, header=False))

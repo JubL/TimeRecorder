@@ -23,12 +23,15 @@ def test_str_overtime_case() -> None:
 
     result = str(line)
 
-    assert "Total work duration: 8 hours and 30 minutes (8.5)." in result
-    assert "Total overtime: 0 hours and 30 minutes." in result
+    assert "Time Recorder - Work Hours calculator" in result
+    assert "📅 Date:" in result
+    assert "⏰ Start time: 08:00" in result
+    assert "⏰ End time: 17:30" in result
+    assert "🍽️  Lunch break: 60m" in result
+    assert "⏱️  Work duration: 8h and 30m (8.5h)" in result
+    assert "📈 Status:" in result
     assert "overtime" in result
-    assert "Decimal representation of" in result
-    assert "overtime" in result
-    assert "is 0.5." in result
+    assert "0h and 30m (0.5h)" in result
 
 
 @pytest.mark.fast
@@ -49,12 +52,15 @@ def test_str_undertime_case() -> None:
 
     result = str(line)
 
-    assert "Total work duration: 7 hours and 30 minutes (7.5)." in result
-    assert "Total undertime: -1 hours and 30 minutes." in result
+    assert "Time Recorder - Work Hours calculator" in result
+    assert "📅 Date:" in result
+    assert "⏰ Start time: 08:00" in result
+    assert "⏰ End time: 16:30" in result
+    assert "🍽️  Lunch break: 60m" in result
+    assert "⏱️  Work duration: 7h and 30m (7.5h)" in result
+    assert "📈 Status:" in result
     assert "undertime" in result
-    assert "Decimal representation of" in result
-    assert "undertime" in result
-    assert "is -0.5." in result
+    assert "-1h and 30m (-0.5h)" in result
 
 
 @pytest.mark.fast
@@ -75,12 +81,15 @@ def test_str_exact_8_hours() -> None:
 
     result = str(line)
 
-    assert "Total work duration: 8 hours and 0 minutes (8.0)." in result
-    assert "Total overtime: 0 hours and 0 minutes." in result
+    assert "Time Recorder - Work Hours calculator" in result
+    assert "📅 Date:" in result
+    assert "⏰ Start time: 08:00" in result
+    assert "⏰ End time: 17:00" in result
+    assert "🍽️  Lunch break: 60m" in result
+    assert "⏱️  Work duration: 8h and 0m (8.0h)" in result
+    assert "📈 Status:" in result
     assert "overtime" in result
-    assert "Decimal representation of" in result
-    assert "overtime" in result
-    assert "is 0.0." in result
+    assert "0h and 0m (0.0h)" in result
 
 
 @pytest.mark.fast
@@ -101,12 +110,15 @@ def test_str_negative_overtime() -> None:
 
     result = str(line)
 
-    assert "Total work duration: 6 hours and 0 minutes (6.0)." in result
-    assert "Total undertime: -2 hours and 0 minutes." in result
+    assert "Time Recorder - Work Hours calculator" in result
+    assert "📅 Date:" in result
+    assert "⏰ Start time: 08:00" in result
+    assert "⏰ End time: 15:00" in result
+    assert "🍽️  Lunch break: 60m" in result
+    assert "⏱️  Work duration: 6h and 0m (6.0h)" in result
+    assert "📈 Status:" in result
     assert "undertime" in result
-    assert "Decimal representation of" in result
-    assert "undertime" in result
-    assert "is -2.0." in result
+    assert "-2h and 0m (-2.0h)" in result
 
 
 @pytest.mark.fast
@@ -127,12 +139,15 @@ def test_str_large_overtime() -> None:
 
     result = str(line)
 
-    assert "Total work duration: 10 hours and 0 minutes (10.0)." in result
-    assert "Total overtime: 2 hours and 0 minutes." in result
+    assert "Time Recorder - Work Hours calculator" in result
+    assert "📅 Date:" in result
+    assert "⏰ Start time: 08:00" in result
+    assert "⏰ End time: 19:00" in result
+    assert "🍽️  Lunch break: 60m" in result
+    assert "⏱️  Work duration: 10h and 0m (10.0h)" in result
+    assert "📈 Status:" in result
     assert "overtime" in result
-    assert "Decimal representation of" in result
-    assert "overtime" in result
-    assert "is 2.0." in result
+    assert "2h and 0m (2.0h)" in result
 
 
 @pytest.mark.fast
@@ -153,12 +168,15 @@ def test_str_partial_hours_and_minutes() -> None:
 
     result = str(line)
 
-    assert "Total work duration: 7 hours and 45 minutes (7.75)." in result
-    assert "Total undertime: -1 hours and 45 minutes." in result
+    assert "Time Recorder - Work Hours calculator" in result
+    assert "📅 Date:" in result
+    assert "⏰ Start time: 08:00" in result
+    assert "⏰ End time: 16:45" in result
+    assert "🍽️  Lunch break: 60m" in result
+    assert "⏱️  Work duration: 7h and 45m (7.75h)" in result
+    assert "📈 Status:" in result
     assert "undertime" in result
-    assert "Decimal representation of" in result
-    assert "undertime" in result
-    assert "is -0.25." in result
+    assert "-1h and 45m (-0.25h)" in result
 
 
 @pytest.mark.fast
@@ -248,24 +266,38 @@ def test_str_format_structure() -> None:
     result = str(line)
     lines = result.split("\n")
 
-    # Should have exactly 3 lines
-    assert len(lines) == 3
+    # Should have exactly 10 lines (empty, title, separator, empty, date, start, end, lunch, work duration, status)
+    assert len(lines) == 10
 
-    # First line should contain work duration
-    assert "Total work duration:" in lines[0]
-    assert "hours and" in lines[0]
-    assert "minutes" in lines[0]
-    assert "(" in lines[0]
-    assert ")" in lines[0]
+    # First line should be empty
+    assert lines[0] == ""
 
-    # Second line should contain overtime/undertime
-    assert "Total" in lines[1]
-    assert "hours and" in lines[1]
-    assert "minutes" in lines[1]
+    # Second line should contain title
+    assert "Time Recorder - Work Hours calculator" in lines[1]
 
-    # Third line should contain decimal representation
-    assert "Decimal representation of" in lines[2]
-    assert "is" in lines[2]
+    # Third line should contain separator
+    assert "=====================================" in lines[2]
+
+    # Fourth line should be empty
+    assert lines[3] == ""
+
+    # Fifth line should contain date
+    assert "📅 Date:" in lines[4]
+
+    # Sixth line should contain start time
+    assert "⏰ Start time:" in lines[5]
+
+    # Seventh line should contain end time
+    assert "⏰ End time:" in lines[6]
+
+    # Eighth line should contain lunch break
+    assert "🍽️  Lunch break:" in lines[7]
+
+    # Ninth line should contain work duration
+    assert "⏱️  Work duration:" in lines[8]
+
+    # Tenth line should contain status
+    assert "📈 Status:" in lines[9]
 
 
 @pytest.mark.fast
@@ -287,11 +319,11 @@ def test_str_decimal_precision() -> None:
     result = str(line)
 
     # Should show 7.33 hours (7 hours 20 minutes = 7.33 hours)
-    assert "Total work duration: 7 hours and 20 minutes (7.33)." in result
-    # Should show -0.67 hours undertime (with ANSI codes)
-    assert "Decimal representation of" in result
+    assert "⏱️  Work duration: 7h and 20m (7.33h)" in result
+    # Should show -0.67 hours undertime
+    assert "📈 Status:" in result
     assert "undertime" in result
-    assert "is -0.67." in result
+    assert "-1h and 20m (-0.67h)" in result
 
 
 @pytest.mark.fast
@@ -312,12 +344,10 @@ def test_str_minimal_work_time() -> None:
 
     result = str(line)
 
-    assert "Total work duration: 0 hours and 1 minutes (0.02)." in result
-    assert "Total undertime: -8 hours and 1 minutes." in result
+    assert "⏱️  Work duration: 0h and 1m (0.02h)" in result
+    assert "📈 Status:" in result
     assert "undertime" in result
-    assert "Decimal representation of" in result
-    assert "undertime" in result
-    assert "is -7.98." in result
+    assert "-8h and 1m (-7.98h)" in result
 
 
 @pytest.mark.fast

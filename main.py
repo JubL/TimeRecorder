@@ -60,6 +60,7 @@ def main() -> None:
     # TODO: make the load and save methods choose from a ariety of submethods, e.g. load_csv, load_parquet, etc
 
     # TODO: the output is diffrent from what is presented in README.md
+    # TODO: modify the output from tail() to match what's in the README.md
 
     args = ap.run_arg_parser()
 

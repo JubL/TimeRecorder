@@ -18,7 +18,9 @@ def test_tail_default_parameter(logbook: Logbook, sample_logbook_df: pd.DataFram
         mock_logger.info.assert_called_once()
 
         logged_output = mock_logger.info.call_args[0][0]
-        # Should contain last 4 rows (default)
+        # Should contain title, separator, and last 4 rows (default)
+        assert "Recent Entries" in logged_output
+        assert "===============" in logged_output
         assert "Wed" in logged_output
         assert "Thu" in logged_output
         assert "Fri" in logged_output
@@ -35,8 +37,9 @@ def test_tail_custom_parameter(logbook: Logbook, sample_logbook_df: pd.DataFrame
         mock_logger.info.assert_called_once()
 
         logged_output = mock_logger.info.call_args[0][0]
-        # Should contain only last 2 rows
-        assert len(logged_output.split("\n")) == 3  # 2 rows of content plus one row for the header
+        # Should contain title, separator, and last 2 rows
+        assert "Recent Entries" in logged_output
+        assert "===============" in logged_output
         assert "Thu" in logged_output
         assert "Fri" in logged_output
         assert "Wed" not in logged_output
@@ -55,7 +58,8 @@ def test_tail_empty_dataframe(logbook: Logbook) -> None:
         mock_logger.info.assert_called_once()
 
         logged_output = mock_logger.info.call_args[0][0]
-        assert not logged_output.strip() or "weekday" in logged_output
+        assert "Recent Entries" in logged_output
+        assert "===============" in logged_output
 
 
 @pytest.mark.fast
@@ -68,7 +72,9 @@ def test_tail_n_larger_than_dataframe(logbook: Logbook, sample_logbook_df: pd.Da
         mock_logger.info.assert_called_once()
 
         logged_output = mock_logger.info.call_args[0][0]
-        # Should contain all rows since n > dataframe size
+        # Should contain title, separator, and all rows since n > dataframe size
+        assert "Recent Entries" in logged_output
+        assert "===============" in logged_output
         assert "Mon" in logged_output
         assert "Tue" in logged_output
         assert "Wed" in logged_output

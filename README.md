@@ -120,7 +120,7 @@ TimeRecorder - Work Hours Calculator
 ⏰ End Time: 17:25:00
 🍽️ Lunch Break: 60 minutes
 ⏱️ Work Duration: 9h 25m
-📈 Status: OVERTIME (+1h 25m)
+📈 Status: overtime (+1h 25m)
 
 Weekly Summary:
 ==============
@@ -131,9 +131,9 @@ Overtime: +2h 15m
 
 Recent Entries:
 ===============
-Mon 25.07.2025 | 07:00-17:25 | 9h 25m | OVERTIME (+1h 25m)
-Fri 22.07.2025 | 08:00-17:00 | 8h 0m  | ON TIME
-Thu 21.07.2025 | 07:30-16:30 | 8h 0m  | ON TIME
+Mon 25.07.2025 | 07:00-17:25 | 9h 25m | overtime (+1h 25m)
+Fri 22.07.2025 | 08:00-17:00 | 8h 0m  | overtime
+Thu 21.07.2025 | 07:45-16:30 | 7h 45m | undertime (-15m)
 ```
 
 ## 🛠️ Development
@@ -150,7 +150,7 @@ TimeRecorder/
 │   ├── __init__.py         # Package initialization
 │   ├── arg_parser.py       # Command line argument parsing
 │   ├── config_utils.py     # Configuration utilities
-│   ├── logbook.py          # CSV logbook management
+│   ├── logbook.py          # Logbook management
 │   ├── logging_utils.py    # Logging configuration
 │   └── time_recorder.py    # Core time tracking functionality
 └── tests/                  # Test suite
@@ -170,6 +170,9 @@ pytest
 # Run specific test categories
 pytest -m "unit"
 pytest -m "integration"
+
+# Run one specific test
+pytest .\tests\test_logbook\test_load_logbook.py
 ```
 
 ### Code Quality
