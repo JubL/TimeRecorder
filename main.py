@@ -29,14 +29,11 @@ def main() -> None:
 
     # TODO: introduce integration tests
 
-    # TODO: reactivate ruffs timezone checks
     # TODO: timezoned were added to the logged time, but they do not show up in the log yet (see line 377 in timerecorder.py)
 
     # TODO: visualization of work hours per day, week, month, year
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
-
-    # TODO set up CI/CD workflows on GitHub
 
     # TODO: set up bash completion (https://docs.pytest.org/en/stable/how-to/bash-completion.html)
 
@@ -61,6 +58,8 @@ def main() -> None:
     # TODO: add the option to save and load the timereport_logbook in different formats, e.g. csv, json, yaml, parquet, etc.
     # TODO: add a method to determine the file format
     # TODO: make the load and save methods choose from a ariety of submethods, e.g. load_csv, load_parquet, etc
+
+    # TODO: the output is diffrent from what is presented in README.md
 
     args = ap.run_arg_parser()
 
