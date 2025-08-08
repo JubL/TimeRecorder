@@ -359,7 +359,7 @@ class TimeRecorder:
             f"{round(self.work_time.total_seconds() / self.sec_in_hour, 2)};"
             f"{self.case};"
             f"{round(self.overtime.total_seconds() / self.sec_in_hour, 2)};"
-            f"{self.timezone};"
+            f"{self.timezone}"
         )
 
     def __str__(self) -> str:
