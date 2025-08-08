@@ -67,11 +67,6 @@ class TimeRecorderArgumentParser:
         -------
         argparse.Namespace
             Parsed command line arguments.
-
-        Raises
-        ------
-        SystemExit
-            If argument validation fails.
         """
         args = self.parser.parse_args()
         self._validate_time_arguments(args)
@@ -86,11 +81,6 @@ class TimeRecorderArgumentParser:
         ----------
         args : argparse.Namespace
             Parsed command line arguments.
-
-        Raises
-        ------
-        SystemExit
-            If validation fails with appropriate error message.
         """
         # Check if any time specification method is provided
         has_boot = args.boot
@@ -139,7 +129,14 @@ class TimeRecorderArgumentParser:
 
     @staticmethod
     def get_project_version() -> str:
-        """Get the project version from the pyproject.toml file."""
+        """
+        Get the project version from the pyproject.toml file.
+
+        Returns
+        -------
+        str
+            The project version.
+        """
         with pathlib.Path("pyproject.toml").open(encoding="utf-8") as file:
             for line in file:
                 if "version" in line:
@@ -155,11 +152,6 @@ def run_arg_parser() -> argparse.Namespace:
     -------
     argparse.Namespace
         Parsed command line arguments.
-
-    Raises
-    ------
-    SystemExit
-        If argument validation fails.
     """
     parser = TimeRecorderArgumentParser()
     return parser.parse_args()

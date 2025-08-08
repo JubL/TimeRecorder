@@ -214,6 +214,11 @@ def create_default_config(config_path: pathlib.Path) -> None:
     ----------
     config_path : pathlib.Path
         Path where the default configuration file should be created.
+
+    Raises
+    ------
+    yaml.YAMLError
+        If the YAML file is malformed.
     """
     if config_path.exists():
         msg = f"Configuration file already exists: {config_path}"

@@ -122,12 +122,12 @@ class Logbook:
 
         Raises
         ------
+        pandas.errors.EmptyDataError
+            If the logbook file is empty and cannot be processed.
+        pandas.errors.ParserError
+            If the logbook file has parsing errors.
         FileNotFoundError
             If the logbook file does not exist and cannot be created.
-        pd.errors.EmptyDataError
-            If the logbook file is empty and cannot be processed.
-        pd.errors.ParserError
-            If the logbook file has parsing errors.
         KeyError
             If the logbook file is missing required columns.
         ValueError
@@ -193,6 +193,13 @@ class Logbook:
         ----------
         df : pd.DataFrame
             The DataFrame to be saved.
+
+        Raises
+        ------
+        PermissionError
+            If the logbook file cannot be saved due to permission issues.
+        OSError
+            If the logbook file cannot be saved due to OS errors.
 
         Notes
         -----
@@ -343,7 +350,19 @@ class Logbook:
             """
             Process work time from a DataFrame row and return case and overtime.
 
-            Returns empty strings if work_time is missing or empty.
+            Parameters
+            ----------
+            row : pd.Series
+                The row to process.
+
+            Returns
+            -------
+            tuple[str, float | str]
+                A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
+
+            Notes
+            -----
+            - Returns empty strings if work_time is missing or empty.
             """
             if not row["work_time"] or pd.isna(row["work_time"]):
                 return "", ""
@@ -456,7 +475,8 @@ class Logbook:
         return missing_days
 
     def add_missing_days_to_logbook(self, missing_days: list[tuple[datetime, datetime]]) -> None:
-        """Add missing Saturdays, Sundays, and holidays to the logbook DataFrame for specified date ranges.
+        """
+        Add missing Saturdays, Sundays, and holidays to the logbook DataFrame for specified date ranges.
 
         For each tuple of (start_date, end_date) in `missing_days`, this method generates all dates between the two (excluding the
         endpoints), and checks if each date is missing from the logbook. If a date is a holiday (as defined in `holidays_de_he`),
@@ -472,9 +492,10 @@ class Logbook:
         log_path: pathlib.Path
             Path to the logbook file where the updated DataFrame will be saved.
 
-        Returns
-        -------
-        None
+        Notes
+        -----
+        - The logbook DataFrame is updated in place.
+        - The logbook DataFrame is sorted by date.
         """
         df = self.load_logbook()
         # Convert 'date' column to string format for comparison
@@ -544,6 +565,11 @@ class Logbook:
 
         This method reads the logbook file containing daily work times, computes the average work hours per day
         (considering only days with recorded work time), and extrapolates this average to a standard 5-day work week.
+
+        Raises
+        ------
+        ValueError
+            If the work_time column contains non-numeric values.
 
         Notes
         -----

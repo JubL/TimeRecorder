@@ -133,6 +133,11 @@ class TimeRecorder:
             tz : str
                 Timezone identifier.
 
+            Raises
+            ------
+            ValueError
+                If the datetime string cannot be parsed.
+
             Returns
             -------
             datetime
@@ -410,12 +415,5 @@ class TimeRecorder:
         return work_duration + "\n" + overtime_amount + "\n" + decimal_str
 
     def print_state(self) -> None:
-        """
-        Get the stats of the TimeRecorder object.
-
-        Returns
-        -------
-        str
-            A string containing the stats of the TimeRecorder object.
-        """
+        """Print the stats of the TimeRecorder object."""
         logger.info(self)

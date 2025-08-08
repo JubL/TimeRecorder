@@ -29,7 +29,19 @@ class LevelSpecificFormatter(logging.Formatter):
         }
 
     def format(self, record: logging.LogRecord) -> str:
-        """Format log record using level-specific formatter."""
+        """
+        Format log record using level-specific formatter.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            The log record to format.
+
+        Returns
+        -------
+        str
+            The formatted log message.
+        """
         formatter = self.formatters.get(record.levelno, self.formatters[logging.INFO])
         return formatter.format(record)
 
