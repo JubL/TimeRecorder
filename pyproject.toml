@@ -32,6 +32,7 @@ indent-width = 4  # use 4 spaces for indentation
 [tool.ruff.lint.per-file-ignores]
 # ignore some checks in test cases
 "test_*.py" = [
+    "DTZ",      # flake8-datetimez
     "D100",     # undocumented-public-module
     "D103",     # undocumented-public-function
     "INP001",   # implicit-namespace-package
@@ -62,7 +63,7 @@ select = [
     "C90",      # mccabe
     "COM",      # flake8-commas
     "D",        # pydocstyle
-    #"DTZ",      # flake8-datetimez
+    "DTZ",      # flake8-datetimez
     "E",        # pycodestyle Error
     "ERA",      # eradicate
     "EXE",      # flake8-executable

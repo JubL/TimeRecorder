@@ -154,10 +154,7 @@ class TimeRecorder:
                 time += ":00"
 
             try:
-                # Parse as naive datetime first
-                naive_dt = datetime.strptime(date + " " + time, full_format)
-                # Make it timezone-aware
-                return naive_dt.replace(tzinfo=ZoneInfo(tz))
+                return datetime.strptime(date + " " + time, full_format).replace(tzinfo=ZoneInfo(tz))
             except ValueError as e:
                 msg = f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}"
                 raise ValueError(msg) from e
@@ -220,11 +217,10 @@ class TimeRecorder:
         # Adjust end time to match boot time date while keeping original time
         try:
             # Parse end time in the same timezone
-            naive_end_time = datetime.strptime(
+            self.end_time = datetime.strptime(
                 self.start_time.date().strftime(self.date_format) + " " + self.end_time.strftime(self.time_format),
                 self.full_format,
-            )
-            self.end_time = naive_end_time.replace(tzinfo=ZoneInfo(self.timezone))
+            ).replace(tzinfo=ZoneInfo(self.timezone))
         except ValueError as e:
             msg = f"{RED}Failed to adjust end time: {e}{RESET}"
             raise BootTimeError(msg) from e
@@ -234,7 +230,7 @@ class TimeRecorder:
 
         # reset the date and the weekday
         self.date = self.start_time.date().strftime(self.date_format)
-        self.weekday = datetime.strptime(self.date, self.date_format).strftime("%a")
+        self.weekday = datetime.strptime(self.date, self.date_format).replace(tzinfo=ZoneInfo(self.timezone)).strftime("%a")
 
     def evaluate_work_hours(self) -> None:
         """

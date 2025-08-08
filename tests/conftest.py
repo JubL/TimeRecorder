@@ -20,7 +20,7 @@ def relative_precision() -> float:
 @pytest.fixture
 def fake_boot_timestamp() -> float:
     """Fixture to provide a fake boot timestamp."""
-    return datetime(2025, 4, 25, 6, 30, 0).timestamp()
+    return datetime(2025, 4, 25, 6, 30, 0, tzinfo=ZoneInfo("Europe/Berlin")).timestamp()
 
 
 @pytest.fixture
