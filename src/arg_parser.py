@@ -30,13 +30,18 @@ class TimeRecorderArgumentParser:
 
     def __init__(self) -> None:
         """Initialize the argument parser with all required arguments."""
-        self.parser = argparse.ArgumentParser(description="Time recorder")
+        self.parser = argparse.ArgumentParser(
+            description="""
+Time recorder
+A powerful and flexible Python tool for tracking and managing work hours.""",
+            formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=105, max_help_position=45),
+        )
         self._setup_arguments()
 
     def _setup_arguments(self) -> None:
         """Set up all command line arguments."""
         # Time specification arguments (intentionally not mutually exclusive)
-        self.parser.add_argument("--boot", action="store_true", help="Use system boot time")
+        self.parser.add_argument("--boot", action=argparse.BooleanOptionalAction, help="Use system boot time (default behavior)")
         self.parser.add_argument("--date", type=str, help="Date (DD.MM.YYYY)")
         self.parser.add_argument("--start", type=str, help="Start time (HH:MM:SS)")
 
@@ -47,9 +52,13 @@ class TimeRecorderArgumentParser:
 
         # Processing control arguments
         self.parser.add_argument("--log", action="store_true", help="Log the results")
-        self.parser.add_argument("--no_squash", action="store_false", help="Do not squash the logbook")
-        self.parser.add_argument("--no_missing", action="store_false", help="Do not add missing days to the logbook")
-        self.parser.add_argument("--no_weekly", action="store_false", help="Do not calculate weekly hours")
+        self.parser.add_argument("--squash", action=argparse.BooleanOptionalAction, help="Squash the logbook (default behavior)")
+        self.parser.add_argument(
+            "--add_missing",
+            action=argparse.BooleanOptionalAction,
+            help="Add missing days to the logbook (default behavior)",
+        )
+        self.parser.add_argument("--weekly", action=argparse.BooleanOptionalAction, help="Calculate weekly hours (default behavior)")
         self.parser.add_argument("--tail", type=int, default=4, help="Show the last n lines of the logbook. Default: 4")
 
         # Configuration arguments
