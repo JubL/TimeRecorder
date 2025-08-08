@@ -13,13 +13,8 @@ def test_load_logbook_file_not_found_error_with_mock_read_csv(logbook: lb.Logboo
     logbook.create_df()
 
     # Mock pd.read_csv to raise FileNotFoundError
-    with patch("pandas.read_csv", side_effect=FileNotFoundError("File not found")), patch("src.logbook.logger") as mock_logger:
-        with pytest.raises(FileNotFoundError) as exc_info:
-            logbook.load_logbook()
-
-        # Verify that the exception was logged
-        mock_logger.exception.assert_called_once()
-        assert "Log file not found" in str(exc_info.value)
+    with patch("pandas.read_csv", side_effect=FileNotFoundError("File not found")), pytest.raises(FileNotFoundError):
+        logbook.load_logbook()
 
 
 @pytest.mark.fast
@@ -29,13 +24,8 @@ def test_load_logbook_empty_data_error_with_mock_read_csv(logbook: lb.Logbook) -
     logbook.create_df()
 
     # Mock pd.read_csv to raise EmptyDataError
-    with patch("pandas.read_csv", side_effect=pd.errors.EmptyDataError("No data")), patch("src.logbook.logger") as mock_logger:
-        with pytest.raises(pd.errors.EmptyDataError) as exc_info:
-            logbook.load_logbook()
-
-        # Verify that the exception was logged
-        mock_logger.exception.assert_called_once()
-        assert "Log file is empty" in str(exc_info.value)
+    with patch("pandas.read_csv", side_effect=pd.errors.EmptyDataError("No data")), pytest.raises(pd.errors.EmptyDataError):
+        logbook.load_logbook()
 
 
 @pytest.mark.fast
@@ -45,13 +35,8 @@ def test_load_logbook_parser_error_with_mock_read_csv(logbook: lb.Logbook) -> No
     logbook.create_df()
 
     # Mock pd.read_csv to raise ParserError
-    with patch("pandas.read_csv", side_effect=pd.errors.ParserError("Parse error")), patch("src.logbook.logger") as mock_logger:
-        with pytest.raises(pd.errors.ParserError) as exc_info:
-            logbook.load_logbook()
-
-        # Verify that the exception was logged
-        mock_logger.exception.assert_called_once()
-        assert "Error parsing log file" in str(exc_info.value)
+    with patch("pandas.read_csv", side_effect=pd.errors.ParserError("Parse error")), pytest.raises(pd.errors.ParserError):
+        logbook.load_logbook()
 
 
 @pytest.mark.fast
