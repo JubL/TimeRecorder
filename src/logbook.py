@@ -642,4 +642,5 @@ class Logbook:
         df = self.load_logbook()
 
         title = "\nRecent Entries\n===============\n"
-        logger.info(title + df.tail(n).to_string(index=False, header=False))
+        msg = title + df.tail(n).to_string(index=False, header=False)
+        logger.info(msg)

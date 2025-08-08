@@ -270,7 +270,7 @@ def test_str_format_structure() -> None:
     assert len(lines) == 10
 
     # First line should be empty
-    assert lines[0] == ""
+    assert not lines[0]
 
     # Second line should contain title
     assert "Time Recorder - Work Hours calculator" in lines[1]
@@ -279,7 +279,7 @@ def test_str_format_structure() -> None:
     assert "=====================================" in lines[2]
 
     # Fourth line should be empty
-    assert lines[3] == ""
+    assert not lines[3]
 
     # Fifth line should contain date
     assert "📅 Date:" in lines[4]
