@@ -154,9 +154,8 @@ class TimeRecorder:
                 # Make it timezone-aware
                 return naive_dt.replace(tzinfo=ZoneInfo(tz))
             except ValueError as e:
-                raise ValueError(
-                    f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}",
-                ) from e
+                msg = f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}"
+                raise ValueError(msg) from e
 
         self.full_format = data["full_format"]
         self.date_format, self.time_format = self.full_format.split(" ")
@@ -203,13 +202,15 @@ class TimeRecorder:
             # Get system boot time
             boot_timestamp = psutil.boot_time()
         except psutil.Error as e:
-            raise BootTimeError(f"{RED}Error accessing system information: {e}{RESET}") from e
+            msg = f"{RED}Error accessing system information: {e}{RESET}"
+            raise BootTimeError(msg) from e
 
         # Update start time to boot time (convert to timezone-aware)
         self.start_time = datetime.fromtimestamp(boot_timestamp, tz=ZoneInfo(self.timezone))
 
         # get the function name and additional debug information
-        logger.debug(f"Updated start_time to boot time: {self.start_time}")
+        msg = f"Updated start_time to boot time: {self.start_time}"
+        logger.debug(msg)
 
         # Adjust end time to match boot time date while keeping original time
         try:
@@ -220,7 +221,8 @@ class TimeRecorder:
             )
             self.end_time = naive_end_time.replace(tzinfo=ZoneInfo(self.timezone))
         except ValueError as e:
-            raise BootTimeError(f"{RED}Failed to adjust end time: {e}{RESET}") from e
+            msg = f"{RED}Failed to adjust end time: {e}{RESET}"
+            raise BootTimeError(msg) from e
 
         # Recalculate work hours
         self.evaluate_work_hours()
@@ -249,8 +251,8 @@ class TimeRecorder:
         self.work_time = self.calculate_work_duration()
         self.case, self.overtime = self.calculate_overtime(self.work_time)
 
-        logger.debug(f"Calculated work_time: {self.work_time}")
-        logger.debug(f"Case: {self.case}, Overtime: {self.overtime}")
+        msg = f"Calculated work_time: {self.work_time}, Case: {self.case}, Overtime: {self.overtime}"
+        logger.debug(msg)
 
     def calculate_work_duration(self) -> timedelta:
         """
@@ -270,14 +272,12 @@ class TimeRecorder:
         """
         # Validate that start time is not after end time
         if self.start_time >= self.end_time:
-            raise ValueError(
-                f"{RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{RESET}",
-            )
+            msg = f"{RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{RESET}"
+            raise ValueError(msg)
 
         if self.lunch_break_duration < timedelta(0):
-            raise ValueError(
-                f"{RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{RESET}",
-            )
+            msg = f"{RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{RESET}"
+            raise ValueError(msg)
 
         # Calculate the total duration between start and end times
         total_duration = self.end_time - self.start_time
@@ -286,9 +286,11 @@ class TimeRecorder:
 
         # Sanity check: work duration must not be negative
         if work_duration <= timedelta(0):
-            raise ValueError(f"{RED}The work duration must be positive. Start time: {self.start_time}, End time: {self.end_time}{RESET}")
+            msg = f"{RED}The work duration must be positive. Start time: {self.start_time}, End time: {self.end_time}{RESET}"
+            raise ValueError(msg)
 
-        logger.debug(f"Total duration: {total_duration}, Lunch break: {self.lunch_break_duration}, Work duration: {work_duration}")
+        msg = f"Total duration: {total_duration}, Lunch break: {self.lunch_break_duration}, Work duration: {work_duration}"
+        logger.debug(msg)
 
         return work_duration
 
@@ -387,7 +389,8 @@ class TimeRecorder:
         """
         # Validate case value
         if self.case not in {"overtime", "undertime"}:
-            raise ValueError(f"{RED}Unexpected value for case: {self.case}. Expected 'overtime' or 'undertime'.{RESET}")
+            msg = f"{RED}Unexpected value for case: {self.case}. Expected 'overtime' or 'undertime'.{RESET}"
+            raise ValueError(msg)
 
         # Build output strings
         work_hours = int(self.work_time.total_seconds() // self.sec_in_hour)

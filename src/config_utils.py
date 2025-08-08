@@ -38,19 +38,23 @@ def load_config(config_path: pathlib.Path) -> dict:
         If the YAML file is malformed.
     """
     if not config_path.exists():
-        raise FileNotFoundError(f"Configuration file not found: {config_path}")
+        msg = f"Configuration file not found: {config_path}"
+        raise FileNotFoundError(msg)
 
     try:
         with config_path.open(encoding="utf-8") as file:
             config = yaml.safe_load(file)
     except yaml.YAMLError:
-        logger.exception(f"Error parsing YAML file {config_path}")
+        msg = f"Error parsing YAML file {config_path}"
+        logger.exception(msg)
         raise
     except Exception:
-        logger.exception(f"Error loading configuration file {config_path}")
+        msg = f"Error loading configuration file {config_path}"
+        logger.exception(msg)
         raise
     else:
-        logger.debug(f"Configuration loaded from {config_path}")
+        msg = f"Configuration loaded from {config_path}"
+        logger.debug(msg)
         return config
 
 
@@ -178,7 +182,8 @@ def validate_config(config: dict) -> bool:
 
     for section in required_sections:
         if section not in config:
-            logger.error(f"Missing required configuration section: {section}")
+            msg = f"Missing required configuration section: {section}"
+            logger.error(msg)
             return False
 
     # Validate time tracking settings
@@ -187,7 +192,8 @@ def validate_config(config: dict) -> bool:
 
     for field in required_time_fields:
         if field not in time_tracking:
-            logger.error(f"Missing required time tracking field: {field}")
+            msg = f"Missing required time tracking field: {field}"
+            logger.error(msg)
             return False
 
     # Validate logging settings
@@ -210,7 +216,8 @@ def create_default_config(config_path: pathlib.Path) -> None:
         Path where the default configuration file should be created.
     """
     if config_path.exists():
-        logger.debug(f"Configuration file already exists: {config_path}")
+        msg = f"Configuration file already exists: {config_path}"
+        logger.debug(msg)
         return
 
     default_config: dict = {
@@ -250,7 +257,8 @@ def create_default_config(config_path: pathlib.Path) -> None:
     try:
         with config_path.open("w", encoding="utf-8") as file:
             yaml.dump(default_config, file, default_flow_style=False, sort_keys=False)
-        logger.debug(f"Default configuration file created: {config_path}")
+        msg = f"Default configuration file created: {config_path}"
+        logger.debug(msg)
     except yaml.YAMLError:
         logger.exception("Error creating default configuration file")
         raise

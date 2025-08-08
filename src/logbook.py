@@ -145,26 +145,29 @@ class Logbook:
         try:
             # Read CSV without dtype to handle empty strings properly
             df = pd.read_csv(self.log_path, sep=";", keep_default_na=False, encoding="utf-8")
-            logger.debug(f"Read logbook from {self.log_path}")
+            msg = f"Read logbook from {self.log_path}"
+            logger.debug(msg)
         except pd.errors.EmptyDataError as e:
-            logger.exception(f"{RED}Log file is empty: {self.log_path}{RESET}")
-            raise pd.errors.EmptyDataError(f"Log file is empty: {self.log_path}") from e
+            msg = f"{RED}Log file is empty: {self.log_path}{RESET}"
+            raise pd.errors.EmptyDataError(msg) from e
         except pd.errors.ParserError as e:
-            logger.exception(f"{RED}Error parsing log file{RESET}")
-            raise pd.errors.ParserError(f"Error parsing log file: {e}") from e
+            msg = f"{RED}Error parsing log file{RESET}"
+            raise pd.errors.ParserError(msg) from e
         except FileNotFoundError as e:
-            logger.exception(f"{RED}Log file not found: {self.log_path}{RESET}")
-            raise FileNotFoundError(f"Log file not found: {self.log_path}") from e
+            msg = f"{RED}Log file not found: {self.log_path}{RESET}"
+            raise FileNotFoundError(msg) from e
 
         # sanity checks
         # make sure all required columns are present
         required_columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         if not all(col in df.columns for col in required_columns):
-            raise KeyError(f"Log file is missing required columns: {required_columns}.")
+            msg = f"Log file is missing required columns: {required_columns}."
+            raise KeyError(msg)
 
         # count the number of columns
         if len(df.columns) != len(required_columns):
-            raise ValueError(f"{RED}Log file has an unexpected number of columns: {len(df.columns)}. Expected 8 columns.{RESET}")
+            msg = f"{RED}Log file has an unexpected number of columns: {len(df.columns)}. Expected 8 columns.{RESET}"
+            raise ValueError(msg)
 
         # Convert columns to their expected types after validation
         df["weekday"] = df["weekday"].astype("string")
@@ -178,7 +181,8 @@ class Logbook:
 
         # case is one of three values
         if not all(df["case"].isin(["overtime", "undertime", ""])):
-            raise ValueError(f"{RED}Log file has invalid case values: {df['case'].unique()}.{RESET}")  # TODO add test for this
+            msg = f"{RED}Log file has invalid case values: {df['case'].unique()}.{RESET}"
+            raise ValueError(msg)  # TODO: add test for this
 
         return df
 
@@ -200,11 +204,14 @@ class Logbook:
             df["date"] = df["date"].dt.strftime(self.date_format)
         try:
             df.to_csv(self.log_path, sep=";", index=False, encoding="utf-8")
-            logger.debug(f"Logbook saved to {self.log_path}")
+            msg = f"Logbook saved to {self.log_path}"
+            logger.debug(msg)
         except PermissionError as e:
-            raise PermissionError(f"Permission denied when saving logbook to {self.log_path}: {e}") from e
+            msg = f"Permission denied when saving logbook to {self.log_path}: {e}"
+            raise PermissionError(msg) from e
         except OSError as e:
-            raise OSError(f"OS error while saving logbook to {self.log_path}: {e}") from e
+            msg = f"OS error while saving logbook to {self.log_path}: {e}"
+            raise OSError(msg) from e
 
     def record_into_df(self, data: dict) -> None:
         """
@@ -294,9 +301,8 @@ class Logbook:
                 # Keep the first occurrence, remove the rest
                 rows_to_remove = row_indices[1:]  # All except the first
 
-                logger.warning(
-                    f"{RED}Removing {len(rows_to_remove)} duplicate(s) at row(s) {rows_to_remove}: {duplicate_dict}{RESET}",
-                )
+                msg = f"{RED}Removing {len(rows_to_remove)} duplicate(s) at row(s) {rows_to_remove}: {duplicate_dict}{RESET}"
+                logger.warning(msg)
 
         # Remove duplicates, keeping the first occurrence
         return df.drop_duplicates(keep="first")
@@ -388,7 +394,8 @@ class Logbook:
 
         # Only log if squashing actually occurred
         if squashing_occurred:
-            logger.info(f"{GREEN}Logbook squashed. {original_count - squashed_count} entries removed.{RESET}")
+            msg = f"{GREEN}Logbook squashed. {original_count - squashed_count} entries removed.{RESET}"
+            logger.info(msg)
 
     def find_and_add_missing_days(self) -> None:
         """Find and add missing holidays and weekend days to the log file.
@@ -430,7 +437,8 @@ class Logbook:
         df = self.load_logbook()
 
         if df.empty:
-            logger.warning(f"{RED}Log file is empty. Cannot add weekend days.{RESET}")
+            msg = f"{RED}Log file is empty. Cannot add weekend days.{RESET}"
+            logger.warning(msg)
             return []
 
         df["date"] = pd.to_datetime(df["date"], format=self.date_format)
@@ -440,10 +448,9 @@ class Logbook:
         missing_days = []
         for i in range(len(df) - 1):
             if (df["date"].iloc[i + 1] - df["date"].iloc[i]).days > 1:
-                logger.warning(
-                    f"{RED}There are missing days in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
-                    f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{RESET}",
-                )
+                msg = f"{RED}There are missing days in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
+                msg += f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{RESET}"
+                logger.warning(msg)
                 missing_days.append((df["date"].iloc[i], df["date"].iloc[i + 1]))
 
         return missing_days
@@ -485,7 +492,8 @@ class Logbook:
                     continue
 
                 if date in holidays_de_he:
-                    logger.info(f"Found a wild {holidays_de_he[date]}.")  # Print the name of the holiday.
+                    msg = f"Found a wild {holidays_de_he[date]}."  # Print the name of the holiday.
+                    logger.info(msg)
                     df.loc[len(df)] = {
                         "weekday": date.strftime("%a"),
                         "date": date_str,
@@ -496,7 +504,8 @@ class Logbook:
                         "case": "",
                         "overtime": "",
                     }
-                    logger.info(f"Added missing holiday on {date_str} - {holidays_de_he[date]}")
+                    msg = f"Added missing holiday on {date_str} - {holidays_de_he[date]}"
+                    logger.info(msg)
 
                 if date.weekday() == saturday and not any(df["date"] == date_str):
                     df.loc[len(df)] = {
@@ -509,7 +518,8 @@ class Logbook:
                         "case": "",
                         "overtime": "",
                     }
-                    logger.info(f"Added missing Saturday on {date_str}")
+                    msg = f"Added missing Saturday on {date_str}"
+                    logger.info(msg)
                 elif date.weekday() == sunday and not any(df["date"] == date_str):
                     df.loc[len(df)] = {
                         "weekday": "Sun",
@@ -521,7 +531,8 @@ class Logbook:
                         "case": "",
                         "overtime": "",
                     }
-                    logger.info(f"Added missing Sunday on {date_str}")
+                    msg = f"Added missing Sunday on {date_str}"
+                    logger.info(msg)
 
         # Sort and save the updated DataFrame back to the log file
         df = df.sort_values(by="date", key=lambda x: pd.to_datetime(x, format=self.date_format))
@@ -553,14 +564,16 @@ class Logbook:
 
             # Check if there are any NaN values (which indicate conversion failures)
             if df["work_time"].isna().any():
-                raise ValueError("Non-numeric work_time values found")
+                msg = "Non-numeric work_time values found"
+                raise ValueError(msg)
 
             # Then convert to timedelta (numeric values will be treated as hours)
             df["work_time"] = pd.to_timedelta(df["work_time"], unit="h")
 
             weekly_hours = df["work_time"].sum().total_seconds() / self.sec_in_hour
             num_days = df[df["work_time"] > pd.Timedelta(0)]["date"].nunique()
-            logger.debug(f"Weekly hours: {weekly_hours}, Number of days: {num_days}")
+            msg = f"Weekly hours: {weekly_hours}, Number of days: {num_days}"
+            logger.debug(msg)
             if num_days == 0:
                 logger.warning("No work days found in the log file.")
             else:
@@ -568,10 +581,12 @@ class Logbook:
                 weekly_hours *= 5  # assuming a 5-day work week
                 result = round(weekly_hours, 2)
         except (ValueError, TypeError):
-            logger.exception(f"{RED}Error converting 'work_time' to timedelta{RESET}")
+            msg = f"{RED}Error converting 'work_time' to timedelta{RESET}"
+            logger.exception(msg)
             result = 0.0
 
-        logger.info(f"Average weekly hours: {result} hours")
+        msg = f"Average weekly hours: {result} hours"
+        logger.info(msg)
 
     def get_path(self) -> pathlib.Path:
         """
