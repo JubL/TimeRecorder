@@ -256,12 +256,11 @@ def test_repr_complex_minutes() -> None:
 
 
 @pytest.mark.fast
-def test_repr_format_consistency() -> None:
-    """Test that __repr__ format is consistent across different scenarios."""
-    # Test multiple scenarios to ensure format consistency
-    scenarios = [
-        {
-            "data": {
+@pytest.mark.parametrize(
+    ("test_data", "expected_parts"),
+    [
+        (
+            {
                 "date": "24.04.2025",
                 "start_time": "08:00",
                 "end_time": "17:00",
@@ -270,10 +269,10 @@ def test_repr_format_consistency() -> None:
                 "timezone": "Europe/Berlin",
                 "full_format": "%d.%m.%Y %H:%M:%S",
             },
-            "expected_parts": 9,
-        },
-        {
-            "data": {
+            9,
+        ),
+        (
+            {
                 "date": "15.03.2025",
                 "start_time": "09:00",
                 "end_time": "18:00",
@@ -282,26 +281,39 @@ def test_repr_format_consistency() -> None:
                 "timezone": "America/New_York",
                 "full_format": "%d.%m.%Y %H:%M:%S",
             },
-            "expected_parts": 9,
-        },
-    ]
+            9,
+        ),
+        (
+            {
+                "date": "01.01.2025",
+                "start_time": "07:30",
+                "end_time": "16:45",
+                "end_now": False,
+                "lunch_break_duration": 45,
+                "timezone": "Asia/Tokyo",
+                "full_format": "%d.%m.%Y %H:%M:%S",
+            },
+            9,
+        ),
+    ],
+)
+def test_repr_format_consistency(test_data: dict, expected_parts: int) -> None:
+    """Test that __repr__ format is consistent across different scenarios."""
+    line = tr.TimeRecorder(test_data)
+    result = repr(line)
+    parts = result.split(";")
 
-    for scenario in scenarios:
-        line = tr.TimeRecorder(scenario["data"])
-        result = repr(line)
-        parts = result.split(";")
+    # Should always have the same number of parts
+    assert len(parts) == expected_parts
 
-        # Should always have the same number of parts
-        assert len(parts) == scenario["expected_parts"]
-
-        # Should have all required fields
-        assert len(parts) >= 8  # At least 8 non-empty parts
-        assert parts[0]  # != ""  # weekday
-        assert parts[1]  # != ""  # date
-        assert parts[2]  # != ""  # start_time
-        assert parts[3]  # != ""  # end_time
-        assert parts[4]  # != ""  # lunch_break_duration
-        assert parts[5]  # != ""  # work_time
-        assert parts[6]  # != ""  # case
-        assert parts[7]  # != ""  # overtime
-        assert parts[8]  # != ""  # timezone
+    # Should have all required fields
+    assert len(parts) >= 8  # At least 8 non-empty parts
+    assert parts[0]  # weekday
+    assert parts[1]  # date
+    assert parts[2]  # start_time
+    assert parts[3]  # end_time
+    assert parts[4]  # lunch_break_duration
+    assert parts[5]  # work_time
+    assert parts[6]  # case
+    assert parts[7]  # overtime
+    assert parts[8]  # timezone
