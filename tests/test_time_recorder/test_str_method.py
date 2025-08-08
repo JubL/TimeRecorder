@@ -224,7 +224,7 @@ def test_str_none_case_raises_value_error() -> None:
     )
 
     # Manually set None case
-    line.case = None
+    line.case = "None"
 
     with pytest.raises(ValueError, match="Unexpected value for case: None"):
         str(line)
