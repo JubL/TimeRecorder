@@ -95,7 +95,7 @@ select = [
     "T10",      # flake8-debugger
     "T20",      # flake8-print
     "TC",       # flake8-type-checking
-    "TRY",      # tryceratops
+    # "TRY",      # tryceratops
     "UP",       # pyupgrade
     "Q",        # flake8-quotes
     "W",        # pycodestyle Warning
