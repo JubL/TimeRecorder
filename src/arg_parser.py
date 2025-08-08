@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Argument parser module for the time_recorder project.
 
