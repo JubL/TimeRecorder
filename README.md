@@ -142,20 +142,23 @@ Thu 21.07.2025 | 07:30-16:30 | 8h 0m  | ON TIME
 
 ```
 TimeRecorder/
-├── main.py                # Main application entry point
-├── config.yaml            # Configuration file (auto-generated)
-├── src/                   # Source code
-│   ├── arg_parser.py      # Command line argument parsing
-│   ├── config_utils.py    # Configuration utilities
-│   ├── logbook.py         # CSV logbook management
-│   ├── logging_utils.py   # Logging configuration
-│   └── time_recorder.py   # Core time tracking functionality
-├── tests/                 # Test suite
-│   ├── test_config_utils/
-│   ├── test_logbook/
-│   ├── test_logging_utils/
-│   └── test_time_recorder/
-└── pyproject.toml         # Project configuration
+├── main.py                 # Main application entry point
+├── config.yaml             # Configuration file (auto-generated)
+├── CONFIGURATION.md        # Detailed configuration documentation
+├── pyproject.toml          # Project configuration and dependencies
+├── src/                    # Source code
+│   ├── __init__.py         # Package initialization
+│   ├── arg_parser.py       # Command line argument parsing
+│   ├── config_utils.py     # Configuration utilities
+│   ├── logbook.py          # CSV logbook management
+│   ├── logging_utils.py    # Logging configuration
+│   └── time_recorder.py    # Core time tracking functionality
+└── tests/                  # Test suite
+    ├── conftest.py         # Pytest configuration
+    ├── test_config_utils/  # Configuration utility tests
+    ├── test_logbook/       # Logbook management tests
+    ├── test_logging_utils/ # Logging utility tests
+    └── test_time_recorder/ # Core functionality tests
 ```
 
 ### Running Tests
