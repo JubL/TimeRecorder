@@ -36,8 +36,6 @@ def main() -> None:
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
 
-    # TODO: CLI input should not be mandatory, but if used, just change the values read from the config.yaml
-
     # TODO set up CI/CD workflows on GitHub
 
     # TODO: set up bash completion (https://docs.pytest.org/en/stable/how-to/bash-completion.html)

@@ -69,7 +69,7 @@ select = [
     "EXE",      # flake8-executable
     "F",        # pyflakes
     "FBT",      # flake8-boolean-trap
-    #"FIX",      # flake8-fixme
+    # "FIX",      # flake8-fixme
     "FLY",      # flynt
     "I",        # isort
     "ICN",      # flake8-import-conventions
