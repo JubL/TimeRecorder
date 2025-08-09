@@ -40,9 +40,6 @@ def main() -> None:
 
     # TODO: executing test via the IDE does produce the german names of the holidays, but not when running the tests via pytest.
 
-    # TODO: initialize logbook with its config? no
-    # TODO: put the holidays into the logbook object
-
     # TODO: use log level from config.yaml. put the logger into the main?
     # TODO: use standard_work_hours from config.yaml in the timerecorder object
     # TODO: use work_days from config.yaml in the logbook class
@@ -84,13 +81,14 @@ def main() -> None:
     logger.debug("Configuration loaded successfully")
 
     # Create TimeRecorder object from configuration
-    tr_line = TimeRecorder(time_recorder_config)
-    logbook = Logbook(log_path=logbook_config["log_path"])
+    tr_line = TimeRecorder(data=time_recorder_config)
+    logbook = Logbook(data=logbook_config)
 
     # Process based on configuration
     if processing_config["use_boot_time"]:
         tr_line.update_boot_time()
-        tr_line.print_state()
+
+    tr_line.print_state()
 
     if processing_config["log_enabled"]:
         tr_dict = tr_line.time_report_line_to_dict()

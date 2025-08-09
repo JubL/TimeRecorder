@@ -47,8 +47,18 @@ def line() -> tr.TimeRecorder:
 
 @pytest.fixture
 def logbook(tmp_path: pathlib.Path) -> lb.Logbook:
-    """Fixture to create a sample Logbook for testing."""
-    return lb.Logbook(log_path=tmp_path / "log.csv")
+    """Fixture to create a sample Logbook for testing with isolated temporary file."""
+    # Use pytest's tmp_path fixture for automatic test isolation and cleanup
+    log_file = tmp_path / "log.csv"
+
+    return lb.Logbook(
+        data={
+            "log_path": log_file,
+            "full_format": "%d.%m.%Y %H:%M:%S",
+            "holidays": "DE",
+            "subdivision": "HE",
+        },
+    )
 
 
 @pytest.fixture

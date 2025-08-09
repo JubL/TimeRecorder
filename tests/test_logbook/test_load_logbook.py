@@ -76,7 +76,7 @@ def test_load_logbook_unexpected_number_of_columns(logbook: lb.Logbook) -> None:
             "extra_column": ["extra_value"],  # Extra column
         },
     )
-    df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.save_logbook(df)
 
     with pytest.raises(ValueError, match="Log file has an unexpected number of columns") as exc_info:
         logbook.load_logbook()
@@ -172,7 +172,7 @@ def test_load_logbook_invalid_case_values(logbook: lb.Logbook) -> None:
     invalid_df = pd.DataFrame(
         {
             "weekday": ["Mon", "Tue"],
-            "date": ["24.04.2025", "25.04.2025"],
+            "date": ["21.04.2025", "22.04.2025"],
             "start_time": ["08:00:00", "09:00:00"],
             "end_time": ["17:00:00", "18:00:00"],
             "lunch_break_duration": [30, 45],
@@ -197,7 +197,7 @@ def test_load_logbook_valid_case_values(logbook: lb.Logbook) -> None:
     valid_df = pd.DataFrame(
         {
             "weekday": ["Mon", "Tue"],
-            "date": ["24.04.2025", "25.04.2025"],
+            "date": ["21.04.2025", "22.04.2025"],
             "start_time": ["08:00:00", "09:00:00"],
             "end_time": ["17:00:00", "18:00:00"],
             "lunch_break_duration": [30, 45],

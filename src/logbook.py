@@ -59,8 +59,6 @@ RED = colorama.Fore.RED
 GREEN = colorama.Fore.GREEN
 RESET = colorama.Style.RESET_ALL
 
-holidays_de_he = holidays.country_holidays("DE", subdiv="HE", language="en")
-
 
 class Logbook:
     """
@@ -94,7 +92,7 @@ class Logbook:
     work_time, case, overtime.
     """
 
-    def __init__(self, log_path: pathlib.Path, *, full_format: str = r"%d.%m.%Y %H:%M:%S") -> None:
+    def __init__(self, data: dict) -> None:
         """Initialize a Logbook object with the provided parameters.
 
         Parameters
@@ -104,13 +102,15 @@ class Logbook:
         full_format : str
             Format string for parsing full datetime (default: "%d.%m.%Y %H:%M:%S").
         """
-        self.log_path = log_path
-        self.full_format = full_format
+        self.log_path = data["log_path"]
+        self.full_format = data["full_format"]
         self.date_format, self.time_format = self.full_format.split(" ")
 
         self.sec_in_min = 60  # Number of seconds in a minute
         self.sec_in_hour = 3600  # Number of seconds in an hour
         self.min_in_hour = 60  # Number of minutes in an hour
+
+        self.holidays_de_he = holidays.country_holidays(data["holidays"], subdiv=data["subdivision"], language="en")
 
     def load_logbook(self) -> pd.DataFrame:
         """Load the logbook CSV file into a pandas DataFrame.
@@ -509,20 +509,20 @@ class Logbook:
                 if any(df["date"] == date_str):
                     continue
 
-                if date in holidays_de_he:
-                    msg = f"Found a wild {holidays_de_he[date]}."  # Print the name of the holiday.
+                if date in self.holidays_de_he:
+                    msg = f"Found a wild {self.holidays_de_he[date]}."  # Print the name of the holiday.
                     logger.info(msg)
                     df.loc[len(df)] = {
                         "weekday": date.strftime("%a"),
                         "date": date_str,
-                        "start_time": holidays_de_he[date],
+                        "start_time": self.holidays_de_he[date],
                         "end_time": "",
                         "lunch_break_duration": "",
                         "work_time": "0",
                         "case": "",
                         "overtime": "",
                     }
-                    msg = f"Added missing holiday on {date_str} - {holidays_de_he[date]}"
+                    msg = f"Added missing holiday on {date_str} - {self.holidays_de_he[date]}"
                     logger.info(msg)
 
                 if date.weekday() == saturday and not any(df["date"] == date_str):
