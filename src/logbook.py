@@ -110,6 +110,9 @@ class Logbook:
         self.sec_in_hour = 3600  # Number of seconds in an hour
         self.min_in_hour = 60  # Number of minutes in an hour
 
+        self.standard_work_hours = data["standard_work_hours"]
+        self.work_days = data["work_days"]
+
         self.holidays_de_he = holidays.country_holidays(data["holidays"], subdiv=data["subdivision"], language="en")
 
     def load_logbook(self) -> pd.DataFrame:
@@ -562,7 +565,9 @@ class Logbook:
 
         title = "\nWeekly Summary - Work Hours calculator\n====================================\n"
         total_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
-        standard_hours = "Standard Hours: 40h 0m"  # TODO: use work_schedule.standard_work_hours from config.yaml times len(work_days)
+        standard_hours = f"Standard Hours: {(self.standard_work_hours * len(self.work_days))}h"
+        if (self.standard_work_hours * len(self.work_days)) % 1 != 0:
+            standard_hours += f" {int((self.standard_work_hours * len(self.work_days)) % 1 * 60)}m"
         daily_overtime = f"Mean Daily Overtime: {int(daily_overtime)}h {int(daily_overtime % 1 * 60)}m"
 
         # Combine all parts

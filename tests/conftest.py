@@ -57,6 +57,8 @@ def logbook(tmp_path: pathlib.Path) -> lb.Logbook:
             "full_format": "%d.%m.%Y %H:%M:%S",
             "holidays": "DE",
             "subdivision": "HE",
+            "standard_work_hours": 8,
+            "work_days": [0, 1, 2, 3, 4],
         },
     )
 

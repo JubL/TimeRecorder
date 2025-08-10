@@ -33,8 +33,8 @@ def test_returns_expected_weekly_hours(logbook: lb.Logbook, caplog: pytest.LogCa
     logbook.save_logbook(df)
     # Average per day = (8 + 7.5 + 8 + 8.5 + 8) / 5 = 8.0, so weekly = 8.0 * 5 = 40.0
     with caplog.at_level("INFO"):
-        logbook.get_weekly_hours_from_log()
-        assert "Average weekly hours: 40.0 hours" in caplog.text
+        logbook.print_weekly_summary()
+        assert "Average Weekly Hours: 40h" in caplog.text
 
 
 @pytest.mark.fast
@@ -55,8 +55,8 @@ def test_ignores_zero_work_time_days(logbook: lb.Logbook, caplog: pytest.LogCapt
     logbook.save_logbook(df)
     # Average per day = (8+8+8)/3 = 8.0, weekly = 8.0*5 = 40.0
     with caplog.at_level("INFO"):
-        logbook.get_weekly_hours_from_log()
-        assert "Average weekly hours: 40.0 hours" in caplog.text
+        logbook.print_weekly_summary()
+        assert "Average Weekly Hours: 40h" in caplog.text
 
 
 @pytest.mark.fast
@@ -98,5 +98,5 @@ def test_rounds_to_two_decimals(logbook: lb.Logbook, caplog: pytest.LogCaptureFi
     logbook.save_logbook(df)
     # The average of (7.3333 + 7.6666) / 2 is 7.5, weekly = 7.5*5 = 37.5
     with caplog.at_level("INFO"):
-        logbook.get_weekly_hours_from_log()
-        assert "Average weekly hours: 37.5 hours" in caplog.text
+        logbook.print_weekly_summary()
+        assert "Average Weekly Hours: 37h 30m" in caplog.text

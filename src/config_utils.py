@@ -103,12 +103,15 @@ def get_logbook_config(config: dict) -> dict:
     logging_config = config.get("logging", {})
     time_tracking = config.get("time_tracking", {})
     holidays = config.get("holidays", {})
+    work_schedule = config.get("work_schedule", {})
 
     return {
         "log_path": pathlib.Path.cwd() / logging_config.get("log_path", "timereport_logbook.txt"),
         "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
         "holidays": holidays.get("country", "DE"),
         "subdivision": holidays.get("subdivision", "HE"),
+        "standard_work_hours": work_schedule.get("standard_work_hours", 8),
+        "work_days": work_schedule.get("work_days", [0, 1, 2, 3, 4]),
     }
 
 
