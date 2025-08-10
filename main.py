@@ -26,7 +26,7 @@ def main() -> None:
     """Run the main function of the time recorder."""
     # TODO: increase the test coverage to 95%
 
-    # TODO: introduce integration tests
+    # TODO: introduce integration tests?
 
     # TODO: timezoned were added to the logged time, but they do not show up in the log yet (see line 377 in timerecorder.py)
 
@@ -39,16 +39,11 @@ def main() -> None:
     # TODO: use work_days from config.yaml in the logbook class
     # TODO: use holidays from config.yaml in the logbook class
 
-    # TODO: show averaged daily overtime in the terminal output next to the weekly work hours
-
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
 
     # TODO: add the option to save and load the timereport_logbook in different formats, e.g. csv, json, yaml, parquet, etc.
     # TODO: add a method to determine the file format
     # TODO: make the load and save methods choose from a ariety of submethods, e.g. load_csv, load_parquet, etc
-
-    # TODO: the output is diffrent from what is presented in README.md
-    # TODO: modify the output from tail() to match what's in the README.md
 
     args = ap.run_arg_parser()
 
