@@ -43,16 +43,12 @@ def main() -> None:
 
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
 
-    # TODO: lunch break duration in logbook is float again. change to int.
-
     # TODO: add the option to save and load the timereport_logbook in different formats, e.g. csv, json, yaml, parquet, etc.
     # TODO: add a method to determine the file format
     # TODO: make the load and save methods choose from a ariety of submethods, e.g. load_csv, load_parquet, etc
 
     # TODO: the output is diffrent from what is presented in README.md
     # TODO: modify the output from tail() to match what's in the README.md
-
-    # TODO: use work_schedule.standard_work_hours from config.yaml times len(work_days) in print_weekly_summary()
 
     args = ap.run_arg_parser()
 

@@ -177,7 +177,7 @@ class Logbook:
         df["date"] = df["date"].astype("string")
         df["start_time"] = df["start_time"].astype("string")
         df["end_time"] = df["end_time"].astype("string")
-        df["lunch_break_duration"] = pd.to_numeric(df["lunch_break_duration"], errors="coerce").fillna("").astype("object")
+        df["lunch_break_duration"] = pd.to_numeric(df["lunch_break_duration"], errors="coerce").fillna(0).astype(int)
         df["work_time"] = pd.to_numeric(df["work_time"], errors="coerce")
         df["case"] = df["case"].astype("string")
         df["overtime"] = pd.to_numeric(df["overtime"], errors="coerce").fillna("").astype("object")
