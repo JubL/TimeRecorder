@@ -556,12 +556,30 @@ class Logbook:
         df = df.sort_values(by="date", key=lambda x: pd.to_datetime(x, format=self.date_format))
         self.save_logbook(df)
 
-    def get_weekly_hours_from_log(self) -> None:
+    def print_weekly_summary(self) -> None:
+        """Get the weekly summary from the logbook."""
+        weekly_hours, daily_overtime = self.get_weekly_hours_from_log()
+
+        title = "\nWeekly Summary - Work Hours calculator\n====================================\n"
+        total_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
+        standard_hours = "Standard Hours: 40h 0m"  # TODO: use work_schedule.standard_work_hours from config.yaml times len(work_days)
+        daily_overtime = f"Mean Daily Overtime: {int(daily_overtime)}h {int(daily_overtime % 1 * 60)}m"
+
+        # Combine all parts
+        items = [title, total_hours, standard_hours, daily_overtime]
+        logger.info("\n".join(items))
+
+    def get_weekly_hours_from_log(self) -> tuple[float, float]:
         """
         Calculate the averaged weekly work hours from the logbook.
 
         This method reads the logbook file containing daily work times, computes the average work hours per day
         (considering only days with recorded work time), and extrapolates this average to a standard 5-day work week.
+
+        Returns
+        -------
+        tuple[float, float]
+            A tuple containing the average weekly work hours and the average daily overtime.
 
         Raises
         ------
@@ -576,7 +594,8 @@ class Logbook:
         - Logs the result and any warnings about data quality
         - Returns 0.0 if no work days are found or if conversion errors occur
         """
-        result = 0.0
+        weekly_result: float = 0.0
+        daily_result: float = 0.0
 
         df = self.load_logbook()
 
@@ -584,32 +603,37 @@ class Logbook:
             # Convert work_time to timedelta, handling both numeric and string values
             # First, convert strings to numeric values where possible
             df["work_time"] = pd.to_numeric(df["work_time"], errors="coerce")
+            df["overtime"] = pd.to_numeric(df["overtime"], errors="coerce")
 
             # Check if there are any NaN values (which indicate conversion failures)
             if df["work_time"].isna().any():
-                msg = "Non-numeric work_time values found"
+                msg = "Non-numeric values found in work_time or overtime columns"
                 raise ValueError(msg)
 
             # Then convert to timedelta (numeric values will be treated as hours)
             df["work_time"] = pd.to_timedelta(df["work_time"], unit="h")
+            df["overtime"] = pd.to_timedelta(df["overtime"], unit="h")
 
             weekly_hours = df["work_time"].sum().total_seconds() / self.sec_in_hour
+            daily_overtime = df["overtime"].sum().total_seconds() / self.sec_in_hour
             num_days = df[df["work_time"] > pd.Timedelta(0)]["date"].nunique()
-            msg = f"Weekly hours: {weekly_hours}, Number of days: {num_days}"
+            msg = f"Weekly hours: {weekly_hours}, Number of days: {num_days}, Daily overtime: {daily_overtime}"
             logger.debug(msg)
             if num_days == 0:
                 logger.warning("No work days found in the log file.")
             else:
                 weekly_hours /= num_days  # average work hours per day
                 weekly_hours *= 5  # assuming a 5-day work week
-                result = round(weekly_hours, 2)
+                daily_overtime /= num_days
+
+                weekly_result = round(weekly_hours, 2)
+                daily_result = round(daily_overtime, 2)
         except (ValueError, TypeError):
             msg = f"{RED}Error converting 'work_time' to timedelta{RESET}"
             logger.exception(msg)
-            result = 0.0
-
-        msg = f"Average weekly hours: {result} hours"
-        logger.info(msg)
+            weekly_result = 0.0
+            daily_result = 0.0
+        return weekly_result, daily_result
 
     def get_path(self) -> pathlib.Path:
         """

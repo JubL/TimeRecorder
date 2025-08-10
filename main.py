@@ -34,12 +34,6 @@ def main() -> None:
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
 
-    # TODO: set up bash completion (https://docs.pytest.org/en/stable/how-to/bash-completion.html)
-
-    # TODO: set up a launch.json for debugging and also for normal execution?
-
-    # TODO: executing test via the IDE does produce the german names of the holidays, but not when running the tests via pytest.
-
     # TODO: use log level from config.yaml. put the logger into the main?
     # TODO: use standard_work_hours from config.yaml in the timerecorder object
     # TODO: use work_days from config.yaml in the logbook class
@@ -57,6 +51,8 @@ def main() -> None:
 
     # TODO: the output is diffrent from what is presented in README.md
     # TODO: modify the output from tail() to match what's in the README.md
+
+    # TODO: use work_schedule.standard_work_hours from config.yaml times len(work_days) in print_weekly_summary()
 
     args = ap.run_arg_parser()
 
@@ -101,7 +97,7 @@ def main() -> None:
             logbook.squash_df()
 
     if processing_config["calculate_weekly_hours"]:
-        logbook.get_weekly_hours_from_log()
+        logbook.print_weekly_summary()
 
     if processing_config["log_enabled"]:
         logbook.tail(display_config["show_tail"])

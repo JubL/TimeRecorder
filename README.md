@@ -125,9 +125,9 @@ TimeRecorder - Work Hours Calculator
 Weekly Summary:
 ==============
 Week 30 (21.07.2025 - 27.07.2025)
-Total Hours: 42h 15m
+Average Weekly Hours: 42h 15m
 Standard Hours: 40h 0m
-Overtime: +2h 15m
+Mean Daily Overtime: +2h 15m
 
 Recent Entries:
 ===============
