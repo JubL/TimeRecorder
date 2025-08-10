@@ -108,6 +108,9 @@ select = [
     "W",        # pycodestyle Warning
 ]
 
+[tool.ruff.lint.pylint]
+max-locals = 16
+
 [tool.ruff.format]
 line-ending = "lf"  # unix style line ending
 docstring-code-format = true
