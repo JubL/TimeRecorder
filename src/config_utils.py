@@ -117,7 +117,7 @@ def get_logbook_config(config: dict) -> dict:
 
 def get_display_config(config: dict) -> dict:
     """
-    Extract output configuration from the main config.
+    Extract display configuration from the main config.
 
     Parameters
     ----------
@@ -127,16 +127,14 @@ def get_display_config(config: dict) -> dict:
     Returns
     -------
     Dict[str, Any]
-        Dictionary containing output parameters.
+        Dictionary containing display parameters.
     """
-    output_config = config.get("output", {})
+    display_config = config.get("display", {})
 
     return {
-        "colored_output": output_config.get("colored_output", True),
-        "show_statistics": output_config.get("show_statistics", True),
-        "export_format": output_config.get("export_format", "csv"),
-        "show_tail": output_config.get("show_tail", 4),
-        "calculate_weekly_hours": output_config.get("calculate_weekly_hours", True),
+        "show_tail": display_config.get("show_tail", 4),
+        "calculate_weekly_hours": display_config.get("calculate_weekly_hours", True),
+        "calculate_daily_overhours": display_config.get("calculate_daily_overhours", True),
     }
 
 
@@ -255,7 +253,7 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "auto_squash": True,
             "add_missing_days": True,
         },
-        "output": {
+        "display": {
             "calculate_weekly_hours": True,
             "calculate_daily_overhours": True,
             "show_tail": 4,
@@ -303,7 +301,7 @@ def update_config(config: dict, args: argparse.Namespace) -> dict:
         ("date", "time_tracking.date"),
         ("start", "time_tracking.start_time"),
         ("end", "time_tracking.end_time"),
-        ("end_now", "time_tracking.end_now"),  # TODO: Is this correct? This does not appear in the config.yaml
+        ("end_now", "time_tracking.end_now"),
         ("lunch", "time_tracking.lunch_break_duration"),
         # Logging settings
         ("logbook", "logging.log_path"),

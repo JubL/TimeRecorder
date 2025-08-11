@@ -79,25 +79,72 @@ You can manually create or modify the `config.yaml` file to customize the applic
 2. Copy the structure above and modify the values as needed
 3. Run the application - it will use your custom configuration
 
-### Command Line Overrides
+### Command Line Arguments
 
-You can override configuration settings via command line arguments:
+TimeRecorder supports various command line arguments to override configuration settings:
 
+#### Time Specification Arguments
 ```bash
-# Use system boot time and enable logging
-python main.py --boot --log
+# Use system boot time (default behavior)
+python main.py --boot
 
-# Override specific time settings
-python main.py --start-time "08:30" --end-time "17:30" --lunch-break 45
+# Specify custom date and start time
+python main.py --date "25.07.2025" --start "08:30"
 
+# Set end time
+python main.py --end "17:30"
+
+# Set end time to one minute from now
+python main.py --end_now
+
+# Set lunch break duration
+python main.py --lunch 45
+```
+
+#### Processing Control Arguments
+```bash
+# Enable logging to logbook
+python main.py --log
+
+# Control data processing (default: enabled)
+python main.py --squash          # Enable/disable squashing
+python main.py --add_missing     # Enable/disable adding missing days
+python main.py --weekly          # Enable/disable weekly calculations
+
+# Show last n lines of logbook
+python main.py --tail 10
+```
+
+#### Configuration Arguments
+```bash
 # Use custom configuration file
 python main.py --config my_config.yaml
+
+# Use custom logbook file
+python main.py --logbook my_logbook.txt
 ```
+
+#### Information Arguments
+```bash
+# Show version
+python main.py --version
+
+# Show help
+python main.py --help
+```
+
+### Argument Validation
+
+The application validates command line arguments and provides warnings for potentially conflicting combinations:
+
+- Using `--boot` together with `--date` or `--start` (though allowed, does not make sense)
+- Using both `--end` and `--end_now` together
+- Providing only one of `--date` or `--start` when not using `--boot`
 
 ### Configuration Validation
 
 The application validates the configuration file on startup and will display an error if:
-- Required sections are missing
+- Required sections are missing (`time_tracking`, `logging`, `work_schedule`)
 - Required fields within sections are missing
 - The YAML file is malformed
 
@@ -149,15 +196,16 @@ display:
 
 ## Configuration Functions
 
-The configuration system provides several utility functions:
+The configuration system provides several utility functions in `src/config_utils.py`:
 
-- `load_config()`: Load configuration from YAML file
-- `validate_config()`: Validate configuration structure
-- `get_time_recorder_config()`: Extract TimeRecorder parameters
-- `get_logbook_config()`: Extract Logbook parameters
-- `get_display_config()`: Extract display parameters
-- `get_processing_config()`: Extract processing parameters
-- `create_default_config()`: Create default configuration file
+- `load_config(config_path: pathlib.Path) -> dict`: Load configuration from YAML file
+- `validate_config(config: dict) -> bool`: Validate configuration structure
+- `get_time_recorder_config(config: dict) -> dict`: Extract TimeRecorder parameters
+- `get_logbook_config(config: dict) -> dict`: Extract Logbook parameters
+- `get_display_config(config: dict) -> dict`: Extract display parameters
+- `get_processing_config(config: dict) -> dict`: Extract processing parameters
+- `create_default_config(config_path: pathlib.Path) -> None`: Create default configuration file
+- `update_config(config: dict, args: argparse.Namespace) -> dict`: Update configuration with command line arguments
 
 ## Key Features
 
@@ -169,6 +217,23 @@ TimeRecorder can automatically detect your work start time from system boot time
 data_processing:
   use_boot_time: true  # Automatically use system boot time as start time
 ```
+
+### End Time Options
+
+You can specify end time in multiple ways:
+
+```bash
+# Use specific end time
+python main.py --end "17:30"
+
+# Use current time (one minute from now)
+python main.py --end_now
+
+# Use end time from configuration file
+python main.py
+```
+
+**Note**: The `--end_now` argument sets the end time to one minute from the current time. This feature is supported via command line and will be added to the configuration when used.
 
 ### Missing Day Detection
 
@@ -196,6 +261,16 @@ Calculate and display weekly work hour summaries:
 display:
   calculate_weekly_hours: true  # Calculate weekly hours from log
 ```
+
+### Flexible Time Specification
+
+You can specify work times in multiple ways:
+
+1. **Boot time mode**: `--boot` (uses system boot time as start)
+2. **Manual mode**: `--date "DD.MM.YYYY" --start "HH:MM"`
+3. **Configuration mode**: Use values from `config.yaml`
+
+
 
 ## Troubleshooting
 
@@ -226,4 +301,51 @@ You can control the logging level in the configuration:
 ```yaml
 logging:
   log_level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
+```
+
+### Command Line Argument Conflicts
+
+The application provides warnings for potentially conflicting argument combinations:
+
+```bash
+# This will show a warning
+python main.py --boot --date "25.07.2025" --start "08:00"
+
+# This will show a warning
+python main.py --end "17:30" --end_now
+```
+
+## Advanced Usage Examples
+
+### Basic Time Recording
+```bash
+# Record today's work with boot time
+python main.py --boot --log
+
+# Record specific work hours
+python main.py --date "25.07.2025" --start "08:00" --end "17:00" --log
+
+# Record work ending now
+python main.py --date "25.07.2025" --start "08:00" --end_now --log
+```
+
+### Data Processing
+```bash
+# Disable automatic data processing
+python main.py --boot --log --no_squash --no_missing
+
+# Show more logbook entries
+python main.py --tail 20
+
+# Disable weekly calculations
+python main.py --boot --log --no_weekly
+```
+
+### Custom Configuration
+```bash
+# Use custom config file
+python main.py --config custom_config.yaml
+
+# Use custom logbook file
+python main.py --config custom_config.yaml --logbook custom_log.txt
 ```
