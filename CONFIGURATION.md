@@ -158,40 +158,40 @@ Here's a complete example of a custom configuration:
 
 # Data processing settings
 data_processing:
-  use_boot_time: false         # Don't use boot time
-  logging_enabled: true         # Enable logging
-  auto_squash: true            # Automatically squash duplicate entries
-  add_missing_days: true       # Add missing days to logbook
+  use_boot_time: false             # Don't use boot time
+  logging_enabled: true            # Enable logging
+  auto_squash: true                # Automatically squash duplicate entries
+  add_missing_days: true           # Add missing days to logbook
 
 # Time tracking settings
 time_tracking:
-  date: "30.12.2024"          # Custom date
-  start_time: "08:30"          # Later start time
-  end_time: "18:00"            # Later end time
-  lunch_break_duration: 45     # Shorter lunch break
+  date: "30.12.2024"               # Custom date
+  start_time: "08:30"              # Later start time
+  end_time: "18:00"                # Later end time
+  lunch_break_duration: 45         # Shorter lunch break
   full_format: "%d.%m.%Y %H:%M:%S"
 
 # Logging settings
 logging:
-  log_path: "my_work_log.txt"  # Custom log file name
-  log_level: "DEBUG"           # More verbose logging
+  log_path: "my_work_log.txt"      # Custom log file name
+  log_level: "DEBUG"               # More verbose logging
 
 # Work schedule settings
 work_schedule:
-  standard_work_hours: 7.5     # Part-time work schedule
-  work_days: [0, 1, 2, 3]     # Monday to Thursday only
-  timezone: "America/New_York" # Different timezone
+  standard_work_hours: 3.75        # Part-time work schedule
+  work_days: [0, 1, 2, 3]          # Monday to Thursday only
+  timezone: "America/New_York"     # Different timezone
 
 # Holiday settings
 holidays:
-  country: "US"                # US holidays
-  subdivision: "NY"            # New York state
+  country: "US"                    # US holidays
+  subdivision: "NY"                # New York state
 
 # Display settings
 display:
-  calculate_weekly_hours: true # Calculate weekly hours from log
+  calculate_weekly_hours: true     # Calculate weekly hours from log
   calculate_daily_overhours: true  # Calculate daily overhours from log
-  show_tail: 10               # Show more recent entries
+  show_tail: 10                    # Show more recent entries
 ```
 
 ## Configuration Functions
@@ -349,3 +349,5 @@ python main.py --config custom_config.yaml
 # Use custom logbook file
 python main.py --config custom_config.yaml --logbook custom_log.txt
 ```
+
+Have fun logging!
