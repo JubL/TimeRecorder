@@ -28,8 +28,6 @@ def main() -> None:
 
     # TODO: introduce integration tests?
 
-    # TODO: timezoned were added to the logged time, but they do not show up in the log yet (see line 335 in timerecorder.py)
-
     # TODO: visualization of work hours per day, week, month, year
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
