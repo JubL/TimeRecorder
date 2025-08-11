@@ -116,11 +116,11 @@ TimeRecorder - Work Hours Calculator
 ====================================
 
 📅 Date: Mon, 25.07.2025
-⏰ Start Time: 07:00:00 CEST
-⏰ End Time: 17:25:00 CEST
-🍽️ Lunch Break: 60 minutes
-⏱️ Work Duration: 9h 25m
-📈 Status: overtime (+1h 25m)
+⏰ Start Time: 07:00 CEST
+⏰ End Time: 17:25 CEST
+🍽️ Lunch Break: 60 m
+⏱️ Work Duration: 9h 25m (9.42h)
+📈 Status: overtime 1h 25m (1.42h)
 
 Weekly Summary:
 ==============
