@@ -185,7 +185,7 @@ class Logbook:
         # case is one of three values
         if not all(df["case"].isin(["overtime", "undertime", ""])):
             msg = f"{RED}Log file has invalid case values: {df['case'].unique()}.{RESET}"
-            raise ValueError(msg)  # TODO: add test for this
+            raise ValueError(msg)
 
         return df
 
