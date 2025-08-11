@@ -28,11 +28,15 @@ def main() -> None:
 
     # TODO: introduce integration tests?
 
-    # TODO: timezoned were added to the logged time, but they do not show up in the log yet (see line 377 in timerecorder.py)
+    # TODO: timezoned were added to the logged time, but they do not show up in the log yet (see line 335 in timerecorder.py)
 
     # TODO: visualization of work hours per day, week, month, year
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
+
+    # TODO: use a bar plot to visualize the work hours per day. put no space between the bars, let the have similar but diffrent colors
+    # TODO: (have a color gradient). let the user decide on the main color sheme, e.g. green, red, blue, purple, etc. show the last 13(!)
+    # TODO: months max. show the standard_work_hours as a horizontal line.
 
     # TODO: use log level from config.yaml. put the logger into the main?
     # TODO: use standard_work_hours from config.yaml in the timerecorder object
