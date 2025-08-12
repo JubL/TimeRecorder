@@ -668,8 +668,13 @@ class Logbook:
         The output is logged using the logger and displayed without
         DataFrame row indices for cleaner formatting.
         """
-        df = self.load_logbook()
+        df = self.load_logbook().tail(n)
+
+        # change the content of work_time from 9.50 to 9h 30m, and be robust against ""
+        df["work_time"] = df["work_time"].apply(lambda x: f"{int(x)}h {int(x % 1 * 60)}m" if x != "" else "")
+        df["overtime"] = df["overtime"].apply(lambda x: f"{int(x)}h {int(x % 1 * 60)}m" if x != "" else "")
 
         title = "\nRecent Entries\n===============\n"
-        msg = title + df.tail(n).to_string(index=False, header=False)
+        msg = title + df.to_string(index=False, header=False)
+
         logger.info(msg)

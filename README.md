@@ -130,9 +130,9 @@ Mean Daily Overtime: +2h 15m
 
 Recent Entries:
 ===============
-Mon 25.07.2025 07:00:12 CEST 17:25:00 CEST 9.42 overtime 1.42
-Fri 22.07.2025 08:00:53 CEST 17:00:00 CEST 8.00 overtime 0.00
-Thu 21.07.2025 07:45:38 CEST 16:30:00 CEST 7.75 undertime -.25
+Mon 25.07.2025 07:00:12 CEST 17:25:00 CEST 9h 25m overtime 1h 25m
+Fri 22.07.2025 08:00:53 CEST 17:00:00 CEST 8h 0m overtime 0h 0m
+Thu 21.07.2025 07:45:38 CEST 16:30:00 CEST 7h 45m undertime -0h 15m
 ```
 
 ## 🛠️ Development
