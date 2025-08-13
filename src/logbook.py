@@ -563,7 +563,7 @@ class Logbook:
         """Get the weekly summary from the logbook."""
         weekly_hours, daily_overtime = self.get_weekly_hours_from_log()
 
-        title = "\nWeekly Summary - Work Hours calculator\n====================================\n"
+        title = "\nWeekly Summary - Work Hours Calculator\n======================================\n"
         avr_weekly_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
         standard_hours = f"Standard Hours: {(self.standard_work_hours * len(self.work_days))}h"
         if (self.standard_work_hours * len(self.work_days)) % 1 != 0:

@@ -396,7 +396,7 @@ class TimeRecorder:
         overtime_minutes = int(self.overtime.total_seconds() // self.sec_in_min % self.min_in_hour)
         overtime_decimal_representation = round(self.overtime.total_seconds() / self.sec_in_hour, 2)
 
-        title = "\nTime Recorder - Work Hours calculator\n=====================================\n"
+        title = "\nTime Recorder - Work Hours Calculator\n=====================================\n"
         date = f"📅 Date: {self.weekday}, {self.date}"
         start_time = f"⏰ Start time: {self.start_time.strftime('%H:%M %Z')}"
         end_time = f"⏰ End time: {self.end_time.strftime('%H:%M %Z')}"
