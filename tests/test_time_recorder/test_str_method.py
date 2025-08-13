@@ -28,10 +28,10 @@ def test_str_overtime_case() -> None:
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 17:30" in result
     assert "🍽️  Lunch break: 60m" in result
-    assert "⏱️  Work duration: 8h and 30m (8.5h)" in result
+    assert "⏱️  Work duration: 8h 30m (8.5h)" in result
     assert "📈 Status:" in result
     assert "overtime" in result
-    assert "0h and 30m (0.5h)" in result
+    assert "0h 30m (0.5h)" in result
 
 
 @pytest.mark.fast
@@ -57,10 +57,10 @@ def test_str_undertime_case() -> None:
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 16:30" in result
     assert "🍽️  Lunch break: 60m" in result
-    assert "⏱️  Work duration: 7h and 30m (7.5h)" in result
+    assert "⏱️  Work duration: 7h 30m (7.5h)" in result
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-1h and 30m (-0.5h)" in result
+    assert "-1h 30m (-0.5h)" in result
 
 
 @pytest.mark.fast
@@ -86,10 +86,10 @@ def test_str_exact_8_hours() -> None:
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 17:00" in result
     assert "🍽️  Lunch break: 60m" in result
-    assert "⏱️  Work duration: 8h and 0m (8.0h)" in result
+    assert "⏱️  Work duration: 8h 0m (8.0h)" in result
     assert "📈 Status:" in result
     assert "overtime" in result
-    assert "0h and 0m (0.0h)" in result
+    assert "0h 0m (0.0h)" in result
 
 
 @pytest.mark.fast
@@ -115,10 +115,10 @@ def test_str_negative_overtime() -> None:
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 15:00" in result
     assert "🍽️  Lunch break: 60m" in result
-    assert "⏱️  Work duration: 6h and 0m (6.0h)" in result
+    assert "⏱️  Work duration: 6h 0m (6.0h)" in result
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-2h and 0m (-2.0h)" in result
+    assert "-2h 0m (-2.0h)" in result
 
 
 @pytest.mark.fast
@@ -144,10 +144,10 @@ def test_str_large_overtime() -> None:
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 19:00" in result
     assert "🍽️  Lunch break: 60m" in result
-    assert "⏱️  Work duration: 10h and 0m (10.0h)" in result
+    assert "⏱️  Work duration: 10h 0m (10.0h)" in result
     assert "📈 Status:" in result
     assert "overtime" in result
-    assert "2h and 0m (2.0h)" in result
+    assert "2h 0m (2.0h)" in result
 
 
 @pytest.mark.fast
@@ -173,10 +173,10 @@ def test_str_partial_hours_and_minutes() -> None:
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 16:45" in result
     assert "🍽️  Lunch break: 60m" in result
-    assert "⏱️  Work duration: 7h and 45m (7.75h)" in result
+    assert "⏱️  Work duration: 7h 45m (7.75h)" in result
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-1h and 45m (-0.25h)" in result
+    assert "-1h 45m (-0.25h)" in result
 
 
 @pytest.mark.fast
@@ -319,11 +319,11 @@ def test_str_decimal_precision() -> None:
     result = str(line)
 
     # Should show 7.33 hours (7 hours 20 minutes = 7.33 hours)
-    assert "⏱️  Work duration: 7h and 20m (7.33h)" in result
+    assert "⏱️  Work duration: 7h 20m (7.33h)" in result
     # Should show -0.67 hours undertime
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-1h and 20m (-0.67h)" in result
+    assert "-1h 20m (-0.67h)" in result
 
 
 @pytest.mark.fast
@@ -344,10 +344,10 @@ def test_str_minimal_work_time() -> None:
 
     result = str(line)
 
-    assert "⏱️  Work duration: 0h and 1m (0.02h)" in result
+    assert "⏱️  Work duration: 0h 1m (0.02h)" in result
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-8h and 1m (-7.98h)" in result
+    assert "-8h 1m (-7.98h)" in result
 
 
 @pytest.mark.fast

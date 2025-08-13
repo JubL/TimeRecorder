@@ -403,9 +403,7 @@ class TimeRecorder:
         lunch_break_duration = f"🍽️  Lunch break: {int(self.lunch_break_duration.total_seconds() // self.sec_in_min)}m"
         work_duration = f"⏱️  Work duration: {work_hours}h {work_minutes}m ({work_hours_decimal_representation}h)"
         color = GREEN if self.case == "overtime" else RED
-        overtime_amount = (
-            f"📈 Status: {color}{self.case}{RESET} {overtime_hours}h and {overtime_minutes}m ({overtime_decimal_representation}h)"
-        )
+        overtime_amount = f"📈 Status: {color}{self.case}{RESET} {overtime_hours}h {overtime_minutes}m ({overtime_decimal_representation}h)"
 
         # Combine all parts
         items = [title, date, start_time, end_time, lunch_break_duration, work_duration, overtime_amount]
