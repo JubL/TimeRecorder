@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# This workflow will install Python dependencies, lint and run tests with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: Lint and Test
@@ -16,8 +16,9 @@ jobs:
     - uses: actions/checkout@v4
     - uses: astral-sh/ruff-action@v3
     - run: ruff check
+
   build:
-    needs: lint
+    # needs: lint
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
