@@ -32,7 +32,7 @@ def main() -> None:
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
 
-    # TODO: have the output of tail() show time units for work_hours and overtime
+    # TODO: shall tail() be controlled by the --log flag?
 
     # TODO: use a bar plot to visualize the work hours per day. put no space between the bars, let the have similar but diffrent colors
     # TODO: (have a color gradient). let the user decide on the main color sheme, e.g. green, red, blue, purple, etc. show the last 13(!)

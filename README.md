@@ -21,6 +21,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **🌍 Holiday Support**: Automatic holiday detection
 - **📱 Missing Day Detection**: Automatically add missing work days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
+- **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
 
 ## 🚀 Quick Start
 
@@ -135,30 +136,7 @@ Fri 22.07.2025 08:00:53 CEST 17:00:00 CEST 8h 0m overtime 0h 0m
 Thu 21.07.2025 07:45:38 CEST 16:30:00 CEST 7h 45m undertime -0h 15m
 ```
 
-## 🛠️ Development
-
-### Project Structure
-
-```
-TimeRecorder/
-├── main.py                 # Main application entry point
-├── config.yaml             # Configuration file (auto-generated)
-├── CONFIGURATION.md        # Detailed configuration documentation
-├── pyproject.toml          # Project configuration and dependencies
-├── src/                    # Source code
-│   ├── __init__.py         # Package initialization
-│   ├── arg_parser.py       # Command line argument parsing
-│   ├── config_utils.py     # Configuration utilities
-│   ├── logbook.py          # Logbook management
-│   ├── logging_utils.py    # Logging configuration
-│   └── time_recorder.py    # Core time tracking functionality
-└── tests/                  # Test suite
-    ├── conftest.py         # Pytest configuration
-    ├── test_config_utils/  # Configuration utility tests
-    ├── test_logbook/       # Logbook management tests
-    ├── test_logging_utils/ # Logging utility tests
-    └── test_time_recorder/ # Core functionality tests
-```
+## 🧪 Testing
 
 ### Running Tests
 
@@ -167,26 +145,23 @@ TimeRecorder/
 pytest
 
 # Run specific test categories
-pytest -m "unit"
-pytest -m "integration"
+pytest -m "fast"           # Fast unit tests
+pytest -m "integration"    # Integration tests
+pytest -m "slow"          # Slow tests
 
-# Run one specific test
-pytest .\tests\test_logbook\test_load_logbook.py
-```
+# Run specific test modules
+pytest tests/test_logbook/
+pytest tests/test_time_recorder/
 
-### Code Quality
+# Run specific test files
+pytest tests/test_logbook/test_tail.py
+pytest tests/test_logbook/test_load_logbook.py
 
-The project uses [Ruff](https://github.com/astral-sh/ruff) for linting and formatting:
+# Run tests with verbose output
+pytest -v
 
-```bash
-# Check code quality
-ruff check .
-
-# Format code
-ruff format .
-
-# Fix auto-fixable issues
-ruff check --fix .
+# Run tests and show local variables on failures
+pytest -l
 ```
 
 ## 🔧 Advanced Features
@@ -218,6 +193,17 @@ data_processing:
   auto_squash: true  # Remove duplicates and aggregate by date
 ```
 
+### Recent Entries Display
+
+View the last n entries from your logbook with formatted time display:
+
+```yaml
+output:
+  show_tail: 4  # Show the last 4 entries (default)
+```
+
+The `tail()` method displays work time in a human-readable format (e.g., "7h 30m" instead of "7.5").
+
 ### Export Options
 
 Export your time records in various formats:
@@ -225,6 +211,46 @@ Export your time records in various formats:
 ```yaml
 output:
   export_format: "csv"  # Options: csv, json, excel
+```
+
+## 🛠️ Development
+
+### Project Structure
+
+```
+TimeRecorder/
+├── main.py                 # Main application entry point
+├── config.yaml             # Configuration file (auto-generated)
+├── CONFIGURATION.md        # Detailed configuration documentation
+├── pyproject.toml          # Project configuration and dependencies
+├── src/                    # Source code
+│   ├── __init__.py         # Package initialization
+│   ├── arg_parser.py       # Command line argument parsing
+│   ├── config_utils.py     # Configuration utilities
+│   ├── logbook.py          # Logbook management
+│   ├── logging_utils.py    # Logging configuration
+│   └── time_recorder.py    # Core time tracking functionality
+└── tests/                  # Test suite
+    ├── conftest.py         # Pytest configuration
+    ├── test_config_utils/  # Configuration utility tests
+    ├── test_logbook/       # Logbook management tests
+    ├── test_logging_utils/ # Logging utility tests
+    └── test_time_recorder/ # Core functionality tests
+```
+
+### Code Quality
+
+The project uses [Ruff](https://github.com/astral-sh/ruff) for linting and formatting:
+
+```bash
+# Check code quality
+ruff check .
+
+# Format code
+ruff format .
+
+# Fix auto-fixable issues
+ruff check --fix .
 ```
 
 ## 🤝 Contributing
