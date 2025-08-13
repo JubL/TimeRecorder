@@ -23,7 +23,7 @@ def test_str_overtime_case() -> None:
 
     result = str(line)
 
-    assert "Time Recorder - Work Hours calculator" in result
+    assert "Time Recorder - Work Hours Calculator" in result
     assert "📅 Date:" in result
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 17:30" in result
@@ -52,7 +52,7 @@ def test_str_undertime_case() -> None:
 
     result = str(line)
 
-    assert "Time Recorder - Work Hours calculator" in result
+    assert "Time Recorder - Work Hours Calculator" in result
     assert "📅 Date:" in result
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 16:30" in result
@@ -81,7 +81,7 @@ def test_str_exact_8_hours() -> None:
 
     result = str(line)
 
-    assert "Time Recorder - Work Hours calculator" in result
+    assert "Time Recorder - Work Hours Calculator" in result
     assert "📅 Date:" in result
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 17:00" in result
@@ -110,7 +110,7 @@ def test_str_negative_overtime() -> None:
 
     result = str(line)
 
-    assert "Time Recorder - Work Hours calculator" in result
+    assert "Time Recorder - Work Hours Calculator" in result
     assert "📅 Date:" in result
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 15:00" in result
@@ -139,7 +139,7 @@ def test_str_large_overtime() -> None:
 
     result = str(line)
 
-    assert "Time Recorder - Work Hours calculator" in result
+    assert "Time Recorder - Work Hours Calculator" in result
     assert "📅 Date:" in result
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 19:00" in result
@@ -168,7 +168,7 @@ def test_str_partial_hours_and_minutes() -> None:
 
     result = str(line)
 
-    assert "Time Recorder - Work Hours calculator" in result
+    assert "Time Recorder - Work Hours Calculator" in result
     assert "📅 Date:" in result
     assert "⏰ Start time: 08:00" in result
     assert "⏰ End time: 16:45" in result
@@ -273,7 +273,7 @@ def test_str_format_structure() -> None:
     assert not lines[0]
 
     # Second line should contain title
-    assert "Time Recorder - Work Hours calculator" in lines[1]
+    assert "Time Recorder - Work Hours Calculator" in lines[1]
 
     # Third line should contain separator
     assert "=====================================" in lines[2]
