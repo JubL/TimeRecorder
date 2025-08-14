@@ -165,6 +165,34 @@ def get_processing_config(config: dict) -> dict:
     }
 
 
+def get_visualization_config(config: dict) -> dict:
+    """
+    Extract visualization configuration from the main config.
+
+    Parameters
+    ----------
+    config : dict
+        The main configuration dictionary.
+
+    Returns
+    -------
+    dict
+        Dictionary containing visualization parameters.
+    """
+    time_tracking = config.get("time_tracking", {})
+    visualization = config.get("visualization", {})
+    work_schedule = config.get("work_schedule", {})
+
+    return {
+        "color_scheme": visualization.get("color_scheme", "ocean"),
+        "num_months": visualization.get("num_months", 13),
+        "plot": visualization.get("plot", True),
+        "standard_work_hours": work_schedule.get("standard_work_hours", 8),
+        "work_days": work_schedule.get("work_days", [0, 1, 2, 3, 4]),
+        "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
+    }
+
+
 def validate_config(config: dict) -> bool:
     """
     Validate the configuration dictionary.
@@ -258,6 +286,11 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "calculate_daily_overhours": True,
             "show_tail": 4,
         },
+        "visualization": {
+            "color_scheme": "ocean",
+            "num_months": 13,
+            "show_plot": True,
+        },
     }
 
     try:
@@ -309,6 +342,10 @@ def update_config(config: dict, args: argparse.Namespace) -> dict:
         ("no_weekly", "display.calculate_weekly_hours"),
         ("no_overhours", "display.calculate_daily_overhours"),
         ("tail", "display.show_tail"),
+        # Visualization settings
+        ("plot", "visualization.plot"),
+        ("num_months", "visualization.num_months"),
+        ("color_scheme", "visualization.color_scheme"),
     ]
 
     def _set_nested_value(config_dict: dict, path: str, value: str | int | bool) -> None:  # noqa: FBT001

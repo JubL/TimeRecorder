@@ -1,0 +1,188 @@
+"""
+TimeRecorder Visualization Module.
+
+This module provides visualization capabilities for work time data using matplotlib.
+It includes color schemes for different themes and a Visualizer class for creating
+work hours charts.
+
+Color Schemes:
+    - ocean: Blue-based theme for professional settings
+    - forest: Green-based theme for natural/organic feel
+    - sunset: Orange-based theme for warm/energetic mood
+    - lavender: Purple-based theme for elegant/creative environments
+    - coral: Pink-based theme for modern/friendly aesthetics
+
+Each theme provides separate color palettes for work hours and overtime hours
+to ensure clear visual distinction between the two data types.
+"""
+
+from datetime import timedelta
+
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import pandas as pd
+
+import src.logging_utils as lu
+
+# Set up logger with centralized configuration
+logger = lu.setup_logger(__name__)
+
+
+COLOR_SCHEMES_WORK = {
+    "ocean": ["#1E3A8A", "#1E40AF", "#2563EB", "#3B82F6", "#60A5FA"],
+    "forest": ["#14532D", "#166534", "#15803D", "#16A34A", "#22C55E"],
+    "sunset": ["#9A3412", "#A03E0C", "#C2410C", "#EA580C", "#F97316"],
+    "lavender": ["#581C87", "#5B21B6", "#6B21A8", "#7C3AED", "#A855F7"],
+    "coral": ["#BE185D", "#BE123C", "#DC2626", "#EC4899", "#F472B6"],
+}
+
+COLOR_SCHEMES_OVERTIME = {
+    "ocean": ["#1E40AF", "#2563EB", "#3B82F6", "#60A5FA", "#93C5FD"],
+    "forest": ["#166534", "#15803D", "#16A34A", "#22C55E", "#4ADE80"],
+    "sunset": ["#A03E0C", "#C2410C", "#EA580C", "#F97316", "#FB923C"],
+    "lavender": ["#5B21B6", "#6B21A8", "#7C3AED", "#A855F7", "#C084FC"],
+    "coral": ["#BE123C", "#DC2626", "#EC4899", "#F472B6", "#F9A8D4"],
+}
+
+
+class Visualizer:
+    """
+    A class for visualizing work time data with customizable color schemes.
+
+    The Visualizer creates bar charts showing daily work hours and overtime,
+    with different colors for each weekday and separate color schemes for
+    work hours vs overtime hours.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame containing work time data with columns:
+        - date: Date of the work entry
+        - work_time: Regular work hours for the day
+        - overtime: Overtime hours for the day
+    data : dict
+        Configuration dictionary containing:
+        - full_format: Date and time format string
+        - color_scheme: Theme name for color selection
+        - num_months: Number of months to display
+        - standard_work_hours: Standard work hours per day
+        - work_days: List of weekday numbers (0=Monday, 6=Sunday)
+
+    Attributes
+    ----------
+    df : pd.DataFrame
+        Processed DataFrame with filtered date range
+    work_colors : list
+        List of hex color codes for work hours by weekday
+    overtime_colors : list
+        List of hex color codes for overtime hours by weekday
+    date_format : str
+        Date format string extracted from full_format
+    time_format : str
+        Time format string extracted from full_format
+    num_months : int
+        Number of months to display in the chart
+    standard_work_hours : float
+        Standard work hours per day
+    work_days : list
+        List of weekday numbers to display
+    """
+
+    def __init__(self, df: pd.DataFrame, data: dict) -> None:
+        """
+        Initialize the Visualizer with data and configuration.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Raw work time data DataFrame
+        data : dict
+            Configuration dictionary with visualization settings
+        """
+        self.df = df
+        self.full_format = data["full_format"]
+        self.date_format, self.time_format = self.full_format.split(" ")
+
+        self.work_colors = COLOR_SCHEMES_WORK[data["color_scheme"]]
+        self.overtime_colors = COLOR_SCHEMES_OVERTIME[data["color_scheme"]]
+        self.num_months = data["num_months"]
+        self.standard_work_hours = data["standard_work_hours"]
+        self.work_days = data["work_days"]
+
+        self.make_logbook_robust()
+
+        # filter the df to only include the last num_months months
+        self.df = self.df[self.df["date"] > self.df["date"].max() - pd.DateOffset(months=self.num_months)]
+
+    def make_logbook_robust(self) -> None:
+        """
+        Make the logbook robust by filling missing values and converting data types.
+
+        This method performs the following data cleaning operations:
+        - Converts date column to datetime format
+        - Converts work_time and overtime columns to numeric, filling NaN with 0.0
+        - Ensures overtime values are non-negative
+
+        Returns
+        -------
+        None
+            Modifies the DataFrame in-place
+        """
+        self.df["date"] = pd.to_datetime(self.df["date"], format=self.date_format)
+
+        # Convert to numeric, coercing errors to NaN, then fill NaN with 0.0
+        self.df["work_time"] = pd.to_numeric(self.df["work_time"], errors="coerce").fillna(0.0)
+        self.df["overtime"] = pd.to_numeric(self.df["overtime"], errors="coerce").fillna(0.0)
+
+        self.df["overtime"] = self.df["overtime"].where(self.df["overtime"] > 0.0, 0.0)
+
+    def plot_daily_work_hours(self) -> None:
+        """
+        Create and display a bar chart of daily work hours and overtime.
+
+        This method creates a matplotlib bar chart showing:
+        - Work hours for each day as colored bars
+        - Overtime hours stacked on top of work hours
+        - Different colors for each weekday
+        - X-axis showing calendar weeks
+        - Y-axis showing work hours
+
+        The chart automatically adjusts work time to exclude overtime
+        when total hours exceed standard work hours.
+
+        Returns
+        -------
+        None
+        """
+        # if work_time is greater than standard_hours, subtract overtime from work_time
+        self.df["work_time"] = self.df["work_time"].where(
+            self.df["work_time"] <= self.standard_work_hours,
+            self.df["work_time"] - self.df["overtime"],
+        )
+
+        _, ax = plt.subplots(figsize=(8, 5))
+
+        ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.WE))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("KW%U"))
+        ax.tick_params(axis="x", which="both", length=0)  # Set x-tick length to 0
+
+        # let each weekday have another color according to the color_scheme
+        for i, weekday in enumerate(self.work_days):
+            ax.bar(
+                self.df[self.df["date"].dt.weekday == weekday]["date"],
+                self.df[self.df["date"].dt.weekday == weekday]["work_time"],
+                width=timedelta(days=1),
+                color=self.work_colors[i],
+            )
+            ax.bar(
+                self.df[self.df["date"].dt.weekday == weekday]["date"],
+                self.df[self.df["date"].dt.weekday == weekday]["overtime"],
+                width=timedelta(days=1),
+                color=self.overtime_colors[i],
+                bottom=self.df[self.df["date"].dt.weekday == weekday]["work_time"],
+            )
+
+        ax.set_xlabel("Calendar Week")
+        ax.set_ylabel("Work Hours")
+        ax.set_title("Daily Work Hours")
+        plt.show()

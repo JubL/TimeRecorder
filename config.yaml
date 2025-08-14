@@ -37,3 +37,9 @@ display:
   calculate_weekly_hours: true  # Calculate weekly hours from log
   calculate_daily_overhours: true  # Calculate daily overhours from log
   show_tail: 4  # Show the last n lines of the logbook
+
+# Visualization settings
+visualization:
+  plot: true  # Show the graphical output
+  color_scheme: "ocean"  # Color scheme: ocean, forest, sunset, lavender, coral
+  num_months: 13  # Number of months to show in daily hours plot

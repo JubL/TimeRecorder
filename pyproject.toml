@@ -20,6 +20,7 @@ dependencies = [
     "pytest-cov",
     "pytest-mock",
     "PyYAML",
+    "matplotlib",
 ]
 [project.optional-dependencies]
 dev = [

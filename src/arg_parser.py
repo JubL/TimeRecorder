@@ -64,6 +64,16 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
         self.parser.add_argument("--config", type=str, help="Path to the config file", default="config.yaml")
         self.parser.add_argument("--logbook", type=str, help="Path to the logbook file", default="timereport_logbook.txt")
 
+        # Visualization arguments
+        self.parser.add_argument("--plot", action="store_true", help="Create visualizations from logbook data")
+        self.parser.add_argument("--num_months", type=int, default=13, help="Number of months to show in daily hours plot")
+        self.parser.add_argument(
+            "--color_scheme",
+            type=str,
+            choices=["ocean", "forest", "sunset", "lavender", "coral"],
+            help="Color scheme for visualizations (default: ocean)",
+        )
+
         # Version argument
         self.parser.add_argument("--version", action="version", version=f"Version: {self.get_project_version()}")
 

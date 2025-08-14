@@ -13,6 +13,7 @@ import src.config_utils as cu
 import src.logging_utils as lu
 from src.logbook import Logbook
 from src.time_recorder import TimeRecorder
+from src.visualizer import Visualizer
 
 # Set global log level first (change this to control all logging)
 # Options: logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR
@@ -33,10 +34,6 @@ def main() -> None:
     # TODO: introduce outlier detection, consistency checks?
 
     # TODO: shall tail() be controlled by the --log flag?
-
-    # TODO: use a bar plot to visualize the work hours per day. put no space between the bars, let the have similar but diffrent colors
-    # TODO: (have a color gradient). let the user decide on the main color sheme, e.g. green, red, blue, purple, etc. show the last 13(!)
-    # TODO: months max. show the standard_work_hours as a horizontal line.
 
     # TODO: use log level from config.yaml. put the logger into the main?
     # TODO: use standard_work_hours from config.yaml in the timerecorder object
@@ -69,6 +66,7 @@ def main() -> None:
     logbook_config = cu.get_logbook_config(config)
     processing_config = cu.get_processing_config(config)
     display_config = cu.get_display_config(config)
+    visualization_config = cu.get_visualization_config(config)
     logger.debug("Configuration loaded successfully")
 
     # Create TimeRecorder object from configuration
@@ -96,6 +94,10 @@ def main() -> None:
 
     if processing_config["log_enabled"]:
         logbook.tail(display_config["show_tail"])
+
+    if visualization_config["plot"]:
+        visualizer = Visualizer(logbook.load_logbook(), visualization_config)
+        visualizer.plot_daily_work_hours()
 
 
 if __name__ == "__main__":
