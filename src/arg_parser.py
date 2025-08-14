@@ -40,38 +40,38 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
     def _setup_arguments(self) -> None:
         """Set up all command line arguments."""
         # Time specification arguments (intentionally not mutually exclusive)
-        self.parser.add_argument("--boot", action=argparse.BooleanOptionalAction, help="Use system boot time (default behavior)")
-        self.parser.add_argument("--date", type=str, help="Date (DD.MM.YYYY)")
-        self.parser.add_argument("--start", type=str, help="Start time (HH:MM:SS)")
+        self.parser.add_argument("--boot", action=argparse.BooleanOptionalAction, help="Use system boot time.")
+        self.parser.add_argument("--date", type=str, help="Date in DD.MM.YYYY format")
+        self.parser.add_argument("--start", type=str, help="Start time in HH:MM:SS format")
 
         # Time completion arguments
-        self.parser.add_argument("--end", type=str, help="End time (HH:MM:SS)")
+        self.parser.add_argument("--end", type=str, help="End time in HH:MM:SS format")
         self.parser.add_argument("--end_now", action="store_true", help="End time is one minute from now.")
         self.parser.add_argument("--lunch", type=int, help="Lunch break duration in minutes")
 
         # Processing control arguments
-        self.parser.add_argument("--log", action="store_true", help="Log the results")
-        self.parser.add_argument("--squash", action=argparse.BooleanOptionalAction, help="Squash the logbook (default behavior)")
+        self.parser.add_argument("--log", action="store_true", help="Log the results.")
+        self.parser.add_argument("--squash", action=argparse.BooleanOptionalAction, help="Squash the logbook.")
         self.parser.add_argument(
             "--add_missing",
             action=argparse.BooleanOptionalAction,
-            help="Add missing days to the logbook (default behavior)",
+            help="Add missing days to the logbook.",
         )
-        self.parser.add_argument("--weekly", action=argparse.BooleanOptionalAction, help="Calculate weekly hours (default behavior)")
-        self.parser.add_argument("--tail", type=int, default=4, help="Show the last n lines of the logbook. Default: 4")
+        self.parser.add_argument("--weekly", action=argparse.BooleanOptionalAction, help="Calculate weekly hours.")
+        self.parser.add_argument("--tail", type=int, help="Show the last n lines of the logbook.")
 
         # Configuration arguments
         self.parser.add_argument("--config", type=str, help="Path to the config file", default="config.yaml")
-        self.parser.add_argument("--logbook", type=str, help="Path to the logbook file", default="timereport_logbook.txt")
+        self.parser.add_argument("--logbook", type=str, help="Path to the logbook file")
 
         # Visualization arguments
         self.parser.add_argument("--plot", action="store_true", help="Create visualizations from logbook data")
-        self.parser.add_argument("--num_months", type=int, default=13, help="Number of months to show in daily hours plot")
+        self.parser.add_argument("--num_months", type=int, help="Number of months to show in daily hours plot")
         self.parser.add_argument(
             "--color_scheme",
             type=str,
             choices=["ocean", "forest", "sunset", "lavender", "coral"],
-            help="Color scheme for visualizations (default: ocean)",
+            help="Color scheme for visualizations",
         )
 
         # Version argument
@@ -87,11 +87,11 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
             Parsed command line arguments.
         """
         args = self.parser.parse_args()
-        self._validate_time_arguments(args)
+        self.validate_time_arguments(args)
         return args
 
     @staticmethod
-    def _validate_time_arguments(args: argparse.Namespace) -> None:
+    def validate_time_arguments(args: argparse.Namespace) -> None:
         """
         Validate that the time arguments follow the required logic.
 
@@ -155,11 +155,16 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
         str
             The project version.
         """
-        with pathlib.Path("pyproject.toml").open(encoding="utf-8") as file:
-            for line in file:
-                if "version" in line:
-                    return line.split("=")[1].strip().strip('"')
-        return "unknown"
+        version = "unknown"
+        try:
+            with pathlib.Path("pyproject.toml").open(encoding="utf-8") as file:
+                for line in file:
+                    if "version" in line:
+                        version = line.split("=")[1].strip().strip('"')
+                        break
+        except (FileNotFoundError, PermissionError, UnicodeDecodeError, OSError):
+            pass
+        return version
 
 
 def run_arg_parser() -> argparse.Namespace:
