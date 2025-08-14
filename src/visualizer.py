@@ -16,8 +16,6 @@ Each theme provides separate color palettes for work hours and overtime hours
 to ensure clear visual distinction between the two data types.
 """
 
-from datetime import timedelta
-
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -171,13 +169,13 @@ class Visualizer:
             ax.bar(
                 self.df[self.df["date"].dt.weekday == weekday]["date"],
                 self.df[self.df["date"].dt.weekday == weekday]["work_time"],
-                width=timedelta(days=1),
+                width=1,
                 color=self.work_colors[i],
             )
             ax.bar(
                 self.df[self.df["date"].dt.weekday == weekday]["date"],
                 self.df[self.df["date"].dt.weekday == weekday]["overtime"],
-                width=timedelta(days=1),
+                width=1,
                 color=self.overtime_colors[i],
                 bottom=self.df[self.df["date"].dt.weekday == weekday]["work_time"],
             )

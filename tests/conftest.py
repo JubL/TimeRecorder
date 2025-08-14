@@ -1,5 +1,9 @@
 """Fixtures for the unit tests."""
 
+import matplotlib as mpl
+
+mpl.use("Agg")  # Use non-interactive backend to suppress window creation
+
 import pathlib
 from datetime import datetime
 from zoneinfo import ZoneInfo
