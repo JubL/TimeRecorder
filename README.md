@@ -22,6 +22,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **📱 Missing Day Detection**: Automatically add missing work days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 - **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
+- **📊 Data Visualization**: Generate beautiful bar charts showing daily work hours and overtime with customizable color schemes
 
 ## 🚀 Quick Start
 
@@ -60,6 +61,12 @@ python main.py --config my_config.yaml
 
 # Override specific settings via command line
 python main.py --start-time "08:30" --end-time "17:30" --lunch-break 45
+
+# Show visualization with custom color scheme
+python main.py --show-plot --color-scheme ocean
+
+# Show visualization for last 6 months
+python main.py --show-plot --num-months 6
 ```
 
 ## 📋 Configuration
@@ -106,6 +113,12 @@ output:
   show_statistics: true        # Show overtime/undertime statistics
   export_format: "csv"         # Export format: csv, json, excel
   show_tail: 4                 # Show the last n lines of the logbook
+
+# Visualization settings
+visualization:
+  show_plot: false             # Show work hours visualization
+  color_scheme: "ocean"        # Color scheme: ocean, forest, sunset, lavender, coral
+  num_months: 12               # Number of months to display in visualization
 ```
 
 For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.md).
@@ -162,6 +175,54 @@ pytest -v
 
 # Run tests and show local variables on failures
 pytest -l
+```
+
+## 📊 Data Visualization
+
+TimeRecorder includes a powerful visualization feature that creates beautiful bar charts showing your daily work hours and overtime. The visualization helps you identify patterns in your work schedule and track overtime trends.
+
+### Available Color Schemes
+
+The visualizer supports five beautiful color schemes:
+
+- **Ocean**: Deep blue tones (#1E3A8A to #60A5FA)
+- **Forest**: Rich green tones (#14532D to #22C55E)
+- **Sunset**: Warm orange tones (#9A3412 to #F97316)
+- **Lavender**: Elegant purple tones (#581C87 to #A855F7)
+- **Coral**: Vibrant pink tones (#BE185D to #F472B6)
+
+### Using Visualization
+
+```bash
+# Show visualization with default settings
+python main.py --show-plot
+
+# Use a specific color scheme
+python main.py --show-plot --color-scheme forest
+
+# Show last 6 months of data
+python main.py --show-plot --num-months 6
+
+# Combine with other options
+python main.py --show-plot --color-scheme sunset --num-months 3
+```
+
+### Visualization Features
+
+- **Separate Work and Overtime**: Work hours and overtime are displayed as separate bars with distinct colors
+- **Color-Coded by Weekday**: Each weekday has its own color within the selected scheme
+- **Automatic Data Filtering**: Shows only the specified number of months
+- **Responsive Design**: Charts automatically adjust to your data
+
+### Configuration
+
+You can configure visualization settings in your `config.yaml`:
+
+```yaml
+visualization:
+  show_plot: true              # Enable visualization by default
+  color_scheme: "ocean"        # Choose your preferred color scheme
+  num_months: 12               # Number of months to display
 ```
 
 ## 🔧 Advanced Features
@@ -229,13 +290,15 @@ TimeRecorder/
 │   ├── config_utils.py     # Configuration utilities
 │   ├── logbook.py          # Logbook management
 │   ├── logging_utils.py    # Logging configuration
-│   └── time_recorder.py    # Core time tracking functionality
+│   ├── time_recorder.py    # Core time tracking functionality
+│   └── visualizer.py       # Data visualization functionality
 └── tests/                  # Test suite
     ├── conftest.py         # Pytest configuration
     ├── test_config_utils/  # Configuration utility tests
     ├── test_logbook/       # Logbook management tests
     ├── test_logging_utils/ # Logging utility tests
-    └── test_time_recorder/ # Core functionality tests
+    ├── test_time_recorder/ # Core functionality tests
+    └── test_visualizer/    # Visualization functionality tests
 ```
 
 ### Code Quality
@@ -271,6 +334,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Built with ❤️ using Python 3.12+
 - Uses [pandas](https://pandas.pydata.org/) for data manipulation
+- [matplotlib](https://matplotlib.org/) for data visualization
 - [colorama](https://github.com/tartley/colorama) for colored terminal output
 - [holidays](https://github.com/dr-prodigy/python-holidays) for holiday detection
 - [psutil](https://github.com/giampaolo/psutil) for system information

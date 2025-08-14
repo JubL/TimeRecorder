@@ -65,6 +65,15 @@ display:
   show_tail: 4                 # Show the last n lines of the logbook
 ```
 
+### Visualization Settings
+
+```yaml
+visualization:
+  show_plot: false             # Show work hours visualization
+  color_scheme: "ocean"        # Color scheme: ocean, forest, sunset, lavender, coral
+  num_months: 12               # Number of months to display in visualization
+```
+
 ## Usage
 
 ### Automatic Configuration Creation
@@ -122,6 +131,21 @@ python main.py --config my_config.yaml
 
 # Use custom logbook file
 python main.py --logbook my_logbook.txt
+```
+
+#### Visualization Arguments
+```bash
+# Show work hours visualization
+python main.py --show-plot
+
+# Use specific color scheme
+python main.py --show-plot --color-scheme forest
+
+# Show visualization for specific number of months
+python main.py --show-plot --num-months 6
+
+# Combine visualization with other options
+python main.py --show-plot --color-scheme sunset --num-months 3
 ```
 
 #### Information Arguments
@@ -192,6 +216,12 @@ display:
   calculate_weekly_hours: true     # Calculate weekly hours from log
   calculate_daily_overhours: true  # Calculate daily overhours from log
   show_tail: 10                    # Show more recent entries
+
+# Visualization settings
+visualization:
+  show_plot: true                  # Enable visualization by default
+  color_scheme: "forest"           # Use forest color scheme
+  num_months: 6                    # Show last 6 months
 ```
 
 ## Configuration Functions
@@ -204,6 +234,7 @@ The configuration system provides several utility functions in `src/config_utils
 - `get_logbook_config(config: dict) -> dict`: Extract Logbook parameters
 - `get_display_config(config: dict) -> dict`: Extract display parameters
 - `get_processing_config(config: dict) -> dict`: Extract processing parameters
+- `get_visualization_config(config: dict) -> dict`: Extract visualization parameters
 - `create_default_config(config_path: pathlib.Path) -> None`: Create default configuration file
 - `update_config(config: dict, args: argparse.Namespace) -> dict`: Update configuration with command line arguments
 
@@ -269,6 +300,27 @@ You can specify work times in multiple ways:
 1. **Boot time mode**: `--boot` (uses system boot time as start)
 2. **Manual mode**: `--date "DD.MM.YYYY" --start "HH:MM"`
 3. **Configuration mode**: Use values from `config.yaml`
+
+### Data Visualization
+
+TimeRecorder includes a powerful visualization feature that creates beautiful bar charts showing your daily work hours and overtime. The visualization helps you identify patterns in your work schedule and track overtime trends.
+
+#### Available Color Schemes
+
+The visualizer supports five beautiful color schemes:
+
+- **Ocean**: Deep blue tones (#1E3A8A to #60A5FA)
+- **Forest**: Rich green tones (#14532D to #22C55E)
+- **Sunset**: Warm orange tones (#9A3412 to #F97316)
+- **Lavender**: Elegant purple tones (#581C87 to #A855F7)
+- **Coral**: Vibrant pink tones (#BE185D to #F472B6)
+
+#### Visualization Features
+
+- **Separate Work and Overtime**: Work hours and overtime are displayed as separate bars with distinct colors
+- **Color-Coded by Weekday**: Each weekday has its own color within the selected scheme
+- **Automatic Data Filtering**: Shows only the specified number of months
+- **Responsive Design**: Charts automatically adjust to your data
 
 
 
@@ -348,6 +400,24 @@ python main.py --config custom_config.yaml
 
 # Use custom logbook file
 python main.py --config custom_config.yaml --logbook custom_log.txt
+```
+
+### Visualization Examples
+```bash
+# Show visualization with default settings
+python main.py --show-plot
+
+# Use a specific color scheme
+python main.py --show-plot --color-scheme forest
+
+# Show last 6 months of data
+python main.py --show-plot --num-months 6
+
+# Combine visualization with time recording
+python main.py --boot --log --show-plot --color-scheme sunset
+
+# Show visualization for specific time period
+python main.py --show-plot --color-scheme coral --num-months 3
 ```
 
 Have fun logging!
