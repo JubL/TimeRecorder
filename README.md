@@ -76,49 +76,49 @@ TimeRecorder uses a YAML configuration file (`config.yaml`) for all settings. He
 ```yaml
 # Time tracking settings
 time_tracking:
-  use_boot_time: true          # Use system boot time as start time
-  date: "25.07.2025"          # Date in DD.MM.YYYY format
-  start_time: "07:00"          # Starting time in HH:MM format
-  end_time: "17:25"            # Ending time in HH:MM format
-  lunch_break_duration: 60     # Duration of the lunch break in minutes
+  use_boot_time: true               # Use system boot time as start time
+  date: "25.07.2025"                # Date in DD.MM.YYYY format
+  start_time: "07:00"               # Starting time in HH:MM format
+  end_time: "17:25"                 # Ending time in HH:MM format
+  lunch_break_duration: 60          # Duration of the lunch break in minutes
   full_format: "%d.%m.%Y %H:%M:%S"  # Format string for parsing full datetime
 
 # Logging settings
 logging:
-  enabled: false               # Set to True to log the results
+  enabled: false                      # Set to True to log the results
   log_path: "timereport_logbook.txt"  # Path to the log file
-  log_level: "INFO"            # Logging level: DEBUG, INFO, WARNING, ERROR
+  log_level: "INFO"                   # Logging level: DEBUG, INFO, WARNING, ERROR
 
 # Work schedule settings
 work_schedule:
-  standard_work_hours: 8       # Standard work hours per day
+  standard_work_hours: 8      # Standard work hours per day
   work_days: [0, 1, 2, 3, 4]  # Monday to Friday (0=Monday, 6=Sunday)
-  timezone: "Europe/Berlin"    # Timezone for time calculations
+  timezone: "Europe/Berlin"   # Timezone for time calculations
 
 # Holiday settings
 holidays:
-  country: "DE"                # Country code for holidays
-  subdivision: "HE"            # State/province subdivision
-  include_holidays: true       # Whether to include holidays in calculations
+  country: "DE"           # Country code for holidays
+  subdivision: "HE"       # State/province subdivision
+  include_holidays: true  # Whether to include holidays in calculations
 
 # Data processing settings
 data_processing:
-  auto_squash: true            # Automatically squash duplicate entries
-  add_missing_days: true       # Add missing days to logbook
-  calculate_weekly_hours: true # Calculate weekly hours from log
+  auto_squash: true             # Automatically squash duplicate entries
+  add_missing_days: true        # Add missing days to logbook
+  calculate_weekly_hours: true  # Calculate weekly hours from log
 
 # Output settings
 output:
-  colored_output: true         # Use colored terminal output
-  show_statistics: true        # Show overtime/undertime statistics
-  export_format: "csv"         # Export format: csv, json, excel
-  show_tail: 4                 # Show the last n lines of the logbook
+  colored_output: true   # Use colored terminal output
+  show_statistics: true  # Show overtime/undertime statistics
+  export_format: "csv"   # Export format: csv, json, excel
+  show_tail: 4           # Show the last n lines of the logbook
 
 # Visualization settings
 visualization:
-  show_plot: false             # Show work hours visualization
-  color_scheme: "ocean"        # Color scheme: ocean, forest, sunset, lavender, coral
-  num_months: 12               # Number of months to display in visualization
+  show_plot: false       # Show work hours visualization
+  color_scheme: "ocean"  # Color scheme: ocean, forest, sunset, lavender, coral
+  num_months: 13         # Number of months to display in visualization
 ```
 
 For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.md).
