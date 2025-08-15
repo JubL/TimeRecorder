@@ -44,12 +44,14 @@ Error Handling:
 
 import pathlib
 from datetime import datetime, timedelta
+from warnings import deprecated
 
 import colorama
 import holidays
 import pandas as pd
 
 import src.logging_utils as lu
+from src import formats
 
 # Set up logger with centralized configuration
 logger = lu.setup_logger(__name__)
@@ -116,7 +118,7 @@ class Logbook:
         self.holidays_de_he = holidays.country_holidays(data["holidays"], subdiv=data["subdivision"], language="en")
 
     def load_logbook(self) -> pd.DataFrame:
-        """Load the logbook CSV file into a pandas DataFrame.
+        """Load the logbook file into a pandas DataFrame.
 
         Returns
         -------
@@ -140,25 +142,21 @@ class Logbook:
         -----
         If the logbook file does not exist or is empty, a new DataFrame is created.
         Handles file not found, empty data, and parsing errors gracefully.
+        Automatically detects file format based on file extension.
         """
+        # Get the appropriate format handler based on file extension
+        format_handler = formats.get_format_handler(self.log_path)
+
         # Create the file if it doesn't exist or is empty
         if not self.log_path.exists() or self.log_path.stat().st_size == 0:
-            self.create_df()
+            format_handler.create_empty(
+                self.log_path,
+                ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"],
+            )
 
-        try:
-            # Read CSV without dtype to handle empty strings properly
-            df = pd.read_csv(self.log_path, sep=";", keep_default_na=False, encoding="utf-8")
-            msg = f"Read logbook from {self.log_path}"
-            logger.debug(msg)
-        except pd.errors.EmptyDataError as e:
-            msg = f"{RED}Log file is empty: {self.log_path}{RESET}"
-            raise pd.errors.EmptyDataError(msg) from e
-        except pd.errors.ParserError as e:
-            msg = f"{RED}Error parsing log file{RESET}"
-            raise pd.errors.ParserError(msg) from e
-        except FileNotFoundError as e:
-            msg = f"{RED}Log file not found: {self.log_path}{RESET}"
-            raise FileNotFoundError(msg) from e
+        df = format_handler.load(self.log_path)
+        msg = f"Read logbook from {self.log_path}"
+        logger.debug(msg)
 
         # sanity checks
         # make sure all required columns are present
@@ -190,7 +188,7 @@ class Logbook:
         return df
 
     def save_logbook(self, df: pd.DataFrame) -> None:
-        """Save a pandas DataFrame to a CSV file.
+        """Save a pandas DataFrame to a file.
 
         Parameters
         ----------
@@ -206,14 +204,16 @@ class Logbook:
 
         Notes
         -----
-        The DataFrame is saved using ';' as the separator and UTF-8 encoding.
+        The DataFrame is saved using the appropriate format handler based on file extension.
         Handles OSError and general exceptions gracefully.
         """
         if len(df) > 0 and type(df["date"][0]) is pd.Timestamp:
             # Convert 'date' column to string format if it is in datetime format
             df["date"] = df["date"].dt.strftime(self.date_format)
         try:
-            df.to_csv(self.log_path, sep=";", index=False, encoding="utf-8")
+            # Get the appropriate format handler based on file extension
+            format_handler = formats.get_format_handler(self.log_path)
+            format_handler.save(df, self.log_path)
             msg = f"Logbook saved to {self.log_path}"
             logger.debug(msg)
         except PermissionError as e:
@@ -246,9 +246,10 @@ class Logbook:
         df.loc[len(df)] = data
         self.save_logbook(df)
 
+    @deprecated("This method is no longer used")
     def create_df(self) -> None:
         """
-        Create a new empty logbook DataFrame and save it to the CSV file.
+        Create a new empty logbook DataFrame and save it to the file.
 
         This method creates a new DataFrame with the required column structure
         and saves it to the logbook file path. Used when the logbook file
@@ -258,11 +259,12 @@ class Logbook:
         -----
         Creates a DataFrame with columns: weekday, date, start_time, end_time,
         lunch_break_duration, work_time, case, overtime.
-        The file is saved using semicolon (;) separator and UTF-8 encoding.
+        The file is saved using the appropriate format handler based on file extension.
         """
         columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
-        df = pd.DataFrame(columns=columns)
-        self.save_logbook(df)
+        # Get the appropriate format handler based on file extension
+        format_handler = formats.get_format_handler(self.log_path)
+        format_handler.create_empty(self.log_path, columns)
 
     @staticmethod
     def remove_duplicate_lines(df: pd.DataFrame) -> pd.DataFrame:

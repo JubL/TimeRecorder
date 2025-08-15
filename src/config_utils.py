@@ -263,7 +263,7 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "full_format": "%d.%m.%Y %H:%M:%S",
         },
         "logging": {
-            "log_path": "timereport_logbook.txt",
+            "log_path": "timereport_logbook.csv",
             "log_level": "INFO",
         },
         "work_schedule": {
