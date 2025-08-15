@@ -22,7 +22,7 @@ def test_parse_args_no_arguments() -> None:
         assert args.end is None
         assert args.end_now is False
         assert args.lunch is None
-        assert args.log is False
+        assert args.log is None
         assert args.squash is None
         assert args.add_missing is None
         assert args.weekly is None

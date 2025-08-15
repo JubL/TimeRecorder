@@ -21,7 +21,7 @@ def test_basic_time_recording_workflow() -> None:
         assert args.start is None
         assert args.end_now is False
         assert args.lunch is None
-        assert args.log is False
+        assert args.log is None
 
 
 @pytest.mark.fast
@@ -161,7 +161,7 @@ def test_edge_cases_empty_arguments() -> None:
         assert args.end is None
         assert args.end_now is False
         assert args.lunch is None
-        assert args.log is False
+        assert args.log is None
         assert args.squash is None
         assert args.add_missing is None
         assert args.weekly is None
