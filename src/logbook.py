@@ -568,7 +568,7 @@ class Logbook:
         title = "\nWeekly Summary - Work Hours Calculator\n======================================\n"
         avr_weekly_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
         standard_hours_str = f"Standard Hours: {int(weekly_standard_hours)}h"
-        if not weekly_standard_hours.is_integer():
+        if weekly_standard_hours % 1 != 0:
             standard_hours_str += f" {int(weekly_standard_hours % 1 * 60)}m"
 
         daily_overtime_str = f"Mean Daily Overtime: {int(daily_overtime)}h {int(daily_overtime % 1 * 60)}m"
