@@ -27,13 +27,13 @@ def main() -> None:
     """Run the main function of the time recorder."""
     # TODO: increase the test coverage to 95%
 
-    # TODO: introduce integration tests?
-
     # TODO: visualization of work hours per day, week, month, year
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
 
     # TODO: shall tail() be controlled by the --log flag?
+
+    # TODO: have a flag to set the timezone
 
     # TODO: use log level from config.yaml. put the logger into the main?
     # TODO: use standard_work_hours from config.yaml in the timerecorder object
@@ -42,9 +42,7 @@ def main() -> None:
 
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
 
-    # TODO: add the option to save and load the timereport_logbook in different formats, e.g. csv, json, yaml, parquet, etc.
-    # TODO: add a method to determine the file format
-    # TODO: make the load and save methods choose from a ariety of submethods, e.g. load_csv, load_parquet, etc
+    # TODO: don't create the log file inside the load method if it doesn't exist, just return an empty dataframe
 
     args = ap.run_arg_parser()
 

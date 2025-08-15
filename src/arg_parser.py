@@ -50,7 +50,7 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
         self.parser.add_argument("--lunch", type=int, help="Lunch break duration in minutes")
 
         # Processing control arguments
-        self.parser.add_argument("--log", action="store_true", help="Log the results.")
+        self.parser.add_argument("--log", action=argparse.BooleanOptionalAction, help="Log the results.")
         self.parser.add_argument("--squash", action=argparse.BooleanOptionalAction, help="Squash the logbook.")
         self.parser.add_argument(
             "--add_missing",
