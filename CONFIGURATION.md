@@ -35,9 +35,18 @@ time_tracking:
 
 ```yaml
 logging:
-  log_path: "timereport_logbook.txt"  # Path to the log file (relative to current directory)
+  log_path: "timereport_logbook.csv"  # Path to the log file (supports multiple formats)
   log_level: "INFO"            # Logging level: DEBUG, INFO, WARNING, ERROR
 ```
+
+**Note**: The `log_path` supports multiple file formats. Simply change the file extension to use a different format:
+
+- `timereport_logbook.csv` - CSV format (default)
+- `timereport_logbook.json` - JSON format
+- `timereport_logbook.yaml` - YAML format
+- `timereport_logbook.xlsx` - Excel format
+- `timereport_logbook.xml` - XML format
+- `timereport_logbook.parquet` - Parquet format
 
 ### Work Schedule Settings
 
@@ -130,7 +139,7 @@ python main.py --tail 10
 python main.py --config my_config.yaml
 
 # Use custom logbook file
-python main.py --logbook my_logbook.txt
+python main.py --logbook my_logbook.csv
 ```
 
 #### Visualization Arguments
@@ -197,7 +206,7 @@ time_tracking:
 
 # Logging settings
 logging:
-  log_path: "my_work_log.txt"      # Custom log file name
+  log_path: "my_work_log.csv"      # Custom log file name
   log_level: "DEBUG"               # More verbose logging
 
 # Work schedule settings
@@ -284,6 +293,45 @@ data_processing:
   auto_squash: true  # Remove duplicates and aggregate by date
 ```
 
+### Multi-Format File Support
+
+TimeRecorder supports multiple file formats for storing your time records. The system automatically detects the format based on the file extension and uses the appropriate handler.
+
+#### Supported Formats
+
+- **CSV** (`.csv`, `.txt`) - Comma-separated values with UTF-8 encoding
+- **JSON** (`.json`) - JavaScript Object Notation for easy data exchange
+- **YAML** (`.yaml`, `.yml`) - Human-readable configuration format
+- **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
+- **XML** (`.xml`) - Extensible Markup Language for enterprise integration
+- **Parquet** (`.parquet`, `.pq`) - Columnar storage format for large datasets
+
+#### Format Selection
+
+To use a different format, simply change the file extension in your configuration:
+
+```yaml
+logging:
+  log_path: "timereport_logbook.xlsx"  # Excel format
+  log_path: "timereport_logbook.json"  # JSON format
+```
+
+#### Format Interoperability
+
+All formats maintain the same data structure and are fully interoperable. You can:
+- Convert between formats by changing the file extension
+- Use different formats for different use cases
+- Share data across different systems and applications
+
+#### Format-Specific Features
+
+- **CSV**: Simple, widely supported format
+- **JSON**: Easy data exchange and API integration
+- **YAML**: Human-readable configuration format
+- **Excel**: Business-friendly with formatting capabilities
+- **XML**: Enterprise integration and structured data
+- **Parquet**: Efficient storage for large datasets
+
 ### Weekly Hours Calculation
 
 Calculate and display weekly work hour summaries:
@@ -332,6 +380,10 @@ The visualizer supports five beautiful color schemes:
 2. **Invalid YAML syntax**: Check the YAML syntax using an online validator
 3. **Missing required fields**: The application will show which fields are missing
 4. **Permission errors**: Ensure you have write permissions in the directory
+5. **Format-specific errors**: Some formats require additional dependencies:
+   - Excel format requires `openpyxl` package
+   - XML format requires `lxml` package
+   - These are automatically installed with the main package
 
 ### Validation Errors
 
@@ -399,7 +451,19 @@ python main.py --boot --log --no_weekly
 python main.py --config custom_config.yaml
 
 # Use custom logbook file
-python main.py --config custom_config.yaml --logbook custom_log.txt
+python main.py --config custom_config.yaml --logbook custom_log.csv
+```
+
+### Multi-Format Examples
+```bash
+# Use Excel format for business reporting
+python main.py --config excel_config.yaml --logbook work_hours.xlsx
+
+# Use JSON format for API integration
+python main.py --config json_config.yaml --logbook time_data.json
+
+# Use XML format for enterprise systems
+python main.py --config xml_config.yaml --logbook time_data.xml
 ```
 
 ### Visualization Examples

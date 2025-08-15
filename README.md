@@ -16,7 +16,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **📊 Overtime Calculations**: Calculate overtime/undertime based on standard eight-hour work days (configurable)
 - **📈 Weekly Reports**: Generate weekly work hour summaries with detailed analysis
 - **🎨 Colored Output**: Visual feedback with color-coded overtime (green) and undertime (red)
-- **📝 CSV Logbook**: Persistent storage of all time records in CSV format
+- **📝 Multi-Format Logbook**: Persistent storage of all time records in multiple formats (CSV, JSON, YAML, Excel, XML, Parquet)
 - **🔧 Flexible Configuration**: YAML-based configuration system for easy customization
 - **🌍 Holiday Support**: Automatic holiday detection
 - **📱 Missing Day Detection**: Automatically add missing work days (weekends, holidays) to your logbook
@@ -86,7 +86,7 @@ time_tracking:
 # Logging settings
 logging:
   enabled: false                      # Set to True to log the results
-  log_path: "timereport_logbook.txt"  # Path to the log file
+  log_path: "timereport_logbook.csv"  # Path to the log file (supports multiple formats)
   log_level: "INFO"                   # Logging level: DEBUG, INFO, WARNING, ERROR
 
 # Work schedule settings
@@ -265,14 +265,41 @@ output:
 
 The `tail()` method displays work time in a human-readable format (e.g., "7h 30m" instead of "7.5").
 
-### Export Options
+### File Format Support
 
-Export your time records in various formats:
+TimeRecorder supports multiple file formats for storing your time records. Simply specify the desired format in your configuration by changing the file extension:
 
 ```yaml
-output:
-  export_format: "csv"  # Options: csv, json, excel
+logging:
+  log_path: "timereport_logbook.csv"   # CSV format
+  log_path: "timereport_logbook.json"  # JSON format
+  log_path: "timereport_logbook.yaml"  # YAML format
+  log_path: "timereport_logbook.xlsx"  # Excel format
+  log_path: "timereport_logbook.xml"   # XML format
+  log_path: "timereport_logbook.pq" # Parquet format
 ```
+
+#### Supported Formats
+
+- **CSV** (`.csv`, `.txt`) - Comma-separated values with UTF-8 encoding
+- **JSON** (`.json`) - JavaScript Object Notation for easy data exchange
+- **YAML** (`.yaml`, `.yml`) - Human-readable configuration format
+- **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
+- **XML** (`.xml`) - Extensible Markup Language for enterprise integration
+- **Parquet** (`.parquet`, `.pq`) - Columnar storage format for large datasets
+
+The system automatically detects the format based on the file extension and uses the appropriate handler. All formats maintain the same data structure and are fully interoperable.
+
+#### Extensible Format System
+
+TimeRecorder uses a **Strategy Pattern** for file format handling, making it easy to add new formats. The system includes:
+
+- **Automatic Format Detection**: Based on file extension
+- **Unified Interface**: All formats implement the same `BaseFormatHandler` interface
+- **Easy Extension**: Adding new formats requires minimal code changes
+- **Format Registry**: Centralized mapping of file extensions to handlers
+
+For developers interested in adding new formats, see the [formats module documentation](src/formats/README.md).
 
 ## 🛠️ Development
 
@@ -288,6 +315,15 @@ TimeRecorder/
 │   ├── __init__.py         # Package initialization
 │   ├── arg_parser.py       # Command line argument parsing
 │   ├── config_utils.py     # Configuration utilities
+│   ├── formats/            # File format handlers
+│   │   ├── __init__.py     # Format registry and handlers
+│   │   ├── base.py         # Base format handler interface
+│   │   ├── csv_handler.py  # CSV format handler
+│   │   ├── json_handler.py # JSON format handler
+│   │   ├── yaml_handler.py # YAML format handler
+│   │   ├── excel_handler.py # Excel format handler
+│   │   ├── xml_handler.py  # XML format handler
+│   │   └── parquet_handler.py # Parquet format handler
 │   ├── logbook.py          # Logbook management
 │   ├── logging_utils.py    # Logging configuration
 │   ├── time_recorder.py    # Core time tracking functionality
@@ -332,12 +368,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built with ❤️ using Python 3.12+
+- Built with ❤️ using Python 3.13+
 - Uses [pandas](https://pandas.pydata.org/) for data manipulation
 - [matplotlib](https://matplotlib.org/) for data visualization
 - [colorama](https://github.com/tartley/colorama) for colored terminal output
 - [holidays](https://github.com/dr-prodigy/python-holidays) for holiday detection
 - [psutil](https://github.com/giampaolo/psutil) for system information
+- [openpyxl](https://openpyxl.readthedocs.io/) for Excel file support
+- [lxml](https://lxml.de/) for XML file support
 
 ## 📞 Support
 
