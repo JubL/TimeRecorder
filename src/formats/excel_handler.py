@@ -19,7 +19,8 @@ class ExcelHandler(BaseFormatHandler):
     Handles reading and writing Excel files (.xlsx, .xls) with proper formatting.
     """
 
-    def load(self, file_path: Path) -> pd.DataFrame:
+    @staticmethod
+    def load(file_path: Path) -> pd.DataFrame:
         """
         Load data from an Excel file into a pandas DataFrame.
 
@@ -51,7 +52,8 @@ class ExcelHandler(BaseFormatHandler):
         except Exception as e:
             raise ValueError(f"Invalid Excel format in {file_path}: {e}") from e
 
-    def save(self, df: pd.DataFrame, file_path: Path) -> None:
+    @staticmethod
+    def save(df: pd.DataFrame, file_path: Path) -> None:
         """
         Save a pandas DataFrame to an Excel file.
 

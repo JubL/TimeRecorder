@@ -19,7 +19,8 @@ class XMLHandler(BaseFormatHandler):
     Handles reading and writing XML files with proper encoding.
     """
 
-    def load(self, file_path: Path) -> pd.DataFrame:
+    @staticmethod
+    def load(file_path: Path) -> pd.DataFrame:
         """
         Load data from an XML file into a pandas DataFrame.
 
@@ -50,7 +51,8 @@ class XMLHandler(BaseFormatHandler):
         except Exception as e:
             raise ValueError(f"Invalid XML format in {file_path}: {e}") from e
 
-    def save(self, df: pd.DataFrame, file_path: Path) -> None:
+    @staticmethod
+    def save(df: pd.DataFrame, file_path: Path) -> None:
         """
         Save a pandas DataFrame to an XML file.
 
