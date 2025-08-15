@@ -21,14 +21,3 @@ def test_record_into_df_creates_and_appends_row(logbook: lb.Logbook, line: tr.Ti
     df2 = logbook.load_logbook()
     assert len(df2) == 2
     assert (df2["date"] == line.date).all()
-
-
-@pytest.mark.fast
-def test_create_df_creates_file_with_correct_columns(logbook: lb.Logbook) -> None:
-    """Test that create_df creates a file with the correct columns and no rows."""
-    logbook.create_df()
-    assert logbook.get_path().exists()
-    df = logbook.load_logbook()
-    expected_columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
-    assert list(df.columns) == expected_columns
-    assert len(df) == 0

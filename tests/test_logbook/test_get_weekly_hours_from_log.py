@@ -9,7 +9,10 @@ import src.logbook as lb
 @pytest.mark.fast
 def test_returns_zero_if_no_work_days(logbook: lb.Logbook, caplog: pytest.LogCaptureFixture) -> None:
     """Should return 0.0 and a log warning if no work days are found (all work_time zero)."""
-    logbook.create_df()
+    df = logbook.load_logbook()
+    assert len(df) == 0
+    logbook.save_logbook(df)
+
     with caplog.at_level("WARNING"):
         logbook.get_weekly_hours_from_log()
         assert "No work days found in the log file." in caplog.text

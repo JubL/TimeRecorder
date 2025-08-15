@@ -72,7 +72,10 @@ def test_find_and_add_missing_days_with_no_missing_days(logbook: lb.Logbook) -> 
 @pytest.mark.fast
 def test_find_and_add_missing_days_with_empty_logbook(logbook: lb.Logbook) -> None:
     """Test that find_and_add_missing_days handles empty logbook gracefully."""
-    logbook.create_df()
+    df = logbook.load_logbook()
+    assert len(df) == 0
+    logbook.save_logbook(df)
+
     logbook.find_and_add_missing_days()
     # Verify that the logbook is still empty
     result = logbook.load_logbook()

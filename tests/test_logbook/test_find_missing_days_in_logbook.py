@@ -11,7 +11,9 @@ import src.logbook as lb
 def test_find_missing_days_empty_logbook(logbook: lb.Logbook) -> None:
     """Test that find_missing_days_in_logbook returns empty list for empty logbook."""
     # Create an empty logbook
-    logbook.create_df()
+    df = logbook.load_logbook()
+    assert len(df) == 0
+    logbook.save_logbook(df)
 
     with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()

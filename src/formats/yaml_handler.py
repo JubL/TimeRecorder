@@ -89,17 +89,3 @@ class YAMLHandler(BaseFormatHandler):
             raise PermissionError(f"Permission denied when saving YAML to {file_path}: {e}") from e
         except OSError as e:
             raise OSError(f"OS error while saving YAML to {file_path}: {e}") from e
-
-    def create_empty(self, file_path: Path, columns: list[str]) -> None:
-        """
-        Create an empty YAML file with the correct structure.
-
-        Parameters
-        ----------
-        file_path : Path
-            Path where to create the empty YAML file.
-        """
-        df = pd.DataFrame(columns=columns)
-        df.loc[len(df)] = ["", "", "", "", 0, 0, "", ""]
-
-        self.save(df, file_path)

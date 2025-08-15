@@ -146,12 +146,10 @@ class Logbook:
         # Get the appropriate format handler based on file extension
         format_handler = formats.get_format_handler(self.log_path)
 
-        # Create the file if it doesn't exist or is empty
+        # If the logbook file doesn't exist or is empty, return an empty dataframe.
         if not self.log_path.exists() or self.log_path.stat().st_size == 0:
-            format_handler.create_empty(
-                self.log_path,
-                ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"],
-            )
+            columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
+            return pd.DataFrame(columns=columns)
 
         df = format_handler.load(self.log_path)
         msg = f"Read logbook from {self.log_path}"

@@ -60,14 +60,3 @@ class BaseFormatHandler(ABC):
         OSError
             If there's an OS-level error during writing.
         """
-
-    @abstractmethod
-    def create_empty(self, file_path: Path, columns: list[str]) -> None:
-        """
-        Create an empty file with the correct format structure.
-
-        Parameters
-        ----------
-        file_path : Path
-            Path where to create the empty file.
-        """

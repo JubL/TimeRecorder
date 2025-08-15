@@ -10,7 +10,9 @@ import src.logbook as lb
 def test_load_logbook_file_not_found_error_with_mock_read_csv(logbook: lb.Logbook) -> None:
     """Test that load_logbook handles FileNotFoundError gracefully by mocking pd.read_csv."""
     # Create a valid file so the initial check passes
-    logbook.create_df()
+    df = logbook.load_logbook()
+    assert len(df) == 0
+    logbook.save_logbook(df)
 
     # Mock pd.read_csv to raise FileNotFoundError
     with patch("pandas.read_csv", side_effect=FileNotFoundError("File not found")), pytest.raises(FileNotFoundError):
@@ -21,7 +23,9 @@ def test_load_logbook_file_not_found_error_with_mock_read_csv(logbook: lb.Logboo
 def test_load_logbook_empty_data_error_with_mock_read_csv(logbook: lb.Logbook) -> None:
     """Test that load_logbook handles EmptyDataError gracefully by mocking pd.read_csv."""
     # Create a valid file so the initial check passes
-    logbook.create_df()
+    df = logbook.load_logbook()
+    assert len(df) == 0
+    logbook.save_logbook(df)
 
     # Mock pd.read_csv to raise EmptyDataError
     with patch("pandas.read_csv", side_effect=pd.errors.EmptyDataError("No data")), pytest.raises(pd.errors.EmptyDataError):
@@ -32,7 +36,9 @@ def test_load_logbook_empty_data_error_with_mock_read_csv(logbook: lb.Logbook) -
 def test_load_logbook_parser_error_with_mock_read_csv(logbook: lb.Logbook) -> None:
     """Test that load_logbook handles ParserError gracefully by mocking pd.read_csv."""
     # Create a valid file so the initial check passes
-    logbook.create_df()
+    df = logbook.load_logbook()
+    assert len(df) == 0
+    logbook.save_logbook(df)
 
     # Mock pd.read_csv to raise ParserError
     with patch("pandas.read_csv", side_effect=pd.errors.ParserError("Parse error")), pytest.raises(pd.errors.ParserError):
