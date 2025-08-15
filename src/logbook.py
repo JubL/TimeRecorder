@@ -44,7 +44,6 @@ Error Handling:
 
 import pathlib
 from datetime import datetime, timedelta
-from warnings import deprecated
 
 import colorama
 import holidays
@@ -210,18 +209,20 @@ class Logbook:
         if len(df) > 0 and type(df["date"][0]) is pd.Timestamp:
             # Convert 'date' column to string format if it is in datetime format
             df["date"] = df["date"].dt.strftime(self.date_format)
+
+        # Get the appropriate format handler based on file extension
+        format_handler = formats.get_format_handler(self.log_path)
         try:
-            # Get the appropriate format handler based on file extension
-            format_handler = formats.get_format_handler(self.log_path)
             format_handler.save(df, self.log_path)
-            msg = f"Logbook saved to {self.log_path}"
-            logger.debug(msg)
         except PermissionError as e:
             msg = f"Permission denied when saving logbook to {self.log_path}: {e}"
             raise PermissionError(msg) from e
         except OSError as e:
             msg = f"OS error while saving logbook to {self.log_path}: {e}"
             raise OSError(msg) from e
+
+        msg = f"Logbook saved to {self.log_path}"
+        logger.debug(msg)
 
     def record_into_df(self, data: dict) -> None:
         """
@@ -245,26 +246,6 @@ class Logbook:
         df = self.load_logbook()
         df.loc[len(df)] = data
         self.save_logbook(df)
-
-    @deprecated("This method is no longer used")
-    def create_df(self) -> None:
-        """
-        Create a new empty logbook DataFrame and save it to the file.
-
-        This method creates a new DataFrame with the required column structure
-        and saves it to the logbook file path. Used when the logbook file
-        doesn't exist or is empty.
-
-        Notes
-        -----
-        Creates a DataFrame with columns: weekday, date, start_time, end_time,
-        lunch_break_duration, work_time, case, overtime.
-        The file is saved using the appropriate format handler based on file extension.
-        """
-        columns = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
-        # Get the appropriate format handler based on file extension
-        format_handler = formats.get_format_handler(self.log_path)
-        format_handler.create_empty(self.log_path, columns)
 
     @staticmethod
     def remove_duplicate_lines(df: pd.DataFrame) -> pd.DataFrame:
