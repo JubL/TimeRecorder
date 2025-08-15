@@ -563,15 +563,18 @@ class Logbook:
         """Get the weekly summary from the logbook."""
         weekly_hours, daily_overtime = self.get_weekly_hours_from_log()
 
+        weekly_standard_hours = self.standard_work_hours * len(self.work_days)
+
         title = "\nWeekly Summary - Work Hours Calculator\n======================================\n"
         avr_weekly_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
-        standard_hours = f"Standard Hours: {(self.standard_work_hours * len(self.work_days))}h"
-        if (self.standard_work_hours * len(self.work_days)) % 1 != 0:
-            standard_hours += f" {int((self.standard_work_hours * len(self.work_days)) % 1 * 60)}m"
+        standard_hours_str = f"Standard Hours: {int(weekly_standard_hours)}h"
+        if not weekly_standard_hours.is_integer():
+            standard_hours_str += f" {int(weekly_standard_hours % 1 * 60)}m"
+
         daily_overtime_str = f"Mean Daily Overtime: {int(daily_overtime)}h {int(daily_overtime % 1 * 60)}m"
 
         # Combine all parts
-        items = [title, avr_weekly_hours, standard_hours, daily_overtime_str]
+        items = [title, avr_weekly_hours, standard_hours_str, daily_overtime_str]
         logger.info("\n".join(items))
 
     def get_weekly_hours_from_log(self) -> tuple[float, float]:
