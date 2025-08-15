@@ -33,7 +33,7 @@ def test_load_config_success(relative_precision: float) -> None:
                 "timezone": "Europe/Berlin",
             },
         }
-        yaml.dump(config_data, f)
+        yaml.safe_dump(config_data, f)
         config_path = f.name
 
     try:

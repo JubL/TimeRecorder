@@ -10,7 +10,7 @@ import src.config_utils as cu
 
 @patch("pathlib.Path.exists")
 @patch("pathlib.Path.open")
-@patch("yaml.dump")
+@patch("yaml.safe_dump")
 @pytest.mark.fast
 def test_create_default_config_new_file(mock_yaml_dump: Mock, mock_open: Mock, mock_exists: Mock) -> None:
     """Test creating default configuration file when it doesn't exist."""
