@@ -289,7 +289,7 @@ def create_default_config(config_path: pathlib.Path) -> None:
         "visualization": {
             "color_scheme": "ocean",
             "num_months": 13,
-            "show_plot": True,
+            "plot": True,
         },
     }
 
