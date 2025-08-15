@@ -10,17 +10,22 @@ from pathlib import Path
 
 from .base import BaseFormatHandler
 from .csv_handler import CSVHandler
+from .excel_handler import ExcelHandler
 from .json_handler import JSONHandler
 from .parquet_handler import ParquetHandler
+from .xml_handler import XMLHandler
 from .yaml_handler import YAMLHandler
 
 # Format registry - maps file extensions to handler classes
 FORMAT_REGISTRY: dict[str, type[BaseFormatHandler]] = {
     ".txt": CSVHandler,
     ".csv": CSVHandler,
+    ".xlsx": ExcelHandler,
+    ".xls": ExcelHandler,
     ".json": JSONHandler,
     ".yaml": YAMLHandler,
     ".yml": YAMLHandler,
+    ".xml": XMLHandler,
     ".parquet": ParquetHandler,
     ".pq": ParquetHandler,
 }

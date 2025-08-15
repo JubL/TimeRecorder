@@ -23,6 +23,12 @@ handler = get_format_handler(Path("logbook.json"))
 
 # Automatically selects YAMLHandler for .yaml files
 handler = get_format_handler(Path("logbook.yaml"))
+
+# Automatically selects ExcelHandler for .xlsx files
+handler = get_format_handler(Path("logbook.xlsx"))
+
+# Automatically selects XMLHandler for .xml files
+handler = get_format_handler(Path("logbook.xml"))
 ```
 
 ### 2. Format Registry
@@ -32,9 +38,12 @@ The `FORMAT_REGISTRY` maps file extensions to handler classes:
 ```python
 FORMAT_REGISTRY = {
     ".csv": CSVHandler,
+    ".xlsx": ExcelHandler,
+    ".xls": ExcelHandler,
     ".json": JSONHandler,
     ".yaml": YAMLHandler,
     ".yml": YAMLHandler,
+    ".xml": XMLHandler,
     ".parquet": ParquetHandler,
     ".pq": ParquetHandler,
 }
@@ -55,8 +64,10 @@ handler.create_empty(file_path)  # Create empty file
 
 Currently supported formats:
 
-- **CSV** (`.csv`) - Semicolon-separated values with UTF-8 encoding
+- **CSV** (`.csv`, `.txt`) - Semicolon-separated values with UTF-8 encoding
+- **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
 - **JSON** (`.json`) - JavaScript Object Notation
+- **XML** (`.xml`) - Extensible Markup Language
 - **YAML** (`.yaml`, `.yml`) - YAML Ain't Markup Language
 - **Parquet** (`.parquet`, `.pq`) - Columnar storage format
 
