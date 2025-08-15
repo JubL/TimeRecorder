@@ -20,7 +20,8 @@ class YAMLHandler(BaseFormatHandler):
     Handles reading and writing YAML files with proper encoding.
     """
 
-    def load(self, file_path: Path) -> pd.DataFrame:
+    @staticmethod
+    def load(file_path: Path) -> pd.DataFrame:
         """
         Load data from a YAML file into a pandas DataFrame.
 
@@ -60,7 +61,8 @@ class YAMLHandler(BaseFormatHandler):
         except yaml.YAMLError as e:
             raise ValueError(f"Invalid YAML format in {file_path}: {e}") from e
 
-    def save(self, df: pd.DataFrame, file_path: Path) -> None:
+    @staticmethod
+    def save(df: pd.DataFrame, file_path: Path) -> None:
         """
         Save a pandas DataFrame to a YAML file.
 

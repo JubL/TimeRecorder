@@ -19,7 +19,8 @@ class CSVHandler(BaseFormatHandler):
     Handles reading and writing CSV files with semicolon separator and UTF-8 encoding.
     """
 
-    def load(self, file_path: Path) -> pd.DataFrame:
+    @staticmethod
+    def load(file_path: Path) -> pd.DataFrame:
         """
         Load data from a CSV file into a pandas DataFrame.
 
@@ -51,7 +52,8 @@ class CSVHandler(BaseFormatHandler):
         except FileNotFoundError as e:
             raise FileNotFoundError(f"CSV file not found: {file_path}") from e
 
-    def save(self, df: pd.DataFrame, file_path: Path) -> None:
+    @staticmethod
+    def save(df: pd.DataFrame, file_path: Path) -> None:
         """
         Save a pandas DataFrame to a CSV file.
 
