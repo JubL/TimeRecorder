@@ -10,8 +10,8 @@ from pathlib import Path
 
 from .base import BaseFormatHandler
 from .csv_handler import CSVHandler
+from .json_handler import JSONHandler
 
-# from .json_handler import JSONHandler
 # from .parquet_handler import ParquetHandler
 from .yaml_handler import YAMLHandler
 
@@ -19,7 +19,7 @@ from .yaml_handler import YAMLHandler
 FORMAT_REGISTRY: dict[str, type[BaseFormatHandler]] = {
     ".txt": CSVHandler,
     ".csv": CSVHandler,
-    # ".json": JSONHandler,
+    ".json": JSONHandler,
     ".yaml": YAMLHandler,
     ".yml": YAMLHandler,
     # ".parquet": ParquetHandler,
