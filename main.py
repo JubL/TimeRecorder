@@ -5,7 +5,6 @@ Provides a main function that creates a TimeRecorder object and a Logbook object
 and uses them to record the time and log the results.
 """
 
-import logging
 import pathlib
 
 import src.arg_parser as ap
@@ -14,13 +13,6 @@ import src.logging_utils as lu
 from src.logbook import Logbook
 from src.time_recorder import TimeRecorder
 from src.visualizer import Visualizer
-
-# Set global log level first (change this to control all logging)
-# Options: logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR
-lu.set_global_log_level(logging.INFO)
-
-# Set up main logger
-logger = lu.setup_logger(__name__)
 
 
 def main() -> None:
@@ -35,8 +27,6 @@ def main() -> None:
 
     # TODO: have a flag to set the timezone
 
-    # TODO: use log level from config.yaml. put the logger into the main?
-
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
 
     args = ap.run_arg_parser()
@@ -47,6 +37,14 @@ def main() -> None:
         cu.create_default_config(config_path)
 
     config = cu.load_config(config_path)
+
+    # Set global log level first (change this to control all logging)
+    # Options: logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR
+    lu.set_global_log_level(config["logging"]["log_level"])
+
+    # Set up main logger
+    logger = lu.setup_logger(__name__)
+
     if not cu.validate_config(config):
         logger.error("Configuration validation failed")
         raise SystemExit(1)
