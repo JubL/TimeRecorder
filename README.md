@@ -99,7 +99,6 @@ work_schedule:
 holidays:
   country: "DE"           # Country code for holidays
   subdivision: "HE"       # State/province subdivision
-  include_holidays: true  # Whether to include holidays in calculations
 
 # Data processing settings
 data_processing:
@@ -116,7 +115,7 @@ output:
 
 # Visualization settings
 visualization:
-  show_plot: false       # Show work hours visualization
+  plot: false            # Show work hours visualization
   color_scheme: "ocean"  # Color scheme: ocean, forest, sunset, lavender, coral
   num_months: 13         # Number of months to display in visualization
 ```
@@ -220,7 +219,7 @@ You can configure visualization settings in your `config.yaml`:
 
 ```yaml
 visualization:
-  show_plot: true              # Enable visualization by default
+  plot: true                   # Enable visualization by default
   color_scheme: "ocean"        # Choose your preferred color scheme
   num_months: 12               # Number of months to display
 ```

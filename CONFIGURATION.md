@@ -78,7 +78,7 @@ display:
 
 ```yaml
 visualization:
-  show_plot: false             # Show work hours visualization
+  plot: false                  # Show work hours visualization
   color_scheme: "ocean"        # Color scheme: ocean, forest, sunset, lavender, coral
   num_months: 12               # Number of months to display in visualization
 ```
@@ -228,7 +228,7 @@ display:
 
 # Visualization settings
 visualization:
-  show_plot: true                  # Enable visualization by default
+  plot: true                       # Enable visualization by default
   color_scheme: "forest"           # Use forest color scheme
   num_months: 6                    # Show last 6 months
 ```
