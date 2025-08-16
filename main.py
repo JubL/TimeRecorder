@@ -36,13 +36,8 @@ def main() -> None:
     # TODO: have a flag to set the timezone
 
     # TODO: use log level from config.yaml. put the logger into the main?
-    # TODO: use standard_work_hours from config.yaml in the timerecorder object
-    # TODO: use work_days from config.yaml in the logbook class
-    # TODO: use holidays from config.yaml in the logbook class
 
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
-
-    # TODO: don't create the log file inside the load method if it doesn't exist, just return an empty dataframe
 
     args = ap.run_arg_parser()
 

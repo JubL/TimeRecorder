@@ -16,13 +16,13 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **📊 Overtime Calculations**: Calculate overtime/undertime based on standard eight-hour work days (configurable)
 - **📈 Weekly Reports**: Generate weekly work hour summaries with detailed analysis
 - **🎨 Colored Output**: Visual feedback with color-coded overtime (green) and undertime (red)
-- **📝 Multi-Format Logbook**: Persistent storage of all time records in multiple formats (CSV, JSON, YAML, Excel, XML, Parquet)
+- **📝 Multi-Format Logbook**: Persistent storage of all time records in multiple file formats
 - **🔧 Flexible Configuration**: YAML-based configuration system for easy customization
 - **🌍 Holiday Support**: Automatic holiday detection
 - **📱 Missing Day Detection**: Automatically add missing work days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 - **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
-- **📊 Data Visualization**: Generate beautiful bar charts showing daily work hours and overtime with customizable color schemes
+- **📊 Data Visualization**: Generate bar charts showing daily work hours and overtime with customizable color schemes
 
 ## 🚀 Quick Start
 
