@@ -45,6 +45,7 @@ def line() -> tr.TimeRecorder:
             "lunch_break_duration": 0,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 

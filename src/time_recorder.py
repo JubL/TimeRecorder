@@ -164,6 +164,7 @@ class TimeRecorder:
 
         self.date = data["date"]
         self.timezone = data["timezone"]
+        self.standard_work_hours = data["standard_work_hours"]
 
         # Start time as a timezone-aware datetime object
         self.start_time = _parse_datetime(data["date"], data["start_time"], self.full_format, self.timezone)
@@ -295,8 +296,7 @@ class TimeRecorder:
 
         return work_duration
 
-    @staticmethod
-    def calculate_overtime(work_time: timedelta) -> tuple[str, timedelta]:
+    def calculate_overtime(self, work_time: timedelta) -> tuple[str, timedelta]:
         """
         Determine whether the given work time results in overtime or undertime by comparing it to a full work day.
 
@@ -314,7 +314,7 @@ class TimeRecorder:
             - str: Case indicating 'overtime' or 'undertime'
             - timedelta: The amount of overtime or undertime calculated as a difference from a full work day
         """
-        full_day_ = timedelta(hours=8, minutes=0)
+        full_day_ = timedelta(hours=self.standard_work_hours)
 
         case = "overtime" if work_time >= full_day_ else "undertime"
 

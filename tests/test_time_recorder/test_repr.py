@@ -17,6 +17,7 @@ def test_repr_basic_format() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -50,6 +51,7 @@ def test_repr_overtime_case() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -79,6 +81,7 @@ def test_repr_undertime_case() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -108,6 +111,7 @@ def test_repr_zero_lunch_break() -> None:
             "lunch_break_duration": 0,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -132,6 +136,7 @@ def test_repr_fractional_work_time() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -155,6 +160,7 @@ def test_repr_different_timezone() -> None:
             "lunch_break_duration": 60,
             "timezone": "America/New_York",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -176,6 +182,7 @@ def test_repr_different_date() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -198,6 +205,7 @@ def test_repr_large_overtime() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -221,6 +229,7 @@ def test_repr_large_undertime() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -244,6 +253,7 @@ def test_repr_complex_minutes() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -268,6 +278,7 @@ def test_repr_complex_minutes() -> None:
                 "lunch_break_duration": 60,
                 "timezone": "Europe/Berlin",
                 "full_format": "%d.%m.%Y %H:%M:%S",
+                "standard_work_hours": 8,
             },
             9,
         ),
@@ -280,6 +291,7 @@ def test_repr_complex_minutes() -> None:
                 "lunch_break_duration": 30,
                 "timezone": "America/New_York",
                 "full_format": "%d.%m.%Y %H:%M:%S",
+                "standard_work_hours": 8,
             },
             9,
         ),
@@ -292,6 +304,7 @@ def test_repr_complex_minutes() -> None:
                 "lunch_break_duration": 45,
                 "timezone": "Asia/Tokyo",
                 "full_format": "%d.%m.%Y %H:%M:%S",
+                "standard_work_hours": 8,
             },
             9,
         ),

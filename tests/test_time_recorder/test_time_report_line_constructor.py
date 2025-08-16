@@ -17,6 +17,7 @@ import src.time_recorder as tr
             "lunch_break_duration": 60,
             "full_format": "%d.%m.%Y %H:%M:%S",
             "timezone": "Europe/Berlin",
+            "standard_work_hours": 8,
             "expected_date": "24.04.2025",
             "expected_start": datetime.strptime("24.04.2025 07:32:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin")),
             "expected_end": datetime.strptime("24.04.2025 15:40:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin")),
@@ -30,6 +31,7 @@ import src.time_recorder as tr
             "lunch_break_duration": 45,
             "full_format": "%Y-%m-%d %H:%M:%S",
             "timezone": "Europe/Berlin",
+            "standard_work_hours": 8,
             "expected_date": "2025-04-24",
             "expected_start": datetime.strptime("2025-04-24 07:32:00", "%Y-%m-%d %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin")),
             "expected_end": datetime.strptime("2025-04-24 15:40:00", "%Y-%m-%d %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin")),
@@ -49,6 +51,7 @@ def test_init_valid(case: dict) -> None:
             "lunch_break_duration": case["lunch_break_duration"],
             "full_format": case["full_format"],
             "timezone": case["timezone"],
+            "standard_work_hours": case["standard_work_hours"],
         },
     )
     assert line.date == case["expected_date"]
@@ -62,6 +65,7 @@ def test_init_valid(case: dict) -> None:
     assert line.full_format == case["full_format"]
     assert isinstance(line.date_format, str)
     assert isinstance(line.time_format, str)
+    assert line.standard_work_hours == case["standard_work_hours"]
 
 
 @pytest.mark.fast
@@ -77,6 +81,7 @@ def test_init_missing_seconds_in_time() -> None:
             "lunch_break_duration": 30,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
     assert line.start_time == datetime.strptime("24.04.2025 08:00:00", "%d.%m.%Y %H:%M:%S").replace(tzinfo=ZoneInfo("Europe/Berlin"))
@@ -96,6 +101,7 @@ def test_init_invalid_time_format_raises() -> None:
                 "lunch_break_duration": 30,
                 "timezone": "Europe/Berlin",
                 "full_format": "%d.%m.%Y %H:%M:%S",
+                "standard_work_hours": 8,
             },
         )
 
@@ -113,6 +119,7 @@ def test_init_start_time_after_end_time_raises() -> None:
                 "lunch_break_duration": 30,
                 "timezone": "Europe/Berlin",
                 "full_format": "%d.%m.%Y %H:%M:%S",
+                "standard_work_hours": 8,
             },
         )
 
@@ -130,6 +137,7 @@ def test_init_negative_lunch_break_raises() -> None:
                 "lunch_break_duration": -10,
                 "timezone": "Europe/Berlin",
                 "full_format": "%d.%m.%Y %H:%M:%S",
+                "standard_work_hours": 8,
             },
         )
 
@@ -147,5 +155,6 @@ def test_init_zero_duration_raises() -> None:
                 "lunch_break_duration": 2,
                 "timezone": "Europe/Berlin",
                 "full_format": "%d.%m.%Y %H:%M:%S",
+                "standard_work_hours": 8,
             },
         )

@@ -82,6 +82,7 @@ def get_time_recorder_config(config: dict) -> dict:
         "end_now": time_tracking.get("end_now", False),
         "lunch_break_duration": time_tracking.get("lunch_break_duration", 60),
         "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
+        "standard_work_hours": work_schedule.get("standard_work_hours", 8),
         "timezone": work_schedule.get("timezone", "Europe/Berlin"),
     }
 

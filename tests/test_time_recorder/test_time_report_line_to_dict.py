@@ -18,6 +18,7 @@ import src.time_recorder as tr
                     "lunch_break_duration": 30,
                     "timezone": "Europe/Berlin",
                     "full_format": "%d.%m.%Y %H:%M:%S",
+                    "standard_work_hours": 8,
                 },
             ),
             {
@@ -39,6 +40,7 @@ import src.time_recorder as tr
                     "lunch_break_duration": 30,
                     "timezone": "Europe/Berlin",
                     "full_format": "%d.%m.%Y %H:%M:%S",
+                    "standard_work_hours": 8,
                 },
             ),
             {
@@ -60,6 +62,7 @@ import src.time_recorder as tr
                     "lunch_break_duration": 60,
                     "timezone": "Europe/Berlin",
                     "full_format": "%d.%m.%Y %H:%M:%S",
+                    "standard_work_hours": 8,
                 },
             ),
             {

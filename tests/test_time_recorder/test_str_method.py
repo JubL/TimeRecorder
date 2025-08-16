@@ -18,6 +18,7 @@ def test_str_overtime_case() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -47,6 +48,7 @@ def test_str_undertime_case() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -76,6 +78,7 @@ def test_str_exact_8_hours() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -105,6 +108,7 @@ def test_str_negative_overtime() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -134,6 +138,7 @@ def test_str_large_overtime() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -163,6 +168,7 @@ def test_str_partial_hours_and_minutes() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -192,6 +198,7 @@ def test_str_invalid_case_raises_value_error() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -215,6 +222,7 @@ def test_str_empty_case_raises_value_error() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -238,6 +246,7 @@ def test_str_none_case_raises_value_error() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -260,6 +269,7 @@ def test_str_format_structure() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -313,6 +323,7 @@ def test_str_decimal_precision() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -339,6 +350,7 @@ def test_str_minimal_work_time() -> None:
             "lunch_break_duration": 0,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -363,6 +375,7 @@ def test_str_ansi_color_codes_present() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
@@ -382,6 +395,7 @@ def test_str_ansi_color_codes_present() -> None:
             "lunch_break_duration": 60,
             "timezone": "Europe/Berlin",
             "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
         },
     )
 
