@@ -76,14 +76,14 @@ def get_time_recorder_config(config: dict) -> dict:
     work_schedule = config.get("work_schedule", {})
 
     return {
-        "date": time_tracking.get("date", "01.08.2025"),
-        "start_time": time_tracking.get("start_time", "07:00"),
-        "end_time": time_tracking.get("end_time", "17:25"),
-        "end_now": time_tracking.get("end_now", False),
-        "lunch_break_duration": time_tracking.get("lunch_break_duration", 60),
-        "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
-        "standard_work_hours": work_schedule.get("standard_work_hours", 8),
-        "timezone": work_schedule.get("timezone", "Europe/Berlin"),
+        "date": time_tracking.get("date"),
+        "start_time": time_tracking.get("start_time"),
+        "end_time": time_tracking.get("end_time"),
+        "end_now": time_tracking.get("end_now"),
+        "lunch_break_duration": time_tracking.get("lunch_break_duration"),
+        "full_format": time_tracking.get("full_format"),
+        "standard_work_hours": work_schedule.get("standard_work_hours"),
+        "timezone": work_schedule.get("timezone"),
     }
 
 
@@ -107,12 +107,12 @@ def get_logbook_config(config: dict) -> dict:
     work_schedule = config.get("work_schedule", {})
 
     return {
-        "log_path": pathlib.Path.cwd() / logging_config.get("log_path", "timereport_logbook.txt"),
-        "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
-        "holidays": holidays.get("country", "DE"),
-        "subdivision": holidays.get("subdivision", "HE"),
-        "standard_work_hours": work_schedule.get("standard_work_hours", 8),
-        "work_days": work_schedule.get("work_days", [0, 1, 2, 3, 4]),
+        "log_path": pathlib.Path.cwd() / logging_config.get("log_path"),
+        "full_format": time_tracking.get("full_format"),
+        "holidays": holidays.get("country"),
+        "subdivision": holidays.get("subdivision"),
+        "standard_work_hours": work_schedule.get("standard_work_hours"),
+        "work_days": work_schedule.get("work_days"),
     }
 
 
@@ -133,9 +133,9 @@ def get_display_config(config: dict) -> dict:
     display_config = config.get("display", {})
 
     return {
-        "show_tail": display_config.get("show_tail", 4),
-        "calculate_weekly_hours": display_config.get("calculate_weekly_hours", True),
-        "calculate_daily_overhours": display_config.get("calculate_daily_overhours", True),
+        "show_tail": display_config.get("show_tail"),
+        "calculate_weekly_hours": display_config.get("calculate_weekly_hours"),
+        "calculate_daily_overhours": display_config.get("calculate_daily_overhours"),
     }
 
 
@@ -157,12 +157,12 @@ def get_processing_config(config: dict) -> dict:
     display = config.get("display", {})
 
     return {
-        "use_boot_time": data_processing.get("use_boot_time", True),
-        "log_enabled": data_processing.get("logging_enabled", False),
-        "auto_squash": data_processing.get("auto_squash", True),
-        "add_missing_days": data_processing.get("add_missing_days", True),
-        "calculate_weekly_hours": display.get("calculate_weekly_hours", True),
-        "calculate_daily_overhours": display.get("calculate_daily_overhours", True),
+        "use_boot_time": data_processing.get("use_boot_time"),
+        "log_enabled": data_processing.get("logging_enabled"),
+        "auto_squash": data_processing.get("auto_squash"),
+        "add_missing_days": data_processing.get("add_missing_days"),
+        "calculate_weekly_hours": display.get("calculate_weekly_hours"),
+        "calculate_daily_overhours": display.get("calculate_daily_overhours"),
     }
 
 
@@ -185,12 +185,12 @@ def get_visualization_config(config: dict) -> dict:
     work_schedule = config.get("work_schedule", {})
 
     return {
-        "color_scheme": visualization.get("color_scheme", "ocean"),
-        "num_months": visualization.get("num_months", 13),
-        "plot": visualization.get("plot", True),
-        "standard_work_hours": work_schedule.get("standard_work_hours", 8),
-        "work_days": work_schedule.get("work_days", [0, 1, 2, 3, 4]),
-        "full_format": time_tracking.get("full_format", "%d.%m.%Y %H:%M:%S"),
+        "color_scheme": visualization.get("color_scheme"),
+        "num_months": visualization.get("num_months"),
+        "plot": visualization.get("plot"),
+        "standard_work_hours": work_schedule.get("standard_work_hours"),
+        "work_days": work_schedule.get("work_days"),
+        "full_format": time_tracking.get("full_format"),
     }
 
 
@@ -208,29 +208,35 @@ def validate_config(config: dict) -> bool:
     bool
         True if configuration is valid, False otherwise.
     """
-    required_sections = ["time_tracking", "logging", "work_schedule"]
+    # Define required sections and their required fields
+    required_fields = {
+        "data_processing": ["use_boot_time", "logging_enabled", "auto_squash", "add_missing_days"],
+        "time_tracking": ["date", "start_time", "end_time", "lunch_break_duration", "full_format"],
+        "logging": ["log_path", "log_level"],
+        "work_schedule": ["standard_work_hours", "work_days", "timezone"],
+        "holidays": ["country", "subdivision"],
+        "display": ["show_tail", "calculate_weekly_hours", "calculate_daily_overhours"],
+        "visualization": ["plot", "color_scheme", "num_months"],
+    }
 
-    for section in required_sections:
+    # Validate all sections exist
+    for section in required_fields:
         if section not in config:
             msg = f"Missing required configuration section: {section}"
             logger.error(msg)
             return False
 
-    # Validate time tracking settings
-    time_tracking = config.get("time_tracking", {})
-    required_time_fields = ["date", "start_time", "end_time", "lunch_break_duration"]
+    # Validate required fields in each section
+    for section, fields in required_fields.items():
+        if not fields:  # Skip sections with no required fields
+            continue
 
-    for field in required_time_fields:
-        if field not in time_tracking:
-            msg = f"Missing required time tracking field: {field}"
-            logger.error(msg)
-            return False
-
-    # Validate logging settings
-    logging_config = config.get("logging", {})
-    if "log_path" not in logging_config:
-        logger.error("Missing required logging field: log_path")
-        return False
+        section_config = config.get(section, {})
+        for field in fields:
+            if field not in section_config:
+                msg = f"Missing required {section} field: {field}"
+                logger.error(msg)
+                return False
 
     logger.debug("Configuration validation passed")
     return True

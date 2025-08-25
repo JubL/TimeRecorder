@@ -23,11 +23,13 @@ def main() -> None:
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
 
-    # TODO: shall tail() be controlled by the --log flag?
+    # TODO: shall tail() be controlled by the --log flag? maybe put it in a analyse category together with features yet to come?
 
     # TODO: have a flag to set the timezone
 
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
+
+    # TODO: shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
     args = ap.run_arg_parser()
 

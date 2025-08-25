@@ -25,16 +25,3 @@ def test_get_time_recorder_config(relative_precision: float) -> None:
     assert result["end_time"] == "17:25"
     assert result["lunch_break_duration"] == pytest.approx(60, rel=relative_precision)
     assert result["full_format"] == "%d.%m.%Y %H:%M:%S"
-
-
-@pytest.mark.fast
-def test_get_time_recorder_config_with_defaults(relative_precision: float) -> None:
-    """Test TimeRecorder configuration with missing values."""
-    config: dict = {"time_tracking": {}}
-
-    result = cu.get_time_recorder_config(config)
-
-    assert result["date"] == "01.08.2025"
-    assert result["start_time"] == "07:00"
-    assert result["end_time"] == "17:25"
-    assert result["lunch_break_duration"] == pytest.approx(60, rel=relative_precision)
