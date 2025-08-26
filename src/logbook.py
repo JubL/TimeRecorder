@@ -482,8 +482,7 @@ class Logbook:
         # Convert 'date' column to string format for comparison
         df["date"] = pd.to_datetime(df["date"], format=self.date_format).dt.strftime(self.date_format)
 
-        saturday = 5  # Constant for Saturday
-        sunday = 6  # Constant for Sunday
+        friday = 4  # Constant for Friday
 
         for start_date, end_date in gaps:
             # Generate all dates between start_date and end_date (exclusive)
@@ -493,48 +492,27 @@ class Logbook:
                 if any(df["date"] == date_str):
                     continue
 
+                reason = ""
+                if date.weekday() <= friday:
+                    reason = "vacation"
                 if date in self.holidays_de_he:
-                    msg = f"Found a wild {self.holidays_de_he[date]}."  # Print the name of the holiday.
-                    logger.info(msg)
-                    df.loc[len(df)] = {
-                        "weekday": date.strftime("%a"),
-                        "date": date_str,
-                        "start_time": self.holidays_de_he[date],
-                        "end_time": "",
-                        "lunch_break_duration": "",
-                        "work_time": "0",
-                        "case": "",
-                        "overtime": "",
-                    }
-                    msg = f"Added missing holiday on {date_str} - {self.holidays_de_he[date]}"
+                    reason = self.holidays_de_he[date]
+                    msg = f"Added missing holiday on {date_str} - {reason}"
                     logger.info(msg)
 
-                if date.weekday() == saturday and not any(df["date"] == date_str):
-                    df.loc[len(df)] = {
-                        "weekday": "Sat",
-                        "date": date_str,
-                        "start_time": "",
-                        "end_time": "",
-                        "lunch_break_duration": "",
-                        "work_time": "0",
-                        "case": "",
-                        "overtime": "",
-                    }
-                    msg = f"Added missing Saturday on {date_str}"
-                    logger.info(msg)
-                elif date.weekday() == sunday and not any(df["date"] == date_str):
-                    df.loc[len(df)] = {
-                        "weekday": "Sun",
-                        "date": date_str,
-                        "start_time": "",
-                        "end_time": "",
-                        "lunch_break_duration": "",
-                        "work_time": "0",
-                        "case": "",
-                        "overtime": "",
-                    }
-                    msg = f"Added missing Sunday on {date_str}"
-                    logger.info(msg)
+                df.loc[len(df)] = {
+                    "weekday": date.strftime("%a"),
+                    "date": date_str,
+                    "start_time": reason,
+                    "end_time": "",
+                    "lunch_break_duration": "0",
+                    "work_time": "0",
+                    "case": "",
+                    "overtime": "",
+                }
+
+            msg = f"Added {len(all_dates)} missing days to the logbook."
+            logger.info(msg)
 
         # Sort and save the updated DataFrame back to the log file
         df = df.sort_values(by="date", key=lambda x: pd.to_datetime(x, format=self.date_format))

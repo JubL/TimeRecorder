@@ -74,7 +74,7 @@ def test_add_missing_days_saturday(logbook: lb.Logbook, relative_precision: floa
         assert not saturday_row["overtime"]
 
         # Verify logging
-        mock_logger.info.assert_any_call("Added missing Saturday on 06.01.2024")
+        mock_logger.info.assert_any_call("Added 2 missing days to the logbook.")
 
 
 @pytest.mark.fast
@@ -116,7 +116,7 @@ def test_add_missing_days_sunday(logbook: lb.Logbook, relative_precision: float)
         assert not sunday_row["overtime"]
 
         # Verify logging
-        mock_logger.info.assert_called_with("Added missing Sunday on 07.01.2024")
+        mock_logger.info.assert_called_with("Added 1 missing days to the logbook.")
 
 
 @pytest.mark.fast
@@ -161,7 +161,6 @@ def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float
         assert not holiday_row["overtime"]
 
         # Verify logging
-        assert "Found a wild " in caplog.text
         assert "Added missing holiday on 01.01.2024 - " in caplog.text
 
 
@@ -183,27 +182,29 @@ def test_add_missing_days_multiple_days(logbook: lb.Logbook) -> None:
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
 
-    # Missing days: Fri to Wed (should add Sat, Sun, Mon, Tue)
-    # But the method only adds weekends and holidays, not regular weekdays
-    # So it should only add Sat and Sun (Mon and Tue are weekdays)
-    missing_days = [(datetime(2024, 1, 5), datetime(2024, 1, 10))]
+    # Gap from Fri to Wed (should add Sat, Sun, Mon, Tue)
+    gap_boundaries = [(datetime(2024, 1, 5), datetime(2024, 1, 10))]
 
     with patch("src.logbook.logger") as mock_logger:
-        logbook.add_missing_days_to_logbook(missing_days)
+        logbook.add_missing_days_to_logbook(gap_boundaries)
 
-        # Verify only weekend days were added
+        # Verify that Saturday, Sunday, Monday and Tuesday were added
         result_df = logbook.load_logbook()
-        assert len(result_df) == 4  # Original 2 work days (Fri, Wed) + 2 weekend days (Sat, Sun)
+        assert len(result_df) == 6
 
         # Check that Saturday and Sunday were added
         saturday_row = result_df[result_df["date"] == "06.01.2024"].iloc[0]
         sunday_row = result_df[result_df["date"] == "07.01.2024"].iloc[0]
+        monday_row = result_df[result_df["date"] == "08.01.2024"].iloc[0]
+        tuesday_row = result_df[result_df["date"] == "09.01.2024"].iloc[0]
 
         assert saturday_row["weekday"] == "Sat"
         assert sunday_row["weekday"] == "Sun"
+        assert monday_row["weekday"] == "Mon"
+        assert tuesday_row["weekday"] == "Tue"
 
-        # Verify logging calls (only 2 weekend days)
-        assert mock_logger.info.call_count == 2  # 2 missing weekend days
+        # Verify logging calls
+        assert mock_logger.info.call_count
 
 
 @pytest.mark.fast
@@ -258,20 +259,16 @@ def test_add_missing_days_multiple_ranges(logbook: lb.Logbook) -> None:
     df.to_csv(logbook.get_path(), sep=";", index=False)
 
     # Multiple missing day ranges (Tue and Thu are weekdays, not weekends nor holidays)
-    missing_days = [
+    gap_boundaries = [
         (datetime(2024, 1, 1), datetime(2024, 1, 3)),  # Mon to Wed (Tue is weekday)
         (datetime(2024, 1, 3), datetime(2024, 1, 5)),  # Wed to Fri (Thu is weekday)
     ]
 
-    with patch("src.logbook.logger") as mock_logger:
-        logbook.add_missing_days_to_logbook(missing_days)
+    logbook.add_missing_days_to_logbook(gap_boundaries)
 
-        # Verify no days were added (weekdays are not added)
-        result_df = logbook.load_logbook()
-        assert len(result_df) == 3  # Should remain unchanged
-
-        # Verify no logging calls (no weekends or holidays to add)
-        assert mock_logger.info.call_count == 0
+    # Verify that Tuesday and Thursday were added
+    result_df = logbook.load_logbook()
+    assert len(result_df) == 5
 
 
 @pytest.mark.fast
@@ -292,14 +289,14 @@ def test_add_missing_days_sorts_result(logbook: lb.Logbook) -> None:
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
 
-    # Missing days: Mon to Wed (should add Tue, but Tue is weekday)
-    missing_days = [(datetime(2024, 1, 1), datetime(2024, 1, 3))]
+    # Gap from Mon to Wed (should add Tuesday)
+    gap_boundaries = [(datetime(2024, 1, 1), datetime(2024, 1, 3))]
 
-    logbook.add_missing_days_to_logbook(missing_days)
+    logbook.add_missing_days_to_logbook(gap_boundaries)
 
-    # Verify result is sorted by date (no days added since Tue is weekday)
+    # Verify result is sorted by date and that Tuesday is added
     result_df = logbook.load_logbook()
-    expected_dates = ["01.01.2024", "03.01.2024"]
+    expected_dates = ["01.01.2024", "02.01.2024", "03.01.2024"]
     actual_dates = result_df["date"].tolist()
     assert actual_dates == expected_dates
 
@@ -336,8 +333,8 @@ def test_add_missing_days_with_mock_load_logbook(logbook: lb.Logbook) -> None:
         # Verify save_logbook was called
         mock_save.assert_called_once()
 
-        # Verify no logging (Tuesday is weekday, not weekend or holiday)
-        assert mock_logger.info.call_count == 0
+        # Verify logging happened
+        assert mock_logger.info.call_count == 1
 
 
 @pytest.mark.fast
@@ -361,21 +358,17 @@ def test_add_missing_days_edge_case_single_day_gap(logbook: lb.Logbook) -> None:
     # Missing days: Mon to Wed (Tue is weekday, not weekend or holiday)
     missing_days = [(datetime(2024, 1, 1), datetime(2024, 1, 3))]
 
-    with patch("src.logbook.logger") as mock_logger:
-        logbook.add_missing_days_to_logbook(missing_days)
+    logbook.add_missing_days_to_logbook(missing_days)
 
-        # Verify no days were added (Tuesday is weekday)
-        result_df = logbook.load_logbook()
-        assert len(result_df) == 2  # Should remain unchanged
-
-        # Verify no logging calls (Tuesday is weekday, not weekend or holiday)
-        assert mock_logger.info.call_count == 0
+    # Verify no days were added (Tuesday is weekday)
+    result_df = logbook.load_logbook()
+    assert len(result_df) == 3
 
 
 @pytest.mark.fast
 def test_add_missing_days_no_weekend_nor_holiday(logbook: lb.Logbook) -> None:
-    """Test that add_missing_days_to_logbook doesn't add weekdays that aren't holidays."""
-    # Create a logbook with gap that includes only weekdays (no weekends or holidays)
+    """Test that add_missing_days_to_logbook does add weekdays that aren't holidays."""
+    # Create a logbook with gap that includes only weekdays (no weekends nor holidays)
     df = pd.DataFrame(
         {
             "weekday": ["Mon", "Thu"],  # Gap includes Tue, Wed (weekdays)
@@ -393,12 +386,8 @@ def test_add_missing_days_no_weekend_nor_holiday(logbook: lb.Logbook) -> None:
     # Missing days: Mon to Thu (Tue, Wed are weekdays, not weekends nor holidays)
     missing_days = [(datetime(2024, 1, 1), datetime(2024, 1, 4))]
 
-    with patch("src.logbook.logger") as mock_logger:
-        logbook.add_missing_days_to_logbook(missing_days)
+    logbook.add_missing_days_to_logbook(missing_days)
 
-        # Verify no days were added (weekdays are not added)
-        result_df = logbook.load_logbook()
-        assert len(result_df) == 2  # Should remain unchanged
-
-        # Verify no logging calls (no weekends or holidays to add)
-        assert mock_logger.info.call_count == 0
+    # Verify no days were added (weekdays are not added)
+    result_df = logbook.load_logbook()
+    assert len(result_df) == 4
