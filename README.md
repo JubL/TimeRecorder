@@ -127,7 +127,6 @@ For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.m
 ```
 TimeRecorder - Work Hours Calculator
 ====================================
-
 📅 Date: Mon, 25.07.2025
 ⏰ Start Time: 07:00 CEST
 ⏰ End Time: 17:25 CEST

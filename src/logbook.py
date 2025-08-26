@@ -524,7 +524,7 @@ class Logbook:
 
         weekly_standard_hours = self.standard_work_hours * len(self.work_days)
 
-        title = "\nWeekly Summary - Work Hours Calculator\n======================================\n"
+        title = "\nWeekly Summary - Work Hours Calculator\n======================================"
         avr_weekly_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
         standard_hours_str = f"Standard Hours: {int(weekly_standard_hours)}h"
         if weekly_standard_hours % 1 != 0:
@@ -642,7 +642,7 @@ class Logbook:
         df["work_time"] = df["work_time"].apply(lambda x: f"{int(x)}h {int(x % 1 * 60)}m" if x else "")
         df["overtime"] = df["overtime"].apply(lambda x: f"{int(x)}h {int(x % 1 * 60)}m" if x else "")
 
-        title = "\nRecent Entries\n===============\n"
+        title = "\nRecent Entries\n==============="
         msg = title + df.to_string(index=False, header=False)
 
         logger.info(msg)
