@@ -276,8 +276,8 @@ def test_str_format_structure() -> None:
     result = str(line)
     lines = result.split("\n")
 
-    # Should have exactly 10 lines (empty, title, separator, empty, date, start, end, lunch, work duration, status)
-    assert len(lines) == 10
+    # Should have exactly 9 lines (empty, title, separator, date, start, end, lunch, work duration, status)
+    assert len(lines) == 9
 
     # First line should be empty
     assert not lines[0]
@@ -288,26 +288,23 @@ def test_str_format_structure() -> None:
     # Third line should contain separator
     assert "=====================================" in lines[2]
 
-    # Fourth line should be empty
-    assert not lines[3]
+    # Fourth line should contain date
+    assert "📅 Date:" in lines[3]
 
-    # Fifth line should contain date
-    assert "📅 Date:" in lines[4]
+    # Fifth line should contain start time
+    assert "⏰ Start time:" in lines[4]
 
-    # Sixth line should contain start time
-    assert "⏰ Start time:" in lines[5]
+    # Sixth line should contain end time
+    assert "⏰ End time:" in lines[5]
 
-    # Seventh line should contain end time
-    assert "⏰ End time:" in lines[6]
+    # Seventh line should contain lunch break
+    assert "🍽️  Lunch break:" in lines[6]
 
-    # Eighth line should contain lunch break
-    assert "🍽️  Lunch break:" in lines[7]
+    # Eighth line should contain work duration
+    assert "⏱️  Work duration:" in lines[7]
 
-    # Ninth line should contain work duration
-    assert "⏱️  Work duration:" in lines[8]
-
-    # Tenth line should contain status
-    assert "📈 Status:" in lines[9]
+    # Ninth line should contain status
+    assert "📈 Status:" in lines[8]
 
 
 @pytest.mark.fast
