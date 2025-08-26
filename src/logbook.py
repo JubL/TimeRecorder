@@ -408,10 +408,10 @@ class Logbook:
         log_path : pathlib.Path
             The file path to the CSV log file. The file must contain a 'date' column.
         """
-        missing_days = self.find_missing_days_in_logbook()
+        gaps = self.find_missing_days_in_logbook()
 
-        if missing_days:
-            self.add_missing_days_to_logbook(missing_days)
+        if gaps:
+            self.add_missing_days_to_logbook(gaps)
 
     def find_missing_days_in_logbook(self) -> list[tuple[datetime, datetime]]:
         """Find missing days in the logbook by checking for gaps between consecutive entries.
@@ -443,19 +443,19 @@ class Logbook:
 
         df["date"] = pd.to_datetime(df["date"], format=self.date_format)
 
-        # Check the log for any missing days
-        # a day is missing if two consecutive entries are not consecutive days
-        missing_days = []
+        # Check the log for any gaps between consecutive entries
+        # a gap is missing if two consecutive entries are not consecutive days
+        gaps = []
         for i in range(len(df) - 1):
             if (df["date"].iloc[i + 1] - df["date"].iloc[i]).days > 1:
-                msg = f"{RED}There are missing days in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
+                msg = f"{RED}There are gaps in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
                 msg += f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{RESET}"
                 logger.warning(msg)
-                missing_days.append((df["date"].iloc[i], df["date"].iloc[i + 1]))
+                gaps.append((df["date"].iloc[i], df["date"].iloc[i + 1]))
 
-        return missing_days
+        return gaps
 
-    def add_missing_days_to_logbook(self, missing_days: list[tuple[datetime, datetime]]) -> None:
+    def add_missing_days_to_logbook(self, gaps: list[tuple[datetime, datetime]]) -> None:
         """
         Add missing Saturdays, Sundays, and holidays to the logbook DataFrame for specified date ranges.
 
@@ -485,7 +485,7 @@ class Logbook:
         saturday = 5  # Constant for Saturday
         sunday = 6  # Constant for Sunday
 
-        for start_date, end_date in missing_days:
+        for start_date, end_date in gaps:
             # Generate all dates between start_date and end_date (exclusive)
             all_dates = pd.date_range(start=start_date + timedelta(days=1), end=end_date - timedelta(days=1), freq="D")
             for date in all_dates:

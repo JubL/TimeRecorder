@@ -98,7 +98,7 @@ def test_find_missing_days_single_gap(logbook: lb.Logbook) -> None:
 
         # Should log a warning
         mock_logger.warning.assert_called_once()
-        assert "There are missing days in the logbook between" in mock_logger.warning.call_args[0][0]
+        assert "There are gaps in the logbook between" in mock_logger.warning.call_args[0][0]
 
 
 @pytest.mark.fast
