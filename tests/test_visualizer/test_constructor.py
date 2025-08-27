@@ -13,6 +13,7 @@ def test_constructor_basic_initialization() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
+            "start_time": ["08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5],
             "overtime": [0.0, 0.5],
         },
@@ -44,6 +45,7 @@ def test_constructor_all_color_schemes() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024"],
+            "start_time": ["08:00:00"],
             "work_time": [8.0],
             "overtime": [0.0],
         },
@@ -72,6 +74,7 @@ def test_constructor_data_filtering() -> None:
     df = pd.DataFrame(
         {
             "date": [d.strftime("%d.%m.%Y") for d in dates],
+            "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
             "overtime": [0.0] * len(dates),
         },
@@ -98,6 +101,7 @@ def test_constructor_format_parsing() -> None:
     df = pd.DataFrame(
         {
             "date": ["2024-01-01"],
+            "start_time": ["08:00:00"],
             "work_time": [8.0],
             "overtime": [0.0],
         },
@@ -123,6 +127,7 @@ def test_constructor_work_days_custom() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024"],
+            "start_time": ["08:00:00"],
             "work_time": [8.0],
             "overtime": [0.0],
         },
@@ -168,6 +173,7 @@ def test_constructor_standard_work_hours_float() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024"],
+            "start_time": ["08:00:00"],
             "work_time": [8.0],
             "overtime": [0.0],
         },

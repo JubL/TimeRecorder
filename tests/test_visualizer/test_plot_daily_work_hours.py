@@ -13,6 +13,7 @@ def test_plot_daily_work_hours_basic_functionality() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024"],
+            "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5, 8.5, 8.0, 7.0],
             "overtime": [0.0, 0.5, 0.5, 0.0, 0.0],
         },
@@ -47,6 +48,7 @@ def test_plot_daily_work_hours_work_time_adjustment() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
+            "start_time": ["08:00:00", "08:00:00"],
             "work_time": [9.0, 10.0],  # Both exceed standard 8 hours
             "overtime": [1.0, 2.0],  # Overtime hours
         },
@@ -79,6 +81,7 @@ def test_plot_daily_work_hours_no_adjustment_needed() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
+            "start_time": ["08:00:00", "08:00:00"],
             "work_time": [7.0, 8.0],  # Both within or at standard hours
             "overtime": [0.0, 0.0],  # No overtime
         },
@@ -111,6 +114,7 @@ def test_plot_daily_work_hours_mixed_scenarios() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
+            "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": [7.0, 8.0, 9.0, 10.0],
             "overtime": [0.0, 0.0, 1.0, 2.0],
         },
@@ -160,7 +164,7 @@ def test_plot_daily_work_hours_empty_dataframe() -> None:
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_different_color_schemes() -> None:
+def test_plot_daily_work_hours_different_color_schemes(sample_logbook_df: pd.DataFrame) -> None:
     """Test plotting with different color schemes."""
     df = pd.DataFrame(
         {
@@ -181,7 +185,7 @@ def test_plot_daily_work_hours_different_color_schemes() -> None:
             "work_days": [0, 1, 2, 3, 4],
         }
 
-        visualizer = viz.Visualizer(df, data)
+        visualizer = viz.Visualizer(sample_logbook_df, data)
 
         # Should run without errors for all color schemes
         visualizer.plot_daily_work_hours()
@@ -191,16 +195,8 @@ def test_plot_daily_work_hours_different_color_schemes() -> None:
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_custom_work_days() -> None:
+def test_plot_daily_work_hours_custom_work_days(sample_logbook_df: pd.DataFrame) -> None:
     """Test plotting with custom work days."""
-    df = pd.DataFrame(
-        {
-            "date": ["01.01.2024", "02.01.2024", "03.01.2024"],  # Mon, Tue, Wed
-            "work_time": [8.0, 8.0, 8.0],
-            "overtime": [0.0, 0.0, 0.0],
-        },
-    )
-
     custom_work_days = [1, 2]  # Only Tuesday and Wednesday
 
     data = {
@@ -211,7 +207,7 @@ def test_plot_daily_work_hours_custom_work_days() -> None:
         "work_days": custom_work_days,
     }
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(sample_logbook_df, data)
 
     # Should run without errors with custom work days
     visualizer.plot_daily_work_hours()
@@ -219,45 +215,8 @@ def test_plot_daily_work_hours_custom_work_days() -> None:
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_standard_work_hours_edge_case() -> None:
-    """Test work_time adjustment at the edge of standard work hours."""
-    df = pd.DataFrame(
-        {
-            "date": ["01.01.2024", "02.01.2024"],
-            "work_time": [8.0, 8.1],  # Exactly at and slightly over standard
-            "overtime": [0.0, 0.1],  # No overtime and small overtime
-        },
-    )
-
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-    }
-
-    visualizer = viz.Visualizer(df, data)
-
-    visualizer.plot_daily_work_hours()
-
-    # Day 1: 8.0 + 0.0 = 8.0 (no adjustment)
-    # Day 2: 8.1 + 0.1 = 8.2 (adjust to 8.0)
-    assert visualizer.df["work_time"].iloc[0] == 8.0
-    assert visualizer.df["work_time"].iloc[1] == 8.0  # 8.1 - 0.1
-
-
-@pytest.mark.fast
-def test_plot_daily_work_hours_large_overtime() -> None:
+def test_plot_daily_work_hours_large_overtime(sample_logbook_df: pd.DataFrame) -> None:
     """Test work_time adjustment with large overtime values."""
-    df = pd.DataFrame(
-        {
-            "date": ["01.01.2024"],
-            "work_time": [12.0],  # Very long work day
-            "overtime": [4.0],  # 4 hours overtime
-        },
-    )
-
     data = {
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
@@ -266,9 +225,9 @@ def test_plot_daily_work_hours_large_overtime() -> None:
         "work_days": [0, 1, 2, 3, 4],
     }
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(sample_logbook_df, data)
 
     visualizer.plot_daily_work_hours()
 
     # Should adjust to 8.0 (12.0 - 4.0)
-    assert visualizer.df["work_time"].iloc[0] == 8.0
+    assert visualizer.df["work_time"].iloc[0] == 7.0

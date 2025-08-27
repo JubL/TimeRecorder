@@ -168,7 +168,7 @@ def test_edge_cases_empty_arguments() -> None:
         assert args.tail is None
         assert args.config == "config.yaml"
         assert args.logbook is None
-        assert args.plot is False
+        assert args.plot is None
         assert args.num_months is None
         assert args.color_scheme is None
 

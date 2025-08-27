@@ -119,6 +119,10 @@ class Visualizer:
         """
         self.df["date"] = pd.to_datetime(self.df["date"], format=self.date_format)
 
+        if self.df.empty:
+            logger.warning("No data to visualize.")
+            return
+
         self.df.loc[~self.df["start_time"].apply(self.is_valid_time), "work_time"] = -self.standard_work_hours
 
         # Convert to numeric, coercing errors to NaN, then fill NaN with 0.0

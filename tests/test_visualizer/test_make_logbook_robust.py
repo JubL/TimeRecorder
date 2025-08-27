@@ -12,6 +12,7 @@ def test_make_logbook_robust_basic_conversion() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
+            "start_time": ["08:00:00", "08:00:00"],
             "work_time": ["8.0", "7.5"],
             "overtime": ["0.0", "0.5"],
         },
@@ -47,6 +48,7 @@ def test_make_logbook_robust_handle_missing_values() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
+            "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": ["8.0", "", "7.5", ""],
             "overtime": ["0.0", "1.0", "", ""],
         },
@@ -73,6 +75,7 @@ def test_make_logbook_robust_handle_invalid_numeric() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
+            "start_time": ["08:00:00", "08:00:00"],
             "work_time": ["8.0", "invalid"],
             "overtime": ["0.0", "not_a_number"],
         },
@@ -99,6 +102,7 @@ def test_make_logbook_robust_negative_overtime_handling() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
+            "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": ["8.0", "7.0", "9.0"],
             "overtime": ["0.0", "-1.0", "1.0"],
         },
@@ -124,7 +128,7 @@ def test_make_logbook_robust_negative_overtime_handling() -> None:
 def test_make_logbook_robust_date_format_parsing() -> None:
     """Test date format parsing with different formats."""
     # Test with different date formats
-    test_cases = [  # use parametrize fixture instead
+    test_cases = [  # TODO: use parametrize fixture instead
         ("%d.%m.%Y", "01.01.2024"),
         ("%Y-%m-%d", "2024-01-01"),
         ("%m/%d/%Y", "01/01/2024"),
@@ -135,6 +139,7 @@ def test_make_logbook_robust_date_format_parsing() -> None:
         df = pd.DataFrame(
             {
                 "date": [date_str],
+                "start_time": ["08:00:00"],
                 "work_time": ["8.0"],
                 "overtime": ["0.0"],
             },
@@ -161,6 +166,7 @@ def test_make_logbook_robust_mixed_data_types() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
+            "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, "7.5", 9],
             "overtime": [0.0, -1.5, "2.0"],
         },
@@ -217,6 +223,7 @@ def test_make_logbook_robust_zero_overtime_preserved() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
+            "start_time": ["08:00:00", "08:00:00"],
             "work_time": ["8.0", "8.0"],
             "overtime": ["0.0", "0"],
         },

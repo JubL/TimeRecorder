@@ -31,6 +31,7 @@ def test_visualizer_integration_complete_workflow() -> None:
             work_data.append(
                 {
                     "date": date.strftime("%d.%m.%Y"),
+                    "start_time": "08:00:00",
                     "work_time": base_hours,
                     "overtime": overtime,
                 },
@@ -73,6 +74,7 @@ def test_visualizer_integration_multiple_months() -> None:
     work_data = [
         {
             "date": date.strftime("%d.%m.%Y"),
+            "start_time": "08:00:00",
             "work_time": 8.0,
             "overtime": 0.0,
         }
@@ -103,6 +105,7 @@ def test_visualizer_integration_all_color_schemes() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
+            "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 8.5, 7.5],
             "overtime": [0.0, 0.5, 0.0],
         },
@@ -110,7 +113,7 @@ def test_visualizer_integration_all_color_schemes() -> None:
 
     color_schemes = ["ocean", "forest", "sunset", "lavender", "coral"]
 
-    for scheme in color_schemes:
+    for scheme in color_schemes:  # TODO: use parametrize fixture instead
         data = {
             "full_format": "%d.%m.%Y %H:%M:%S",
             "color_scheme": scheme,
@@ -134,7 +137,7 @@ def test_visualizer_integration_all_color_schemes() -> None:
 @pytest.mark.fast
 def test_visualizer_integration_different_formats() -> None:
     """Test visualizer with different date formats."""
-    test_cases = [
+    test_cases = [  # TODO: use parametrize fixture instead
         ("%d.%m.%Y", "01.01.2024"),
         ("%Y-%m-%d", "2024-01-01"),
         ("%m/%d/%Y", "01/01/2024"),
@@ -145,6 +148,7 @@ def test_visualizer_integration_different_formats() -> None:
         df = pd.DataFrame(
             {
                 "date": [date_str],
+                "start_time": ["08:00:00"],
                 "work_time": [8.0],
                 "overtime": [0.0],
             },
@@ -175,6 +179,7 @@ def test_visualizer_integration_edge_cases() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
+            "start_time": ["07:00:00", "07:00:00"],
             "work_time": [12.0, 16.0],
             "overtime": [4.0, 8.0],
         },
@@ -203,6 +208,7 @@ def test_visualizer_integration_custom_work_days() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024", "06.01.2024", "07.01.2024"],
+            "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0],
             "overtime": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
         },
@@ -231,6 +237,7 @@ def test_visualizer_integration_mixed_data_quality() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
+            "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": ["8.0", "", "invalid", "7.5"],
             "overtime": ["0.0", "1.0", "", "0.5"],
         },
@@ -264,6 +271,7 @@ def test_visualizer_integration_standard_work_hours_variations() -> None:
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
+            "start_time": ["08:00:00", "08:00:00"],
             "work_time": [7.5, 8.5],
             "overtime": [0.0, 0.5],
         },
