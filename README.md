@@ -22,7 +22,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **📱 Missing Day Detection**: Automatically add missing work days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 - **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
-- **📊 Data Visualization**: Generate bar charts showing daily work hours and overtime with customizable color schemes
+- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime with 5 beautiful color schemes, robust data handling, and time validation
 
 ## 🚀 Quick Start
 
@@ -63,10 +63,15 @@ python main.py --config my_config.yaml
 python main.py --start-time "08:30" --end-time "17:30" --lunch-break 45
 
 # Show visualization with custom color scheme
-python main.py --show-plot --color-scheme ocean
+python main.py --plot --color-scheme ocean
+python main.py --plot --color-scheme forest
+python main.py --plot --color-scheme sunset
+python main.py --plot --color-scheme lavender
+python main.py --plot --color-scheme coral
 
 # Show visualization for last 6 months
-python main.py --show-plot --num-months 6
+python main.py --plot --num-months 6
+
 ```
 
 ## 📋 Configuration
@@ -193,16 +198,20 @@ The visualizer supports five beautiful color schemes:
 
 ```bash
 # Show visualization with default settings
-python main.py --show-plot
+python main.py --plot
 
 # Use a specific color scheme
-python main.py --show-plot --color-scheme forest
+python main.py --plot --color-scheme forest
 
 # Show last 6 months of data
-python main.py --show-plot --num-months 6
+python main.py --plot --num-months 6
 
 # Combine with other options
-python main.py --show-plot --color-scheme sunset --num-months 3
+python main.py --plot --color-scheme sunset --num-months 3
+
+# Try different color schemes
+python main.py --plot --color-scheme lavender
+python main.py --plot --color-scheme coral
 ```
 
 ### Visualization Features
@@ -211,6 +220,9 @@ python main.py --show-plot --color-scheme sunset --num-months 3
 - **Color-Coded by Weekday**: Each weekday has its own color within the selected scheme
 - **Automatic Data Filtering**: Shows only the specified number of months
 - **Responsive Design**: Charts automatically adjust to your data
+- **Robust Data Handling**: Automatically handles missing data, invalid time formats, and data type conversions
+- **Time Validation**: Validates time strings and handles timezone information gracefully
+- **Calendar Week Display**: X-axis shows calendar weeks for easy reference
 
 ### Configuration
 
@@ -220,7 +232,7 @@ You can configure visualization settings in your `config.yaml`:
 visualization:
   plot: true                   # Enable visualization by default
   color_scheme: "ocean"        # Choose your preferred color scheme
-  num_months: 12               # Number of months to display
+  num_months: 13               # Number of months to display
 ```
 
 ## 🔧 Advanced Features
