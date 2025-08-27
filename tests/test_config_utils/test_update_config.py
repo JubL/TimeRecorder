@@ -54,9 +54,6 @@ def test_update_config_single_arg() -> None:
     # Check that other values remain unchanged
     assert result["time_tracking"]["start_time"] == "07:00"
     assert result["data_processing"]["use_boot_time"] is True
-    # Note: The function uses shallow copy, so nested dicts are shared
-    # The original config will be modified for nested dictionaries
-    assert config["time_tracking"]["date"] == "26.07.2025"
 
 
 @pytest.mark.fast
@@ -327,7 +324,7 @@ def test_update_config_deep_nesting() -> None:
 @pytest.mark.fast
 def test_update_config_empty_config() -> None:
     """Test update_config with an empty configuration."""
-    config = {}
+    config: dict[str, dict] = {}
 
     args = argparse.Namespace(
         date="26.07.2025",

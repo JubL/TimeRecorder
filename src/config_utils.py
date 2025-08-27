@@ -16,7 +16,7 @@ import src.logging_utils as lu
 logger = lu.setup_logger(__name__)
 
 
-def load_config(config_path: pathlib.Path) -> dict:
+def load_config(config_path: pathlib.Path) -> dict[str, dict]:
     """
     Load configuration from a YAML file.
 
@@ -310,7 +310,7 @@ def create_default_config(config_path: pathlib.Path) -> None:
         raise
 
 
-def update_config(config: dict, args: argparse.Namespace) -> dict:
+def update_config(config: dict, args: argparse.Namespace) -> dict[str, dict]:
     """
     Update the configuration dictionary with the values from the command line arguments.
 

@@ -38,7 +38,7 @@ def main() -> None:
     if not config_path.exists():
         cu.create_default_config(config_path)
 
-    config = cu.load_config(config_path)
+    config: dict[str, dict] = cu.load_config(config_path)
 
     # Set global log level first (change this to control all logging)
     # Options: logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR

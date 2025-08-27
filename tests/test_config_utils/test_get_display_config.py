@@ -47,7 +47,7 @@ def test_get_display_config_missing_display_section() -> None:
 @pytest.mark.fast
 def test_get_display_config_empty_display_section() -> None:
     """Test extraction when display section exists but is empty."""
-    config = {
+    config: dict[str, dict] = {
         "display": {},
     }
 

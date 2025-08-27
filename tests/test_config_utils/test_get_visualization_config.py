@@ -59,7 +59,7 @@ def test_get_visualization_config_missing_all_sections() -> None:
 @pytest.mark.fast
 def test_get_visualization_config_empty_sections() -> None:
     """Test extraction when sections exist but are empty."""
-    config = {
+    config: dict[str, dict] = {
         "time_tracking": {},
         "visualization": {},
         "work_schedule": {},
