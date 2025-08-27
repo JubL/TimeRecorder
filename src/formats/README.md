@@ -38,14 +38,16 @@ The `FORMAT_REGISTRY` maps file extensions to handler classes:
 ```python
 FORMAT_REGISTRY = {
     ".csv": CSVHandler,
-    ".xlsx": ExcelHandler,
+    ".dat": CSVHandler,
+    ".txt": CSVHandler,
     ".xls": ExcelHandler,
+    ".xlsx": ExcelHandler,
     ".json": JSONHandler,
-    ".yaml": YAMLHandler,
-    ".yml": YAMLHandler,
-    ".xml": XMLHandler,
     ".parquet": ParquetHandler,
     ".pq": ParquetHandler,
+    ".xml": XMLHandler,
+    ".yaml": YAMLHandler,
+    ".yml": YAMLHandler,
 }
 ```
 
@@ -64,7 +66,7 @@ handler.create_empty(file_path)  # Create empty file
 
 Currently supported formats:
 
-- **CSV** (`.csv`, `.txt`) - Semicolon-separated values with UTF-8 encoding
+- **CSV** (`.csv`, `.txt`, `.dat`) - Semicolon-separated values with UTF-8 encoding
 - **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
 - **JSON** (`.json`) - JavaScript Object Notation
 - **XML** (`.xml`) - Extensible Markup Language

@@ -283,15 +283,15 @@ TimeRecorder supports multiple file formats for storing your time records. Simpl
 logging:
   log_path: "timereport_logbook.csv"   # CSV format
   log_path: "timereport_logbook.json"  # JSON format
-  log_path: "timereport_logbook.yaml"  # YAML format
   log_path: "timereport_logbook.xlsx"  # Excel format
+  log_path: "timereport_logbook.pq"    # Parquet format
   log_path: "timereport_logbook.xml"   # XML format
-  log_path: "timereport_logbook.pq" # Parquet format
+  log_path: "timereport_logbook.yaml"  # YAML format
 ```
 
 #### Supported Formats
 
-- **CSV** (`.csv`, `.txt`) - Comma-separated values with UTF-8 encoding
+- **CSV** (`.csv`, `.txt`, `.dat`) - Comma-separated values with UTF-8 encoding
 - **JSON** (`.json`) - JavaScript Object Notation for easy data exchange
 - **YAML** (`.yaml`, `.yml`) - Human-readable configuration format
 - **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
