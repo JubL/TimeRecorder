@@ -40,6 +40,6 @@ display:
 
 # Visualization settings
 visualization:
-  plot: true  # Show the graphical output
+  plot: false  # Show the graphical output
   color_scheme: "ocean"  # Color scheme: ocean, forest, sunset, lavender, coral
   num_months: 13  # Number of months to show in daily hours plot

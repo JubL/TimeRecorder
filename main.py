@@ -29,6 +29,8 @@ def main() -> None:
 
     # TODO: shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
+    # TODO: add color scheme black or gray
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
