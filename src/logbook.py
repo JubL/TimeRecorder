@@ -642,7 +642,7 @@ class Logbook:
         df["work_time"] = df["work_time"].apply(lambda x: f"{int(x)}h {int(x % 1 * 60)}m" if x else "")
         df["overtime"] = df["overtime"].apply(lambda x: f"{int(x)}h {int(x % 1 * 60)}m" if x else "")
 
-        title = "\nRecent Entries\n==============="
+        title = "\nRecent Entries\n===============\n"
         msg = title + df.to_string(index=False, header=False)
 
         logger.info(msg)
