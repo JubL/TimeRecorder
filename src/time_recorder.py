@@ -160,7 +160,7 @@ class TimeRecorder:
                 raise ValueError(msg) from e
 
         self.full_format = data["full_format"]
-        self.date_format, self.time_format = self.full_format.split(" ")
+        self.date_format, self.time_format = self.full_format.split(" ", 1)
 
         self.date = data["date"]
         self.timezone = data["timezone"]
