@@ -25,8 +25,6 @@ def main() -> None:
 
     # TODO: shall tail() be controlled by the --log flag? maybe put it in a analyse category together with features yet to come?
 
-    # TODO: have a flag to set the timezone
-
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
 
     # TODO: shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
