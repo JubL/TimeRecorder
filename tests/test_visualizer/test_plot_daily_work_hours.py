@@ -166,14 +166,6 @@ def test_plot_daily_work_hours_empty_dataframe() -> None:
 @pytest.mark.fast
 def test_plot_daily_work_hours_different_color_schemes(sample_logbook_df: pd.DataFrame) -> None:
     """Test plotting with different color schemes."""
-    df = pd.DataFrame(
-        {
-            "date": ["01.01.2024", "02.01.2024"],
-            "work_time": [8.0, 8.0],
-            "overtime": [0.0, 0.0],
-        },
-    )
-
     color_schemes = ["ocean", "forest", "sunset", "lavender", "coral"]
 
     for scheme in color_schemes:
