@@ -16,6 +16,8 @@ Each theme provides separate color palettes for work hours and overtime hours
 to ensure clear visual distinction between the two data types.
 """
 
+from datetime import datetime
+
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -117,11 +119,43 @@ class Visualizer:
         """
         self.df["date"] = pd.to_datetime(self.df["date"], format=self.date_format)
 
+        self.df.loc[~self.df["start_time"].apply(self.is_valid_time), "work_time"] = -self.standard_work_hours
+
         # Convert to numeric, coercing errors to NaN, then fill NaN with 0.0
         self.df["work_time"] = pd.to_numeric(self.df["work_time"], errors="coerce").fillna(0.0)
         self.df["overtime"] = pd.to_numeric(self.df["overtime"], errors="coerce").fillna(0.0)
 
         self.df["overtime"] = self.df["overtime"].where(self.df["overtime"] > 0.0, 0.0)
+
+    def is_valid_time(self, time_string: str) -> bool:
+        """
+        Validate whether a time string matches the expected format.
+
+        Parameters
+        ----------
+        time_string : str
+            The time string to validate (e.g., "07:37:15 CEST").
+
+        Returns
+        -------
+        bool
+            True if the time string matches the format, False otherwise.
+        """
+        if not time_string or pd.isna(time_string):
+            return False
+
+        try:
+            # First try to parse with timezone
+            datetime.strptime(time_string, self.time_format + " %Z")  # noqa: DTZ007
+            return True
+        except ValueError:
+            try:
+                # If that fails, try without timezone (strip timezone part)
+                time_part = time_string.split(maxsplit=1)[0]  # Get just the time part
+                datetime.strptime(time_part, self.time_format)  # noqa: DTZ007
+                return True
+            except (ValueError, IndexError):
+                return False
 
     def plot_daily_work_hours(self) -> None:
         """
@@ -155,18 +189,30 @@ class Visualizer:
 
         # let each weekday have another color according to the color_scheme
         for i, weekday in enumerate(self.work_days):
+            condition_work = (self.df["date"].dt.weekday == weekday) & (self.df["work_time"] > 0)
+            condition_free = (self.df["date"].dt.weekday == weekday) & (self.df["work_time"] == -self.standard_work_hours)
+            # regular work hours
             ax.bar(
-                self.df[self.df["date"].dt.weekday == weekday]["date"],
-                self.df[self.df["date"].dt.weekday == weekday]["work_time"],
+                self.df[condition_work]["date"],
+                self.df[condition_work]["work_time"],
                 width=1,
                 color=self.work_colors[i],
             )
+            # overtime hours
             ax.bar(
-                self.df[self.df["date"].dt.weekday == weekday]["date"],
-                self.df[self.df["date"].dt.weekday == weekday]["overtime"],
+                self.df[condition_work]["date"],
+                self.df[condition_work]["overtime"],
                 width=1,
                 color=self.work_colors[i + 1],
-                bottom=self.df[self.df["date"].dt.weekday == weekday]["work_time"],
+                bottom=self.df[condition_work]["work_time"],
+            )
+            # free days (non-weekend days)
+            ax.bar(
+                self.df[condition_free]["date"],
+                abs(self.df[condition_free]["work_time"]),
+                width=1,
+                color=self.work_colors[-1],
+                alpha=0.4,
             )
 
         ax.set_xlabel("Calendar Week")
