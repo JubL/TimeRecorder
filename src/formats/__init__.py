@@ -18,16 +18,17 @@ from .yaml_handler import YAMLHandler
 
 # Format registry - maps file extensions to handler classes
 FORMAT_REGISTRY: dict[str, type[BaseFormatHandler]] = {
-    ".txt": CSVHandler,
     ".csv": CSVHandler,
-    ".xlsx": ExcelHandler,
+    ".dat": CSVHandler,
+    ".txt": CSVHandler,
     ".xls": ExcelHandler,
+    ".xlsx": ExcelHandler,
     ".json": JSONHandler,
-    ".yaml": YAMLHandler,
-    ".yml": YAMLHandler,
-    ".xml": XMLHandler,
     ".parquet": ParquetHandler,
     ".pq": ParquetHandler,
+    ".xml": XMLHandler,
+    ".yaml": YAMLHandler,
+    ".yml": YAMLHandler,
 }
 
 
