@@ -27,19 +27,11 @@ logger = lu.setup_logger(__name__)
 
 
 COLOR_SCHEMES_WORK = {
-    "ocean": ["#1E3A8A", "#1E40AF", "#2563EB", "#3B82F6", "#60A5FA"],
-    "forest": ["#14532D", "#166534", "#15803D", "#16A34A", "#22C55E"],
-    "sunset": ["#9A3412", "#A03E0C", "#C2410C", "#EA580C", "#F97316"],
-    "lavender": ["#581C87", "#5B21B6", "#6B21A8", "#7C3AED", "#A855F7"],
-    "coral": ["#BE185D", "#BE123C", "#DC2626", "#EC4899", "#F472B6"],
-}
-
-COLOR_SCHEMES_OVERTIME = {
-    "ocean": ["#1E40AF", "#2563EB", "#3B82F6", "#60A5FA", "#93C5FD"],
-    "forest": ["#166534", "#15803D", "#16A34A", "#22C55E", "#4ADE80"],
-    "sunset": ["#A03E0C", "#C2410C", "#EA580C", "#F97316", "#FB923C"],
-    "lavender": ["#5B21B6", "#6B21A8", "#7C3AED", "#A855F7", "#C084FC"],
-    "coral": ["#BE123C", "#DC2626", "#EC4899", "#F472B6", "#F9A8D4"],
+    "ocean": ["#1E3A8A", "#1E40AF", "#2563EB", "#3B82F6", "#60A5FA", "#93C5FD"],
+    "forest": ["#14532D", "#166534", "#15803D", "#16A34A", "#22C55E", "#4ADE80"],
+    "sunset": ["#9A3412", "#A03E0C", "#C2410C", "#EA580C", "#F97316", "#FB923C"],
+    "lavender": ["#581C87", "#5B21B6", "#6B21A8", "#7C3AED", "#A855F7", "#C084FC"],
+    "coral": ["#BE185D", "#BE123C", "#DC2626", "#EC4899", "#F472B6", "#F9A8D4"],
 }
 
 
@@ -72,8 +64,6 @@ class Visualizer:
         Processed DataFrame with filtered date range
     work_colors : list
         List of hex color codes for work hours by weekday
-    overtime_colors : list
-        List of hex color codes for overtime hours by weekday
     date_format : str
         Date format string extracted from full_format
     time_format : str
@@ -102,7 +92,6 @@ class Visualizer:
         self.date_format, self.time_format = self.full_format.split(" ")
 
         self.work_colors = COLOR_SCHEMES_WORK[data["color_scheme"]]
-        self.overtime_colors = COLOR_SCHEMES_OVERTIME[data["color_scheme"]]
         self.num_months = data["num_months"]
         self.standard_work_hours = data["standard_work_hours"]
         self.work_days = data["work_days"]
@@ -176,7 +165,7 @@ class Visualizer:
                 self.df[self.df["date"].dt.weekday == weekday]["date"],
                 self.df[self.df["date"].dt.weekday == weekday]["overtime"],
                 width=1,
-                color=self.overtime_colors[i],
+                color=self.work_colors[i + 1],
                 bottom=self.df[self.df["date"].dt.weekday == weekday]["work_time"],
             )
 

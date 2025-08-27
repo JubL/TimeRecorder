@@ -188,7 +188,6 @@ def test_plot_daily_work_hours_different_color_schemes() -> None:
 
         # Verify color schemes are correctly assigned
         assert visualizer.work_colors == viz.COLOR_SCHEMES_WORK[scheme]
-        assert visualizer.overtime_colors == viz.COLOR_SCHEMES_OVERTIME[scheme]
 
 
 @pytest.mark.fast

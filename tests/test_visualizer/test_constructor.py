@@ -35,8 +35,7 @@ def test_constructor_basic_initialization() -> None:
     assert visualizer.num_months == 12
     assert visualizer.standard_work_hours == 8.0
     assert visualizer.work_days == [0, 1, 2, 3, 4]
-    assert len(visualizer.work_colors) == 5
-    assert len(visualizer.overtime_colors) == 5
+    assert len(visualizer.work_colors) == 6
 
 
 @pytest.mark.fast
@@ -63,7 +62,6 @@ def test_constructor_all_color_schemes() -> None:
 
         visualizer = viz.Visualizer(df, data)
         assert visualizer.work_colors == viz.COLOR_SCHEMES_WORK[scheme]
-        assert visualizer.overtime_colors == viz.COLOR_SCHEMES_OVERTIME[scheme]
 
 
 @pytest.mark.fast
@@ -161,8 +159,7 @@ def test_constructor_empty_dataframe() -> None:
     visualizer = viz.Visualizer(df, data)
 
     assert visualizer.df.empty
-    assert len(visualizer.work_colors) == 5
-    assert len(visualizer.overtime_colors) == 5
+    assert len(visualizer.work_colors) == 6
 
 
 @pytest.mark.fast

@@ -123,7 +123,6 @@ def test_visualizer_integration_all_color_schemes() -> None:
 
         # Test that each color scheme works correctly
         assert visualizer.work_colors == viz.COLOR_SCHEMES_WORK[scheme]
-        assert visualizer.overtime_colors == viz.COLOR_SCHEMES_OVERTIME[scheme]
 
         # Test plotting with each scheme
         visualizer.plot_daily_work_hours()
