@@ -48,7 +48,7 @@ def load_config(config_path: pathlib.Path) -> dict[str, dict]:
         msg = f"Error parsing YAML file {config_path}"
         logger.exception(msg)
         raise
-    except Exception:
+    except OSError:
         msg = f"Error loading configuration file {config_path}"
         logger.exception(msg)
         raise
