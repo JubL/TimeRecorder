@@ -375,7 +375,7 @@ def test_get_format_handler_performance() -> None:
 def test_get_format_handler_with_none_path() -> None:
     """Test that get_format_handler handles None path gracefully."""
     with pytest.raises(AttributeError):
-        formats.get_format_handler(None)
+        formats.get_format_handler(None)  # type: ignore[arg-type]
 
 
 @pytest.mark.fast
