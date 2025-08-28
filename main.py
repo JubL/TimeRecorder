@@ -17,8 +17,6 @@ from src.visualizer import Visualizer
 
 def main() -> None:
     """Run the main function of the time recorder."""
-    # TODO: increase the test coverage to 95%
-
     # TODO: visualization of work hours per day, week, month, year
     # TODO: calc overtime mean and std dev
     # TODO: introduce outlier detection, consistency checks?
