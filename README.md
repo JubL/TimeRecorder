@@ -23,6 +23,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 - **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
 - **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime with 5 beautiful color schemes, robust data handling, and time validation
+- **🧪 Comprehensive Testing**: Extensive test suite with high coverage across all modules
 
 ## 🚀 Quick Start
 
@@ -153,6 +154,8 @@ Thu 21.07.2025 07:45:38 CEST 16:30:00 CEST 7h 45m undertime -0h 15m
 ```
 
 ## 🧪 Testing
+
+TimeRecorder includes a comprehensive test suite with high coverage across all modules. The test suite is designed to ensure reliability and maintainability of the codebase.
 
 ### Running Tests
 
@@ -293,12 +296,23 @@ logging:
 
 - **CSV** (`.csv`, `.txt`, `.dat`) - Comma-separated values with UTF-8 encoding
 - **JSON** (`.json`) - JavaScript Object Notation for easy data exchange
-- **YAML** (`.yaml`, `.yml`) - Human-readable configuration format
+- **YAML** (`.yaml`, `.yml`) - Human-readable configuration format with column preservation
 - **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
 - **XML** (`.xml`) - Extensible Markup Language for enterprise integration
 - **Parquet** (`.parquet`, `.pq`) - Columnar storage format for large datasets
 
 The system automatically detects the format based on the file extension and uses the appropriate handler. All formats maintain the same data structure and are fully interoperable.
+
+#### Format-Specific Features
+
+Each format handler includes comprehensive features:
+
+- **CSV Handler**: UTF-8 encoding, automatic column detection, robust error handling
+- **JSON Handler**: Records wrapper format, nested structure support, unicode handling
+- **YAML Handler**: Column order preservation, YAML-specific features (anchors, comments), block style output
+- **Excel Handler**: Multiple sheet support, data type preservation, openpyxl integration
+- **XML Handler**: Custom XML structure, attribute support, enterprise integration
+- **Parquet Handler**: Columnar storage, compression support, large dataset optimization
 
 #### Extensible Format System
 
@@ -308,6 +322,7 @@ TimeRecorder uses a **Strategy Pattern** for file format handling, making it eas
 - **Unified Interface**: All formats implement the same `BaseFormatHandler` interface
 - **Easy Extension**: Adding new formats requires minimal code changes
 - **Format Registry**: Centralized mapping of file extensions to handlers
+- **Comprehensive Testing**: Each format handler includes 30+ tests for reliability
 
 For developers interested in adding new formats, see the [formats module documentation](src/formats/README.md).
 
@@ -338,13 +353,15 @@ TimeRecorder/
 │   ├── logging_utils.py    # Logging configuration
 │   ├── time_recorder.py    # Core time tracking functionality
 │   └── visualizer.py       # Data visualization functionality
-└── tests/                  # Test suite
-    ├── conftest.py         # Pytest configuration
+└── tests/                  # Comprehensive test suite
+    ├── conftest.py         # Pytest configuration and shared fixtures
+    ├── test_formats/       # File format handler tests (200+ tests)
     ├── test_config_utils/  # Configuration utility tests
     ├── test_logbook/       # Logbook management tests
     ├── test_logging_utils/ # Logging utility tests
     ├── test_time_recorder/ # Core functionality tests
-    └── test_visualizer/    # Visualization functionality tests
+    ├── test_visualizer/    # Visualization functionality tests
+    └── test_arg_parser/    # Argument parsing tests
 ```
 
 ### Code Quality
@@ -362,15 +379,29 @@ ruff format .
 ruff check --fix .
 ```
 
+### Development Workflow
+
+1. **Write Tests First**: All new features should include comprehensive tests
+2. **Maintain Coverage**: Aim for high test coverage across all modules
+3. **Follow Patterns**: Use established patterns for format handlers and testing
+4. **Document Changes**: Update documentation for any new features or changes
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our contributing guidelines:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Write comprehensive tests for your changes
+4. Ensure all tests pass and maintain high coverage
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+### Testing Requirements
+
+- All new code must include comprehensive tests
+- Maintain or improve test coverage
 
 ## 📝 License
 
@@ -386,6 +417,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [psutil](https://github.com/giampaolo/psutil) for system information
 - [openpyxl](https://openpyxl.readthedocs.io/) for Excel file support
 - [lxml](https://lxml.de/) for XML file support
+- [PyYAML](https://pyyaml.org/) for YAML file support
+- [pyarrow](https://arrow.apache.org/docs/python/) for Parquet file support
 
 ## 📞 Support
 
