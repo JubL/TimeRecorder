@@ -64,12 +64,12 @@ def get_time_recorder_config(config: dict) -> dict:
 
     Parameters
     ----------
-    config : Dict[str, Any]
+    config : dict
         The main configuration dictionary.
 
     Returns
     -------
-    Dict[str, Any]
+    dict
         Dictionary containing TimeRecorder parameters.
     """
     time_tracking = config.get("time_tracking", {})
@@ -93,12 +93,12 @@ def get_logbook_config(config: dict) -> dict:
 
     Parameters
     ----------
-    config : Dict[str, Any]
+    config : dict
         The main configuration dictionary.
 
     Returns
     -------
-    Dict[str, Any]
+    dict
         Dictionary containing Logbook parameters.
     """
     logging_config = config.get("logging", {})
@@ -122,12 +122,12 @@ def get_display_config(config: dict) -> dict:
 
     Parameters
     ----------
-    config : Dict[str, Any]
+    config : dict
         The main configuration dictionary.
 
     Returns
     -------
-    Dict[str, Any]
+    dict
         Dictionary containing display parameters.
     """
     display_config = config.get("display", {})
@@ -145,12 +145,12 @@ def get_processing_config(config: dict) -> dict:
 
     Parameters
     ----------
-    config : Dict[str, Any]
+    config : dict
         The main configuration dictionary.
 
     Returns
     -------
-    Dict[str, Any]
+    dict
         Dictionary containing processing parameters.
     """
     data_processing = config.get("data_processing", {})
@@ -200,7 +200,7 @@ def validate_config(config: dict) -> bool:
 
     Parameters
     ----------
-    config : Dict[str, Any]
+    config : dict
         The configuration dictionary to validate.
 
     Returns
