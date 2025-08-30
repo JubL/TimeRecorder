@@ -44,8 +44,8 @@ def main() -> None:
     logger = lu.setup_logger(__name__)
 
     if not cu.validate_config(config):
-        logger.error("Configuration validation failed")
-        raise SystemExit(1)
+        msg = f"Configuration validation failed. Please check the {args.config or 'config.yaml'} file."
+        raise SystemExit(msg)
 
     # Update the config with the command line arguments
     config = cu.update_config(config, args)
