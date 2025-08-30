@@ -11,16 +11,12 @@ def test_get_display_config_complete() -> None:
     config = {
         "display": {
             "show_tail": 5,
-            "calculate_weekly_hours": True,
-            "calculate_daily_overhours": False,
         },
     }
 
     result = cu.get_display_config(config)
 
     assert result["show_tail"] == 5
-    assert result["calculate_weekly_hours"] is True
-    assert result["calculate_daily_overhours"] is False
 
 
 @pytest.mark.fast
@@ -40,8 +36,6 @@ def test_get_display_config_missing_display_section() -> None:
 
     # All values should be None when display section is missing
     assert result["show_tail"] is None
-    assert result["calculate_weekly_hours"] is None
-    assert result["calculate_daily_overhours"] is None
 
 
 @pytest.mark.fast
@@ -55,25 +49,6 @@ def test_get_display_config_empty_display_section() -> None:
 
     # All values should be None when display section is empty
     assert result["show_tail"] is None
-    assert result["calculate_weekly_hours"] is None
-    assert result["calculate_daily_overhours"] is None
-
-
-@pytest.mark.fast
-def test_get_display_config_partial_configuration() -> None:
-    """Test extraction when only some display options are provided."""
-    config = {
-        "display": {
-            "show_tail": 10,
-            # calculate_weekly_hours and calculate_daily_overhours are missing
-        },
-    }
-
-    result = cu.get_display_config(config)
-
-    assert result["show_tail"] == 10
-    assert result["calculate_weekly_hours"] is None
-    assert result["calculate_daily_overhours"] is None
 
 
 @pytest.mark.fast
@@ -86,8 +61,6 @@ def test_get_display_config_with_other_sections() -> None:
         },
         "display": {
             "show_tail": 3,
-            "calculate_weekly_hours": True,
-            "calculate_daily_overhours": True,
         },
         "logging": {
             "log_path": "test.csv",
@@ -100,8 +73,6 @@ def test_get_display_config_with_other_sections() -> None:
     result = cu.get_display_config(config)
 
     assert result["show_tail"] == 3
-    assert result["calculate_weekly_hours"] is True
-    assert result["calculate_daily_overhours"] is True
 
 
 @pytest.mark.fast
@@ -110,8 +81,6 @@ def test_get_display_config_return_structure() -> None:
     config = {
         "display": {
             "show_tail": 7,
-            "calculate_weekly_hours": True,
-            "calculate_daily_overhours": False,
         },
     }
 
@@ -119,4 +88,4 @@ def test_get_display_config_return_structure() -> None:
 
     # Check that result is a dictionary with exactly the expected keys
     assert isinstance(result, dict)
-    assert set(result.keys()) == {"show_tail", "calculate_weekly_hours", "calculate_daily_overhours"}
+    assert set(result.keys()) == {"show_tail"}

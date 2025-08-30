@@ -38,14 +38,15 @@ def test_validate_config_success() -> None:
             "subdivision": "HE",
         },
         "display": {
-            "calculate_weekly_hours": True,
-            "calculate_daily_overhours": True,
             "show_tail": 4,
         },
         "visualization": {
             "plot": True,
             "color_scheme": "ocean",
             "num_months": 13,
+        },
+        "analyzer": {
+            "analyze_work_patterns": True,
         },
     }
 
@@ -93,6 +94,7 @@ def test_validate_config_missing_field() -> None:
         "data_processing": {},
         "display": {},
         "visualization": {},
+        "analyzer": {},
     }
 
     assert cu.validate_config(config) is False

@@ -232,8 +232,6 @@ def test_update_config_all_argument_mappings() -> None:
             "log_path": "default.csv",
         },
         "display": {
-            "calculate_weekly_hours": True,
-            "calculate_daily_overhours": True,
             "show_tail": 5,
         },
         "visualization": {
@@ -258,8 +256,6 @@ def test_update_config_all_argument_mappings() -> None:
         # Logging settings
         logbook="custom.csv",
         # Display settings
-        no_weekly=False,
-        no_overhours=False,
         tail=10,
         # Visualization settings
         plot=False,
@@ -286,8 +282,6 @@ def test_update_config_all_argument_mappings() -> None:
     assert result["logging"]["log_path"] == "custom.csv"
 
     # Check display settings
-    assert result["display"]["calculate_weekly_hours"] is False
-    assert result["display"]["calculate_daily_overhours"] is False
     assert result["display"]["show_tail"] == 10
 
     # Check visualization settings

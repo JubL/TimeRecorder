@@ -15,10 +15,6 @@ def test_get_processing_config() -> None:
             "auto_squash": True,
             "add_missing_days": True,
         },
-        "display": {
-            "calculate_weekly_hours": True,
-            "calculate_daily_overhours": True,
-        },
     }
 
     result = cu.get_processing_config(config)
@@ -27,4 +23,3 @@ def test_get_processing_config() -> None:
     assert result["log_enabled"] is True
     assert result["auto_squash"] is True
     assert result["add_missing_days"] is True
-    assert result["calculate_weekly_hours"] is True

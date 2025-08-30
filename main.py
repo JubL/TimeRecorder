@@ -10,6 +10,7 @@ import pathlib
 import src.arg_parser as ap
 import src.config_utils as cu
 import src.logging_utils as lu
+from src.analyzer import Analyzer
 from src.logbook import Logbook
 from src.time_recorder import TimeRecorder
 from src.visualizer import Visualizer
@@ -18,8 +19,7 @@ from src.visualizer import Visualizer
 def main() -> None:
     """Run the main function of the time recorder."""
     # TODO: visualization of work hours per day, week, month, year
-    # TODO: calc overtime mean and std dev
-    # TODO: introduce outlier detection, consistency checks?
+    # TODO: implement outlier detection, consistency checks?
 
     # TODO: shall tail() be controlled by the --log flag? maybe put it in a analyse category together with features yet to come?
 
@@ -33,15 +33,7 @@ def main() -> None:
     config_path = pathlib.Path(args.config or "config.yaml")
     if not config_path.exists():
         cu.create_default_config(config_path)
-
     config: dict[str, dict] = cu.load_config(config_path)
-
-    # Set global log level first (change this to control all logging)
-    # Options: logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR
-    lu.set_global_log_level(config["logging"]["log_level"])
-
-    # Set up main logger
-    logger = lu.setup_logger(__name__)
 
     if not cu.validate_config(config):
         msg = f"Configuration validation failed. Please check the {args.config or 'config.yaml'} file."
@@ -50,12 +42,19 @@ def main() -> None:
     # Update the config with the command line arguments
     config = cu.update_config(config, args)
 
+    # Set global log level first (change this to control all logging)
+    # Options: logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR
+    lu.set_global_log_level(config["logging"]["log_level"])
+    # Set up main logger
+    logger = lu.setup_logger(__name__)
+
     # Extract configuration sections
     time_recorder_config = cu.get_time_recorder_config(config)
     logbook_config = cu.get_logbook_config(config)
     processing_config = cu.get_processing_config(config)
     display_config = cu.get_display_config(config)
     visualization_config = cu.get_visualization_config(config)
+    analyzer_config = cu.get_analyzer_config(config)
     logger.debug("Configuration loaded successfully")
 
     # Create TimeRecorder object from configuration
@@ -78,11 +77,12 @@ def main() -> None:
         if processing_config["auto_squash"]:
             logbook.squash_df()
 
-    if processing_config["calculate_weekly_hours"]:
-        logbook.print_weekly_summary()
-
     if processing_config["log_enabled"]:
         logbook.tail(display_config["show_tail"])
+
+    if analyzer_config["analyze_work_patterns"]:
+        analyzer = Analyzer(data=analyzer_config, logbook_df=logbook.load_logbook())
+        analyzer.generate_summary_report()
 
     if visualization_config["plot"]:
         visualizer = Visualizer(logbook.load_logbook(), visualization_config)

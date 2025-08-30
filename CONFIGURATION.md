@@ -69,8 +69,6 @@ holidays:
 
 ```yaml
 display:
-  calculate_weekly_hours: true # Calculate weekly hours from log
-  calculate_daily_overhours: true  # Calculate daily overhours from log
   show_tail: 4                 # Show the last n lines of the logbook
 ```
 
@@ -222,8 +220,6 @@ holidays:
 
 # Display settings
 display:
-  calculate_weekly_hours: true     # Calculate weekly hours from log
-  calculate_daily_overhours: true  # Calculate daily overhours from log
   show_tail: 10                    # Show more recent entries
 
 # Visualization settings

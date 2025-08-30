@@ -21,9 +21,10 @@ dependencies = [
     "pytest-mock",
     "PyYAML",
     "matplotlib",
-    "pyarrow",  # For Parquet format support
-    "openpyxl",  # For Excel format support
-    "lxml",  # For XML format support
+    "pyarrow",  # for Parquet format support
+    "openpyxl",  # for Excel format support
+    "lxml",  # for XML format support
+    "scikit-learn",
 ]
 [project.optional-dependencies]
 dev = [

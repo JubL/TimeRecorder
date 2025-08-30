@@ -134,8 +134,6 @@ def get_display_config(config: dict) -> dict:
 
     return {
         "show_tail": display_config.get("show_tail"),
-        "calculate_weekly_hours": display_config.get("calculate_weekly_hours"),
-        "calculate_daily_overhours": display_config.get("calculate_daily_overhours"),
     }
 
 
@@ -154,15 +152,12 @@ def get_processing_config(config: dict) -> dict:
         Dictionary containing processing parameters.
     """
     data_processing = config.get("data_processing", {})
-    display = config.get("display", {})
 
     return {
         "use_boot_time": data_processing.get("use_boot_time"),
         "log_enabled": data_processing.get("logging_enabled"),
         "auto_squash": data_processing.get("auto_squash"),
         "add_missing_days": data_processing.get("add_missing_days"),
-        "calculate_weekly_hours": display.get("calculate_weekly_hours"),
-        "calculate_daily_overhours": display.get("calculate_daily_overhours"),
     }
 
 
@@ -194,6 +189,29 @@ def get_visualization_config(config: dict) -> dict:
     }
 
 
+def get_analyzer_config(config: dict) -> dict:
+    """
+    Extract analyzer configuration from the main config.
+
+    Parameters
+    ----------
+    config : dict
+        The main configuration dictionary.
+
+    Returns
+    -------
+    dict
+        Dictionary containing analyzer parameters.
+    """
+    analyzer_config = config.get("analyzer", {})
+    work_schedule = config.get("work_schedule", {})
+    return {
+        "analyze_work_patterns": analyzer_config.get("analyze_work_patterns"),
+        "standard_work_hours": work_schedule.get("standard_work_hours"),
+        "work_days": work_schedule.get("work_days"),
+    }
+
+
 def validate_config(config: dict) -> bool:
     """
     Validate the configuration dictionary.
@@ -215,8 +233,9 @@ def validate_config(config: dict) -> bool:
         "logging": ["log_path", "log_level"],
         "work_schedule": ["standard_work_hours", "work_days", "timezone"],
         "holidays": ["country", "subdivision"],
-        "display": ["show_tail", "calculate_weekly_hours", "calculate_daily_overhours"],
+        "display": ["show_tail"],
         "visualization": ["plot", "color_scheme", "num_months"],
+        "analyzer": ["analyze_work_patterns"],
     }
 
     # Validate all sections exist
@@ -289,14 +308,15 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "add_missing_days": True,
         },
         "display": {
-            "calculate_weekly_hours": True,
-            "calculate_daily_overhours": True,
             "show_tail": 4,
         },
         "visualization": {
             "color_scheme": "ocean",
             "num_months": 13,
             "plot": True,
+        },
+        "analyzer": {
+            "analyze_work_patterns": True,
         },
     }
 
@@ -346,13 +366,13 @@ def update_config(config: dict, args: argparse.Namespace) -> dict[str, dict]:
         # Logging settings
         ("logbook", "logging.log_path"),
         # Display settings
-        ("no_weekly", "display.calculate_weekly_hours"),
-        ("no_overhours", "display.calculate_daily_overhours"),
         ("tail", "display.show_tail"),
         # Visualization settings
         ("plot", "visualization.plot"),
         ("num_months", "visualization.num_months"),
         ("color_scheme", "visualization.color_scheme"),
+        # Analyzer settings
+        ("analyze", "analyzer.analyze_work_patterns"),
     ]
 
     def _set_nested_value(config_dict: dict, path: str, value: str | int | bool) -> None:  # noqa: FBT001
