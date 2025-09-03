@@ -546,6 +546,9 @@ class Logbook:
         The output is logged using the logger and displayed without
         DataFrame row indices for cleaner formatting.
         """
+        if n <= 0:
+            return
+
         df = self.load_logbook().tail(n)
 
         # sanity check

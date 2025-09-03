@@ -304,24 +304,14 @@ def test_tail_with_invalid_n_parameter(logbook: Logbook, sample_logbook_df: pd.D
     with patch("src.logbook.logger") as mock_logger:
         # Test with negative n
         logbook.tail(n=-1)
-        mock_logger.info.assert_called_once()
-
-        logged_output = mock_logger.info.call_args[0][0]
-        # Should handle negative n appropriately (pandas tail behavior)
-        assert "Recent Entries" in logged_output
-        assert "===============" in logged_output
+        mock_logger.info.assert_not_called()
 
         # Reset mock for next test
         mock_logger.reset_mock()
 
         # Test with zero n
         logbook.tail(n=0)
-        mock_logger.info.assert_called_once()
-
-        logged_output = mock_logger.info.call_args[0][0]
-        # Should handle zero n appropriately (pandas tail behavior)
-        assert "Recent Entries" in logged_output
-        assert "===============" in logged_output
+        mock_logger.info.assert_not_called()
 
 
 @pytest.mark.fast
