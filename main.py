@@ -77,7 +77,6 @@ def main() -> None:
         if processing_config["auto_squash"]:
             logbook.squash_df()
 
-    if processing_config["log_enabled"]:
         logbook.tail(display_config["show_tail"])
 
     if analyzer_config["analyze_work_patterns"]:
