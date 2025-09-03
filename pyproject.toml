@@ -19,6 +19,7 @@ dependencies = [
     "pytest",
     "pytest-cov",
     "pytest-mock",
+    "pytest-xdist",
     "PyYAML",
     "matplotlib",
     "pyarrow",  # for Parquet format support
@@ -30,6 +31,7 @@ dependencies = [
 dev = [
     "ruff>=0.12.8",
     "pytest>=8.3.5",
+    "pytest-xdist>=3.8.0",
     "mypy>=1.17.0",
 ]
 
