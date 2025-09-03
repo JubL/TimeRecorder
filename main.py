@@ -18,7 +18,9 @@ from src.visualizer import Visualizer
 
 def main() -> None:
     """Run the main function of the time recorder."""
-    # TODO: visualization of work hours per day, week, month, year
+    # TODO: visualization of work hours per day, week, month, year in one plot with fou graphs.
+    # TODO: give a notice if there is too little data to show the graphs
+
     # TODO: implement outlier detection, consistency checks?
 
     # TODO: shall tail() be controlled by the --log flag? maybe put it in a analyse category together with features yet to come?
@@ -26,6 +28,8 @@ def main() -> None:
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
 
     # TODO: shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
+
+    # TODO: implement report generation in PDF and HTML format
 
     args = ap.run_arg_parser()
 
