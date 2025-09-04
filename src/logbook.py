@@ -494,7 +494,7 @@ class Logbook:
 
                 reason = ""
                 if date.weekday() <= friday:
-                    reason = "vacation"
+                    reason = "Vacation"
                 if date in self.holidays_de_he:
                     reason = self.holidays_de_he[date]
                     msg = f"Added missing holiday on {date_str} - {reason}"
