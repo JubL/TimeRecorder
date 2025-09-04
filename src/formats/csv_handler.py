@@ -72,7 +72,7 @@ class CSVHandler(BaseFormatHandler):
             If there's an OS-level error during writing.
         """
         try:
-            df.to_csv(file_path, sep=";", index=False, encoding="utf-8")
+            df.to_csv(file_path, sep=";", float_format="%.2f", index=False, encoding="utf-8")
         except PermissionError as e:
             raise PermissionError(f"Permission denied when saving CSV to {file_path}: {e}") from e
         except OSError as e:

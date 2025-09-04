@@ -74,7 +74,7 @@ class ExcelHandler(BaseFormatHandler):
         try:
             # Save DataFrame to Excel file
             # Use openpyxl engine for .xlsx files
-            df.to_excel(file_path, index=False, engine="openpyxl")
+            df.to_excel(file_path, float_format="%.2f", index=False, engine="openpyxl")
 
         except PermissionError as e:
             raise PermissionError(f"Permission denied when saving Excel file to {file_path}: {e}") from e
