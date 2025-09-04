@@ -579,9 +579,9 @@ def test_load_error_message_content(tmp_path: pathlib.Path) -> None:
 
 
 @pytest.mark.fast
-def test_save_error_message_content(sample_json_data: pd.DataFrame) -> None:
+def test_save_error_message_content(sample_json_data: pd.DataFrame, tmp_path: pathlib.Path) -> None:
     """Test that save error messages contain expected content."""
-    file_path = pathlib.Path("test.json")
+    file_path = tmp_path / "test.json"
 
     # Mock the open function to raise PermissionError
     with patch("pathlib.Path.open", side_effect=PermissionError("Permission denied")):
