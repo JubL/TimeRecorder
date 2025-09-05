@@ -62,7 +62,7 @@ def test_str_undertime_case() -> None:
     assert "⏱️  Work duration: 7h 30m (7.5h)" in result
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-1h 30m (-0.5h)" in result
+    assert "0h -30m (-0.5h)" in result
 
 
 @pytest.mark.fast
@@ -182,7 +182,7 @@ def test_str_partial_hours_and_minutes() -> None:
     assert "⏱️  Work duration: 7h 45m (7.75h)" in result
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-1h 45m (-0.25h)" in result
+    assert "0h -15m (-0.25h)" in result
 
 
 @pytest.mark.fast
@@ -331,7 +331,7 @@ def test_str_decimal_precision() -> None:
     # Should show -0.67 hours undertime
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-1h 20m (-0.67h)" in result
+    assert "0h -40m (-0.67h)" in result
 
 
 @pytest.mark.fast
@@ -356,7 +356,7 @@ def test_str_minimal_work_time() -> None:
     assert "⏱️  Work duration: 0h 1m (0.02h)" in result
     assert "📈 Status:" in result
     assert "undertime" in result
-    assert "-8h 1m (-7.98h)" in result
+    assert "-7h -59m (-7.98h)" in result
 
 
 @pytest.mark.fast
