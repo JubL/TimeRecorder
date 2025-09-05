@@ -81,6 +81,13 @@ visualization:
   num_months: 12               # Number of months to display in visualization
 ```
 
+### Analyzer Settings
+
+```yaml
+analyzer:
+  analyze_work_patterns: false  # Calculate mean and standard deviation of overtime
+```
+
 ## Usage
 
 ### Automatic Configuration Creation
@@ -227,6 +234,10 @@ visualization:
   plot: true                       # Enable visualization by default
   color_scheme: "forest"           # Use forest color scheme
   num_months: 6                    # Show last 6 months
+
+# Analyzer settings
+analyzer:
+  analyze_work_patterns: true      # Enable work pattern analysis
 ```
 
 ## Configuration Functions
@@ -240,6 +251,7 @@ The configuration system provides several utility functions in `src/config_utils
 - `get_display_config(config: dict) -> dict`: Extract display parameters
 - `get_processing_config(config: dict) -> dict`: Extract processing parameters
 - `get_visualization_config(config: dict) -> dict`: Extract visualization parameters
+- `get_analyzer_config(config: dict) -> dict`: Extract analyzer parameters
 - `create_default_config(config_path: pathlib.Path) -> None`: Create default configuration file
 - `update_config(config: dict, args: argparse.Namespace) -> dict`: Update configuration with command line arguments
 
@@ -344,6 +356,22 @@ You can specify work times in multiple ways:
 1. **Boot time mode**: `--boot` (uses system boot time as start)
 2. **Manual mode**: `--date "DD.MM.YYYY" --start "HH:MM"`
 3. **Configuration mode**: Use values from `config.yaml`
+
+### Work Pattern Analysis
+
+TimeRecorder includes an advanced analyzer that provides statistical insights into your work patterns:
+
+```yaml
+analyzer:
+  analyze_work_patterns: true  # Enable comprehensive work pattern analysis
+```
+
+The analyzer provides:
+- **Statistical Analysis**: Mean and standard deviation of overtime
+- **Weekly Hours Calculation**: Average weekly work hours from logbook data
+- **Outlier Detection**: Identifies unusual work patterns using multiple methods (IQR, Z-score, Isolation Forest)
+- **Data Quality Validation**: Checks for missing values, data type issues, and logical inconsistencies
+- **Comprehensive Reports**: Generates formatted summary reports with all analysis results
 
 ### Data Visualization
 
@@ -478,6 +506,23 @@ python main.py --boot --log --show-plot --color-scheme sunset
 
 # Show visualization for specific time period
 python main.py --show-plot --color-scheme coral --num-months 3
+```
+
+### Analyzer Examples
+```bash
+# Enable work pattern analysis (controlled via config.yaml)
+# Set analyzer.analyze_work_patterns: true in your config.yaml
+
+# Run with analysis enabled
+python main.py --boot --log
+
+# The analyzer will automatically generate reports when enabled
+# Output includes:
+# - Mean overtime per work day
+# - Standard deviation of overtime
+# - Average weekly hours
+# - Mean daily overtime
+# - Outlier detection results
 ```
 
 Have fun logging!

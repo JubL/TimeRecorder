@@ -19,10 +19,10 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **📝 Multi-Format Logbook**: Persistent storage of all time records in multiple file formats
 - **🔧 Flexible Configuration**: YAML-based configuration system for easy customization
 - **🌍 Holiday Support**: Automatic holiday detection
-- **📱 Missing Day Detection**: Automatically add missing work days (weekends, holidays) to your logbook
+- **📱 Missing Day Detection**: Automatically add missing days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 - **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
-- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime with 5 beautiful color schemes, robust data handling, and time validation
+- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime
 - **🧪 Comprehensive Testing**: Extensive test suite with high coverage across all modules
 
 ## 🚀 Quick Start
@@ -117,7 +117,7 @@ output:
   colored_output: true   # Use colored terminal output
   show_statistics: true  # Show overtime/undertime statistics
   export_format: "csv"   # Export format: csv, json, excel
-  show_tail: 4           # Show the last n lines of the logbook
+  show_tail: 5           # Show the last n lines of the logbook
 
 # Visualization settings
 visualization:
@@ -273,7 +273,7 @@ View the last n entries from your logbook with formatted time display:
 
 ```yaml
 output:
-  show_tail: 4  # Show the last 4 entries (default)
+  show_tail: 5  # Show the last 5 entries (default)
 ```
 
 The `tail()` method displays work time in a human-readable format (e.g., "7h 30m" instead of "7.5").

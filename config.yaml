@@ -34,7 +34,7 @@ holidays:
 
 # Display settings
 display:
-  show_tail: 4  # Show the last n lines of the logbook
+  show_tail: 5  # Show the last n lines of the logbook
 
 # Visualization settings
 visualization:
