@@ -392,8 +392,7 @@ class TimeRecorder:
         work_hours = int(self.work_time.total_seconds() // self.sec_in_hour)
         work_minutes = int(self.work_time.total_seconds() // self.sec_in_min % self.min_in_hour)
         work_hours_decimal_representation = round(self.work_time.total_seconds() / self.sec_in_hour, 2)
-        overtime_hours = int(self.overtime.total_seconds() // self.sec_in_hour)
-        overtime_minutes = int(self.overtime.total_seconds() // self.sec_in_min % self.min_in_hour)
+        overtime_hours, overtime_minutes = self.get_hours_minutes(self.overtime)
         overtime_decimal_representation = round(self.overtime.total_seconds() / self.sec_in_hour, 2)
 
         title = "\nTime Recorder - Work Hours Calculator\n====================================="
@@ -408,6 +407,16 @@ class TimeRecorder:
         # Combine all parts
         items = [title, date, start_time, end_time, lunch_break_duration, work_duration, overtime_amount]
         return "\n".join(items)
+
+    def get_hours_minutes(self, time: timedelta) -> tuple[int, int]:
+        """Get the hours and minutes from a timedelta object."""
+        if time < timedelta(0):
+            return (
+                -int(abs(time.total_seconds()) // self.sec_in_hour),
+                -int(abs(time.total_seconds()) // self.sec_in_min % self.min_in_hour),
+            )
+
+        return int(time.total_seconds() // self.sec_in_hour), int(time.total_seconds() // self.sec_in_min % self.min_in_hour)
 
     def print_state(self) -> None:
         """Print the stats of the TimeRecorder object."""
