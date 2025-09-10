@@ -71,6 +71,8 @@ class ParquetHandler(BaseFormatHandler):
         try:
             df.to_parquet(file_path, index=False)
 
+        except ImportError as e:
+            raise OSError(f"pyarrow library not installed. Please install it with: pip install pyarrow. Error: {e}") from e
         except PermissionError as e:
             raise PermissionError(f"Permission denied when saving Parquet to {file_path}: {e}") from e
         except OSError as e:
