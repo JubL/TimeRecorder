@@ -170,7 +170,7 @@ def test_constructor_invalid_full_format() -> None:
         "work_days": [0, 1, 2, 3, 4],
     }
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="not enough values to unpack"):
         viz.Visualizer(df, data)
 
 
