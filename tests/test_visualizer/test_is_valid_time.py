@@ -116,17 +116,17 @@ def test_is_valid_time_none_and_na_values() -> None:
     visualizer = viz.Visualizer(df, data)
 
     # Test None and NaN values
-    assert visualizer.is_valid_time(None) is False
+    assert visualizer.is_valid_time(None) is False  # type: ignore[arg-type]
     # Note: pd.NA and pd.NaT cause TypeError in boolean context, so we test them differently
     try:
-        result = visualizer.is_valid_time(pd.NA)
+        result = visualizer.is_valid_time(pd.NA)  # type: ignore[arg-type]
         assert result is False
     except TypeError:
         # This is expected behavior - pd.NA in boolean context raises TypeError
         pass
 
     try:
-        result = visualizer.is_valid_time(pd.NaT)
+        result = visualizer.is_valid_time(pd.NaT)  # type: ignore[arg-type]
         assert result is False
     except TypeError:
         # This is expected behavior - pd.NaT in boolean context raises TypeError
