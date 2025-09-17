@@ -63,7 +63,7 @@ def test_get_analyzer_config_missing_work_schedule_section() -> None:
 @pytest.mark.fast
 def test_get_analyzer_config_empty_config() -> None:
     """Test get_analyzer_config with an empty configuration."""
-    config = {}
+    config: dict = {}
 
     result = cu.get_analyzer_config(config)
 
