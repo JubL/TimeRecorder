@@ -18,7 +18,7 @@ from src.visualizer import Visualizer
 
 def main() -> None:
     """Run the main function of the time recorder."""
-    # TODO: visualization of work hours per day, week, month, year in one plot with fou graphs.
+    # TODO: visualization of work hours per day, week, month, year in one plot with four graphs.
     # TODO: give a notice if there is too little data to show the graphs
 
     # TODO: implement outlier detection, consistency checks?
@@ -30,6 +30,13 @@ def main() -> None:
     # TODO: shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
     # TODO: implement report generation in PDF and HTML format
+
+    # TODO: write floats into the log with two decimal places
+
+    # TODO: is squashing the log a bad idea?
+    # TODO: maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
+
+    # TODO: switch to using loguru for logging over logger?
 
     args = ap.run_arg_parser()
 
