@@ -100,3 +100,47 @@ def sample_logbook_df() -> pd.DataFrame:
             "overtime": [0.0, 0.0, 0.0, 0.0, 0.0],
         },
     )
+
+
+@pytest.fixture
+def sample_config() -> dict:
+    """Sample configuration dictionary for testing."""
+    return {
+        "time_tracking": {
+            "date": "01.08.2025",
+            "start_time": "07:30",
+            "end_time": "17:25",
+            "lunch_break_duration": 60,
+            "full_format": "%d.%m.%Y %H:%M:%S",
+        },
+        "logging": {
+            "log_path": "timereport_logbook.csv",
+            "log_level": "INFO",
+        },
+        "work_schedule": {
+            "standard_work_hours": 8,
+            "work_days": [0, 1, 2, 3, 4],
+            "timezone": "Europe/Berlin",
+        },
+        "holidays": {
+            "country": "DE",
+            "subdivision": "HE",
+        },
+        "data_processing": {
+            "use_boot_time": True,
+            "logging_enabled": False,
+            "auto_squash": True,
+            "add_missing_days": True,
+        },
+        "display": {
+            "show_tail": 4,
+        },
+        "visualization": {
+            "color_scheme": "ocean",
+            "num_months": 13,
+            "plot": True,
+        },
+        "analyzer": {
+            "analyze_work_patterns": True,
+        },
+    }
