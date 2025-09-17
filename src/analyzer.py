@@ -93,7 +93,7 @@ class Analyzer:
 
         logger.debug(f"Analyzer initialized with DataFrame containing {len(logbook_df)} rows")
 
-    def mean_and_std(self) -> tuple[float, float]:
+    def mean_and_std(self) -> tuple[float | None, float | None]:
         """
         Calculate and log the mean and standard deviation of overtime.
 
@@ -110,7 +110,9 @@ class Analyzer:
 
         Returns
         -------
-            None
+        tuple[float | None, float | None]
+            A tuple containing (mean, std) of overtime values in hours.
+            Returns (None, None) if no valid overtime data is found.
 
         Side Effects:
             - Logs statistical results to the configured logger
@@ -353,7 +355,7 @@ class Analyzer:
             daily_result = 0.0
         return weekly_result, daily_result
 
-    def generate_summary_report(self) -> str:
+    def generate_summary_report(self) -> None:
         """
         Generate a comprehensive summary report of all analyses.
 
@@ -371,8 +373,13 @@ class Analyzer:
 
         outliers = self.detect_outliers()
 
-        mean_str = f"Mean overtime per work day: {int(mean)}h {mean % 1 * 60:.0f}m"
-        std_str = f"Standard Deviation of overtime: {int(std)}h {std % 1 * 60:.0f}m"
+        # Handle case where mean_and_std returns None values
+        if mean is not None and std is not None:
+            mean_str = f"Mean overtime per work day: {int(mean)}h {mean % 1 * 60:.0f}m"
+            std_str = f"Standard Deviation of overtime: {int(std)}h {std % 1 * 60:.0f}m"
+        else:
+            mean_str = "Mean overtime per work day: No valid data available"
+            std_str = "Standard Deviation of overtime: No valid data available"
         avr_weekly_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
         standard_hours_str = f"Standard Hours: {int(weekly_standard_hours)}h"
         if weekly_standard_hours % 1 != 0:
