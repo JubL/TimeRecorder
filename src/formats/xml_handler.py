@@ -41,15 +41,15 @@ class XMLHandler(BaseFormatHandler):
         ValueError
             If the XML format is invalid.
         """
-        try:
-            # Try to read XML as a table structure
-            # pandas can read XML files with table-like structure
-            return pd.read_xml(file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"XML file not found: {file_path}")
 
-        except FileNotFoundError as e:
-            raise FileNotFoundError(f"XML file not found: {file_path}") from e
-        except Exception as e:
+        try:
+            df = pd.read_xml(file_path)
+        except (ValueError, SyntaxError) as e:
             raise ValueError(f"Invalid XML format in {file_path}: {e}") from e
+
+        return df
 
     @staticmethod
     def save(df: pd.DataFrame, file_path: Path) -> None:
@@ -71,13 +71,9 @@ class XMLHandler(BaseFormatHandler):
             If there's an OS-level error during writing.
         """
         try:
-            # Convert DataFrame to XML format
-            # Use records format for better XML structure
             xml_data = df.to_xml(index=False, root_name="logbook", row_name="record")
-
             with file_path.open("w", encoding="utf-8") as f:
                 f.write(xml_data)
-
         except PermissionError as e:
             raise PermissionError(f"Permission denied when saving XML to {file_path}: {e}") from e
         except OSError as e:
