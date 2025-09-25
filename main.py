@@ -27,6 +27,9 @@ def main() -> None:
 
     # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
 
+    # TODO: show histogramm of work start time and work end time.
+    # TODO: show histogramm of work time, lunch break duration and overtime.
+
     # TODO: shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
     # TODO: implement report generation in PDF and HTML format
@@ -37,6 +40,9 @@ def main() -> None:
     # TODO: maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
 
     # TODO: switch to using loguru for logging over logger?
+
+    # TODO: Das Ausführen dauert erstaunlich lange. Finde heraus, an welchen Stellen am meisten Zeit verloren geht.
+    # TODO: Load the logbook only once!
 
     args = ap.run_arg_parser()
 
