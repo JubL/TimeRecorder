@@ -222,4 +222,8 @@ class Visualizer:
         ax.set_xlabel("Calendar Week")
         ax.set_ylabel("Work Hours")
         ax.set_title("Daily Work Hours")
+
+        for i, tick in enumerate(ax.xaxis.get_ticklabels()):
+            tick.set_visible(i % 2 == 0)  # Make every other tick visible
+
         plt.show()

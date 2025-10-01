@@ -44,6 +44,8 @@ def main() -> None:
     # TODO: Das Ausführen dauert erstaunlich lange. Finde heraus, an welchen Stellen am meisten Zeit verloren geht.
     # TODO: Load the logbook only once!
 
+    # TODO: analyze_work_patterns not yet in arg_parse?
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
