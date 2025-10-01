@@ -18,6 +18,11 @@ def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock, mock_show: 
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
 
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_tick2 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1, mock_tick2]
+
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
@@ -51,6 +56,11 @@ def test_plot_daily_work_hours_axis_configuration(mock_subplots: Mock) -> None:
     mock_fig = Mock()
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
+
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_tick2 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1, mock_tick2]
 
     df = pd.DataFrame(
         {
@@ -90,6 +100,12 @@ def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock) -> None:
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
 
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_tick2 = Mock()
+    mock_tick3 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1, mock_tick2, mock_tick3]
+
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
@@ -122,6 +138,12 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -
     mock_fig = Mock()
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
+
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_tick2 = Mock()
+    mock_tick3 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1, mock_tick2, mock_tick3]
 
     df = pd.DataFrame(
         {
@@ -165,6 +187,9 @@ def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock, mock_show: M
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
 
+    # Mock tick labels to be iterable
+    mock_ax.xaxis.get_ticklabels.return_value = []
+
     df = pd.DataFrame(columns=["date", "work_time", "overtime"])
 
     data = {
@@ -191,6 +216,10 @@ def test_plot_daily_work_hours_single_work_day(mock_subplots: Mock) -> None:
     mock_fig = Mock()
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
+
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1]
 
     df = pd.DataFrame(
         {
@@ -225,6 +254,11 @@ def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock, mock_show: Mock
     mock_fig = Mock()
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
+
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_tick2 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1, mock_tick2]
 
     df = pd.DataFrame(
         {
@@ -261,6 +295,11 @@ def test_plot_daily_work_hours_all_negative_work_time(mock_subplots: Mock) -> No
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
 
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_tick2 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1, mock_tick2]
+
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
@@ -293,6 +332,11 @@ def test_plot_daily_work_hours_zero_work_time(mock_subplots: Mock) -> None:
     mock_fig = Mock()
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
+
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_tick2 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1, mock_tick2]
 
     df = pd.DataFrame(
         {
@@ -327,6 +371,11 @@ def test_plot_daily_work_hours_color_scheme_usage(mock_subplots: Mock) -> None:
     mock_fig = Mock()
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
+
+    # Mock tick labels to be iterable
+    mock_tick1 = Mock()
+    mock_tick2 = Mock()
+    mock_ax.xaxis.get_ticklabels.return_value = [mock_tick1, mock_tick2]
 
     df = pd.DataFrame(
         {
