@@ -46,6 +46,10 @@ def main() -> None:
 
     # TODO: analyze_work_patterns not yet in arg_parse?
 
+    # TODO: output of analytics: move 'Standard Hours: 40h' up, before 'Mean overtime per work day: 0h 47m'
+    # TODO: and have 'Average Weekly Hours: 40h' after 'Standard Hours: 40h'.
+    # TODO: Also 'Mean Daily Overtime' and 'Mean Overtime per Work Day' are awefully similar, yet they have different values.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist

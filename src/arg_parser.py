@@ -119,7 +119,8 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
         # Case 2: Manual time specification (both --date and --start must be provided)
         elif (has_date or has_start) and not (has_date and has_start):
             logger.warning(
-                "When not using --boot, both --date and --start must be provided. Use either --boot OR both --date and --start together.",
+                "When you want to set --start manually, both --date and --start must be provided. "
+                "Use either --boot OR --no-boot, --date and --start together.",
             )
 
         # Case 3: Both end and end_now were specified

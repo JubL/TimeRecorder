@@ -27,6 +27,7 @@ dependencies = [
     "lxml",  # for XML format support
     "scikit-learn",
 ]
+
 [project.optional-dependencies]
 dev = [
     "ruff>=0.12.8",
