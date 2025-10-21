@@ -161,6 +161,22 @@ class Visualizer:
             except (ValueError, IndexError):
                 return False
 
+    def get_rolling_average(self, window: int = 5) -> pd.Series:
+        """
+        Calculate the rolling average of the work hours.
+
+        Parameters
+        ----------
+        window : int, default 7
+            The number of days to include in the rolling average.
+
+        Returns
+        -------
+        pd.Series
+            The rolling average of the work hours over the last window days.
+        """
+        return self.df[self.df["work_time"] > 0]["work_time"].rolling(window=window, min_periods=1).mean()
+
     def plot_daily_work_hours(self) -> None:
         """
         Create and display a bar chart of daily work hours and overtime.
@@ -179,6 +195,9 @@ class Visualizer:
         -------
         None
         """
+        self.df["rolling_avg"] = self.get_rolling_average()
+        self.df["rolling_avg"] = self.df["rolling_avg"].ffill()
+
         # if work_time is greater than standard_hours, subtract overtime from work_time
         self.df["work_time"] = self.df["work_time"].where(
             self.df["work_time"] <= self.standard_work_hours,
@@ -218,6 +237,8 @@ class Visualizer:
                 color=self.work_colors[-1],
                 alpha=0.4,
             )
+
+        ax.plot(self.df["date"], self.df["rolling_avg"], color="black", label="Rolling Average")
 
         ax.set_xlabel("Calendar Week")
         ax.set_ylabel("Work Hours")
