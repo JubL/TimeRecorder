@@ -368,7 +368,7 @@ class Analyzer:
             Formatted summary report as a string
         """
         mean, std = self.mean_and_std()
-        weekly_hours, daily_overtime = self.get_weekly_hours_from_log()
+        weekly_hours, _ = self.get_weekly_hours_from_log()
         weekly_standard_hours = self.standard_work_hours * len(self.work_days)
 
         outliers = self.detect_outliers()
@@ -380,15 +380,14 @@ class Analyzer:
         else:
             mean_str = "Mean overtime per work day: No valid data available"
             std_str = "Standard Deviation of overtime: No valid data available"
-        avr_weekly_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
         standard_hours_str = f"Standard Hours: {int(weekly_standard_hours)}h"
+        avr_weekly_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
         if weekly_standard_hours % 1 != 0:
             standard_hours_str += f" {int(weekly_standard_hours % 1 * 60)}m"
-        daily_overtime_str = f"Mean Daily Overtime: {int(daily_overtime)}h {int(daily_overtime % 1 * 60)}m"
         outliers_str = f"Outliers: {outliers}"
 
         title = "\nAnalytics\n========="
 
         # Combine all parts
-        items = [title, mean_str, std_str, avr_weekly_hours, standard_hours_str, daily_overtime_str, "", outliers_str]
+        items = [title, standard_hours_str, avr_weekly_hours, mean_str, std_str, "", outliers_str]
         logger.info("\n".join(items))
