@@ -74,6 +74,9 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
             help="Color scheme for visualizations",
         )
 
+        # Analyzer arguments
+        self.parser.add_argument("--analyze", action=argparse.BooleanOptionalAction, help="Analyze the logbook data")
+
         # Version argument
         self.parser.add_argument("--version", action="version", version=f"Version: {self.get_project_version()}")
 
