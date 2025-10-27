@@ -22,6 +22,7 @@ def test_is_valid_time_with_timezone() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -50,6 +51,7 @@ def test_is_valid_time_without_timezone() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -78,6 +80,7 @@ def test_is_valid_time_invalid_formats() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -109,6 +112,7 @@ def test_is_valid_time_none_and_na_values() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -161,6 +165,7 @@ def test_is_valid_time_different_time_formats() -> None:
             "full_format": full_format,
             "color_scheme": "ocean",
             "num_months": 12,
+            "rolling_average_window_size": 10,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
         }
@@ -185,6 +190,7 @@ def test_is_valid_time_timezone_parsing_edge_cases() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -217,6 +223,7 @@ def test_is_valid_time_malformed_timezone() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -245,6 +252,7 @@ def test_is_valid_time_boundary_values() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -276,6 +284,7 @@ def test_is_valid_time_whitespace_handling() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }

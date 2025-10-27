@@ -73,6 +73,12 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
             choices=["ocean", "forest", "sunset", "lavender", "coral"],
             help="Color scheme for visualizations",
         )
+        self.parser.add_argument(
+            "--rolling_average_window_size",
+            type=int,
+            help="Number of days to include in the rolling average",
+            default=10,
+        )
 
         # Analyzer arguments
         self.parser.add_argument("--analyze", action=argparse.BooleanOptionalAction, help="Analyze the logbook data")

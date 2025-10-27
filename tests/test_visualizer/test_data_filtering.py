@@ -24,6 +24,7 @@ def test_constructor_data_filtering_exact_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 3,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -52,6 +53,7 @@ def test_constructor_data_filtering_more_than_num_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 3,  # Only last 3 months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -85,6 +87,7 @@ def test_constructor_data_filtering_less_than_num_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 3,  # Request 3 months but only have 1
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -112,6 +115,7 @@ def test_constructor_data_filtering_zero_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 0,  # Zero months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -140,6 +144,7 @@ def test_constructor_data_filtering_negative_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": -1,  # Negative months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -167,6 +172,7 @@ def test_constructor_data_filtering_single_day() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -209,6 +215,7 @@ def test_constructor_data_filtering_irregular_dates() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 2,  # Last 2 months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -238,6 +245,7 @@ def test_constructor_data_filtering_leap_year() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 1,  # Last 1 month
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -266,6 +274,7 @@ def test_constructor_data_filtering_year_boundary() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 2,  # Last 2 months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -298,6 +307,7 @@ def test_constructor_data_filtering_very_large_num_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 1000,  # Very large number
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -326,6 +336,7 @@ def test_constructor_data_filtering_float_num_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 2.5,  # Float months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }

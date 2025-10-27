@@ -183,6 +183,7 @@ def get_visualization_config(config: dict) -> dict:
         "color_scheme": visualization.get("color_scheme"),
         "num_months": visualization.get("num_months"),
         "plot": visualization.get("plot"),
+        "rolling_average_window_size": visualization.get("rolling_average_window_size"),
         "standard_work_hours": work_schedule.get("standard_work_hours"),
         "work_days": work_schedule.get("work_days"),
         "full_format": time_tracking.get("full_format"),
@@ -234,7 +235,7 @@ def validate_config(config: dict) -> bool:
         "work_schedule": ["standard_work_hours", "work_days", "timezone"],
         "holidays": ["country", "subdivision"],
         "display": ["show_tail"],
-        "visualization": ["plot", "color_scheme", "num_months"],
+        "visualization": ["plot", "color_scheme", "num_months", "rolling_average_window_size"],
         "analyzer": ["analyze_work_patterns"],
     }
 
@@ -314,6 +315,7 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "color_scheme": "ocean",
             "num_months": 13,
             "plot": True,
+            "rolling_average_window_size": 10,
         },
         "analyzer": {
             "analyze_work_patterns": True,
@@ -371,6 +373,7 @@ def update_config(config: dict, args: argparse.Namespace) -> dict[str, dict]:
         ("plot", "visualization.plot"),
         ("num_months", "visualization.num_months"),
         ("color_scheme", "visualization.color_scheme"),
+        ("rolling_average_window_size", "visualization.rolling_average_window_size"),
         # Analyzer settings
         ("analyze", "analyzer.analyze_work_patterns"),
     ]

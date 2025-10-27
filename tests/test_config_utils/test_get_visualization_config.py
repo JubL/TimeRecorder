@@ -143,6 +143,7 @@ def test_get_visualization_config_with_other_sections() -> None:
         "visualization": {
             "color_scheme": "magma",
             "num_months": 6,
+            "rolling_average_window_size": 10,
             "plot": True,
         },
         "work_schedule": {
@@ -162,6 +163,7 @@ def test_get_visualization_config_with_other_sections() -> None:
 
     assert result["color_scheme"] == "magma"
     assert result["num_months"] == 6
+    assert result["rolling_average_window_size"] == 10
     assert result["plot"] is True
     assert result["standard_work_hours"] == 8
     assert result["work_days"] == [0, 1, 2, 3, 4, 5]
@@ -178,6 +180,7 @@ def test_get_visualization_config_return_structure() -> None:
         "visualization": {
             "color_scheme": "inferno",
             "num_months": 3,
+            "rolling_average_window_size": 10,
             "plot": True,
         },
         "work_schedule": {
@@ -193,6 +196,7 @@ def test_get_visualization_config_return_structure() -> None:
     expected_keys = {
         "color_scheme",
         "num_months",
+        "rolling_average_window_size",
         "plot",
         "standard_work_hours",
         "work_days",
@@ -209,6 +213,7 @@ def test_get_visualization_config_missing_individual_sections() -> None:
         "visualization": {
             "color_scheme": "cividis",
             "num_months": 9,
+            "rolling_average_window_size": 10,
             "plot": False,
         },
         "work_schedule": {
@@ -221,6 +226,7 @@ def test_get_visualization_config_missing_individual_sections() -> None:
 
     assert result["color_scheme"] == "cividis"
     assert result["num_months"] == 9
+    assert result["rolling_average_window_size"] == 10
     assert result["plot"] is False
     assert result["standard_work_hours"] == 8
     assert result["work_days"] == [0, 1, 2, 3, 4]
@@ -241,6 +247,7 @@ def test_get_visualization_config_missing_individual_sections() -> None:
 
     assert result["color_scheme"] is None
     assert result["num_months"] is None
+    assert result["rolling_average_window_size"] is None
     assert result["plot"] is None
     assert result["standard_work_hours"] == 7
     assert result["work_days"] == [1, 2, 3, 4, 5]
@@ -254,6 +261,7 @@ def test_get_visualization_config_missing_individual_sections() -> None:
         "visualization": {
             "color_scheme": "twilight",
             "num_months": 15,
+            "rolling_average_window_size": 10,
             "plot": True,
         },
     }
@@ -262,6 +270,7 @@ def test_get_visualization_config_missing_individual_sections() -> None:
 
     assert result["color_scheme"] == "twilight"
     assert result["num_months"] == 15
+    assert result["rolling_average_window_size"] == 10
     assert result["plot"] is True
     assert result["standard_work_hours"] is None
     assert result["work_days"] is None

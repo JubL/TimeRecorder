@@ -43,6 +43,7 @@ def test_visualizer_integration_complete_workflow() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -88,6 +89,7 @@ def test_visualizer_integration_multiple_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "forest",
         "num_months": 2,  # Only show last 2 months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -118,6 +120,7 @@ def test_visualizer_integration_all_color_schemes() -> None:
             "full_format": "%d.%m.%Y %H:%M:%S",
             "color_scheme": scheme,
             "num_months": 12,
+            "rolling_average_window_size": 10,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
         }
@@ -158,6 +161,7 @@ def test_visualizer_integration_different_formats() -> None:
             "full_format": full_format,
             "color_scheme": "ocean",
             "num_months": 12,
+            "rolling_average_window_size": 10,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
         }
@@ -189,6 +193,7 @@ def test_visualizer_integration_edge_cases() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -221,6 +226,7 @@ def test_visualizer_integration_custom_work_days() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "sunset",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": custom_work_days,
     }
@@ -247,6 +253,7 @@ def test_visualizer_integration_mixed_data_quality() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "lavender",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -282,6 +289,7 @@ def test_visualizer_integration_standard_work_hours_variations() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "coral",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 7.5,
         "work_days": [0, 1, 2, 3, 4],
     }

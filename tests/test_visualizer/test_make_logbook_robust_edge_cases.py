@@ -22,6 +22,7 @@ def test_make_logbook_robust_invalid_time_handling() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -49,6 +50,7 @@ def test_make_logbook_robust_mixed_valid_invalid_times() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -80,6 +82,7 @@ def test_make_logbook_robust_none_start_time() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -107,6 +110,7 @@ def test_make_logbook_robust_nan_start_time() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -132,6 +136,7 @@ def test_make_logbook_robust_extreme_numeric_values() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -162,6 +167,7 @@ def test_make_logbook_robust_string_numeric_conversion() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -195,6 +201,7 @@ def test_make_logbook_robust_boolean_values() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -229,6 +236,7 @@ def test_make_logbook_robust_complex_invalid_strings() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -266,6 +274,7 @@ def test_make_logbook_robust_unicode_values() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }

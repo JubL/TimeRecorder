@@ -57,6 +57,7 @@ class Visualizer:
         - full_format: Date and time format string
         - color_scheme: Theme name for color selection
         - num_months: Number of months to display
+        - rolling_average_window_size: Number of days to include in the rolling average
         - standard_work_hours: Standard work hours per day
         - work_days: List of weekday numbers (0=Monday, 6=Sunday)
 
@@ -72,6 +73,8 @@ class Visualizer:
         Time format string extracted from full_format
     num_months : int
         Number of months to display in the chart
+    rolling_average_window_size : int
+        Number of days to include in the rolling average
     standard_work_hours : float
         Standard work hours per day
     work_days : list
@@ -95,6 +98,7 @@ class Visualizer:
 
         self.work_colors = COLOR_SCHEMES_WORK[data["color_scheme"]]
         self.num_months = data["num_months"]
+        self.rolling_average_window_size = data["rolling_average_window_size"]
         self.standard_work_hours = data["standard_work_hours"]
         self.work_days = data["work_days"]
 
@@ -161,7 +165,7 @@ class Visualizer:
             except (ValueError, IndexError):
                 return False
 
-    def get_rolling_average(self, window: int = 5) -> pd.Series:
+    def get_rolling_average(self, window: int = 10) -> pd.Series:
         """
         Calculate the rolling average of the work hours.
 
@@ -175,6 +179,8 @@ class Visualizer:
         pd.Series
             The rolling average of the work hours over the last window days.
         """
+        if not window:
+            return 0.0
         return self.df[self.df["work_time"] > 0]["work_time"].rolling(window=window, min_periods=1).mean()
 
     def plot_daily_work_hours(self) -> None:
@@ -195,7 +201,7 @@ class Visualizer:
         -------
         None
         """
-        self.df["rolling_avg"] = self.get_rolling_average()
+        self.df["rolling_avg"] = self.get_rolling_average(self.rolling_average_window_size)
         self.df["rolling_avg"] = self.df["rolling_avg"].ffill()
 
         # if work_time is greater than standard_hours, subtract overtime from work_time

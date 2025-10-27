@@ -142,6 +142,7 @@ def test_constructor_missing_work_days() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         # Missing 'work_days'
     }
@@ -166,6 +167,7 @@ def test_constructor_invalid_full_format() -> None:
         "full_format": "invalid_format",  # No space to split
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -190,6 +192,7 @@ def test_constructor_negative_num_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": -1,  # Negative months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -214,6 +217,7 @@ def test_constructor_zero_num_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 0,  # Zero months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -238,6 +242,7 @@ def test_constructor_negative_standard_work_hours() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": -8.0,  # Negative work hours
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -262,6 +267,7 @@ def test_constructor_zero_standard_work_hours() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 0.0,  # Zero work hours
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -286,6 +292,7 @@ def test_constructor_empty_work_days() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [],  # Empty work days
     }
@@ -310,6 +317,7 @@ def test_constructor_invalid_work_days() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4, 5, 6, 7, 8],  # Invalid weekday numbers
     }
@@ -334,6 +342,7 @@ def test_constructor_float_num_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 6.5,  # Float months
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -358,6 +367,7 @@ def test_constructor_float_standard_work_hours() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 7.5,  # Float work hours
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -382,6 +392,7 @@ def test_constructor_very_large_num_months() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 1000,  # Very large number
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -406,6 +417,7 @@ def test_constructor_very_large_standard_work_hours() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 1000.0,  # Very large work hours
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -430,6 +442,7 @@ def test_constructor_none_values_in_config() -> None:
         "full_format": None,  # None value
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }

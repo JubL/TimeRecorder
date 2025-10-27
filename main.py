@@ -39,7 +39,7 @@ def main() -> None:
     # TODO: is squashing the log a bad idea?
     # TODO: maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
 
-    # TODO: switch to using loguru for logging over logger?
+    # TODO: switch to using loguru for logging over logger? (create a branch for experimenting on this approach)
 
     # TODO: Das Ausführen dauert erstaunlich lange. Finde heraus, an welchen Stellen am meisten Zeit verloren geht.
     # TODO: Load the logbook only once!

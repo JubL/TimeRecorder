@@ -44,6 +44,7 @@ def test_validate_config_success() -> None:
             "plot": True,
             "color_scheme": "ocean",
             "num_months": 13,
+            "rolling_average_window_size": 10,
         },
         "analyzer": {
             "analyze_work_patterns": True,

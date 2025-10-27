@@ -36,6 +36,7 @@ def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock, mock_show: 
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -75,6 +76,7 @@ def test_plot_daily_work_hours_axis_configuration(mock_subplots: Mock) -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -119,6 +121,7 @@ def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock) -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -158,6 +161,7 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -196,6 +200,7 @@ def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock, mock_show: M
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -234,6 +239,7 @@ def test_plot_daily_work_hours_single_work_day(mock_subplots: Mock) -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0],  # Only Monday
     }
@@ -273,6 +279,7 @@ def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock, mock_show: Mock
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [],  # No work days
     }
@@ -313,6 +320,7 @@ def test_plot_daily_work_hours_all_negative_work_time(mock_subplots: Mock) -> No
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -351,6 +359,7 @@ def test_plot_daily_work_hours_zero_work_time(mock_subplots: Mock) -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -390,6 +399,7 @@ def test_plot_daily_work_hours_color_scheme_usage(mock_subplots: Mock) -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "forest",  # Use forest color scheme
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }

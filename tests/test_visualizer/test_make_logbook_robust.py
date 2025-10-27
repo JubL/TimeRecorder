@@ -22,6 +22,7 @@ def test_make_logbook_robust_basic_conversion() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -58,6 +59,7 @@ def test_make_logbook_robust_handle_missing_values() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -85,6 +87,7 @@ def test_make_logbook_robust_handle_invalid_numeric() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -112,6 +115,7 @@ def test_make_logbook_robust_negative_overtime_handling() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -149,6 +153,7 @@ def test_make_logbook_robust_date_format_parsing() -> None:
             "full_format": full_format,
             "color_scheme": "ocean",
             "num_months": 12,
+            "rolling_average_window_size": 10,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
         }
@@ -176,6 +181,7 @@ def test_make_logbook_robust_mixed_data_types() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -204,6 +210,7 @@ def test_make_logbook_robust_empty_dataframe() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -233,6 +240,7 @@ def test_make_logbook_robust_zero_overtime_preserved() -> None:
         "full_format": "%d.%m.%Y %H:%M:%S",
         "color_scheme": "ocean",
         "num_months": 12,
+        "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }

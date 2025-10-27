@@ -22,7 +22,8 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **📱 Missing Day Detection**: Automatically add missing days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 - **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
-- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime
+- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime with rolling average trends
+- **📈 Rolling Average Analysis**: Track work time trends with configurable rolling average window
 - **🧪 Comprehensive Testing**: Extensive test suite with high coverage across all modules
 
 ## 🚀 Quick Start
@@ -124,6 +125,7 @@ visualization:
   plot: false            # Show work hours visualization
   color_scheme: "ocean"  # Color scheme: ocean, forest, sunset, lavender, coral
   num_months: 13         # Number of months to display in visualization
+  rolling_average_window_size: 10  # Number of days for rolling average calculation
 ```
 
 For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.md).
@@ -185,7 +187,7 @@ pytest -l
 
 ## 📊 Data Visualization
 
-TimeRecorder includes a powerful visualization feature that creates beautiful bar charts showing your daily work hours and overtime. The visualization helps you identify patterns in your work schedule and track overtime trends.
+TimeRecorder includes a powerful visualization feature that creates beautiful bar charts showing your daily work hours and overtime with rolling average trend lines. The visualization helps you identify patterns in your work schedule, track overtime trends, and analyze long-term work patterns.
 
 ### Available Color Schemes
 
@@ -220,12 +222,14 @@ python main.py --plot --color-scheme coral
 ### Visualization Features
 
 - **Separate Work and Overtime**: Work hours and overtime are displayed as separate bars with distinct colors
+- **Rolling Average Trend Line**: Black trend line shows the rolling average of work hours over a configurable window
 - **Color-Coded by Weekday**: Each weekday has its own color within the selected scheme
 - **Automatic Data Filtering**: Shows only the specified number of months
 - **Responsive Design**: Charts automatically adjust to your data
 - **Robust Data Handling**: Automatically handles missing data, invalid time formats, and data type conversions
 - **Time Validation**: Validates time strings and handles timezone information gracefully
 - **Calendar Week Display**: X-axis shows calendar weeks for easy reference
+- **Configurable Rolling Window**: Adjust the rolling average window size
 
 ### Configuration
 
@@ -236,7 +240,22 @@ visualization:
   plot: true                   # Enable visualization by default
   color_scheme: "ocean"        # Choose your preferred color scheme
   num_months: 13               # Number of months to display
+  rolling_average_window_size: 10  # Days to include in rolling average (default: 10)
 ```
+
+### Rolling Average Configuration
+
+The rolling average feature helps you identify trends in your work patterns by calculating the average work hours over a sliding window of days. This is particularly useful for:
+
+- **Trend Analysis**: See if your work hours are increasing or decreasing over time
+- **Pattern Recognition**: Identify seasonal patterns or workload changes
+- **Goal Tracking**: Monitor progress toward work-life balance goals
+- **Anomaly Detection**: Spot unusual work patterns that might need attention
+
+**Configuration Options:**
+- **Small Window (5-7 days)**: Shows short-term trends and weekly patterns
+- **Medium Window (10-14 days)**: Balances responsiveness with stability (recommended default)
+- **Large Window (20-30 days)**: Shows long-term trends and smooths out daily variations
 
 ## 🔧 Advanced Features
 
