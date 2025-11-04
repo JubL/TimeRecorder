@@ -12,6 +12,8 @@ def test_get_analyzer_config_complete(sample_config: dict) -> None:
 
     expected = {
         "analyze_work_patterns": True,
+        "outlier_method": "iqr",
+        "outlier_threshold": 1.5,
         "standard_work_hours": 8,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -33,6 +35,8 @@ def test_get_analyzer_config_missing_analyzer_section() -> None:
 
     expected = {
         "analyze_work_patterns": None,
+        "outlier_method": None,
+        "outlier_threshold": None,
         "standard_work_hours": 8,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -53,6 +57,8 @@ def test_get_analyzer_config_missing_work_schedule_section() -> None:
 
     expected = {
         "analyze_work_patterns": True,
+        "outlier_method": None,
+        "outlier_threshold": None,
         "standard_work_hours": None,
         "work_days": None,
     }
@@ -69,6 +75,8 @@ def test_get_analyzer_config_empty_config() -> None:
 
     expected = {
         "analyze_work_patterns": None,
+        "outlier_method": None,
+        "outlier_threshold": None,
         "standard_work_hours": None,
         "work_days": None,
     }
@@ -93,6 +101,8 @@ def test_get_analyzer_config_partial_config() -> None:
 
     expected = {
         "analyze_work_patterns": False,
+        "outlier_method": None,
+        "outlier_threshold": None,
         "standard_work_hours": 7.5,
         "work_days": [1, 2, 3, 4, 5],
     }
@@ -117,6 +127,8 @@ def test_get_analyzer_config_none_values() -> None:
 
     expected = {
         "analyze_work_patterns": None,
+        "outlier_method": None,
+        "outlier_threshold": None,
         "standard_work_hours": None,
         "work_days": None,
     }
@@ -146,7 +158,9 @@ def test_get_analyzer_config_return_structure() -> None:
 
     # Check that result is a dictionary with exactly the expected keys
     assert isinstance(result, dict)
-    assert set(result.keys()) == {"analyze_work_patterns", "standard_work_hours", "work_days"}
+    assert set(result.keys()) == {"analyze_work_patterns", "outlier_method", "outlier_threshold", "standard_work_hours", "work_days"}
     assert result["analyze_work_patterns"] is True
+    assert result["outlier_method"] is None
+    assert result["outlier_threshold"] is None
     assert result["standard_work_hours"] == 8
     assert result["work_days"] == [0, 1, 2, 3, 4]

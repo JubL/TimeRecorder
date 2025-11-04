@@ -210,6 +210,8 @@ def get_analyzer_config(config: dict) -> dict:
         "analyze_work_patterns": analyzer_config.get("analyze_work_patterns"),
         "standard_work_hours": work_schedule.get("standard_work_hours"),
         "work_days": work_schedule.get("work_days"),
+        "outlier_method": analyzer_config.get("outlier_method"),
+        "outlier_threshold": analyzer_config.get("outlier_threshold"),
     }
 
 
@@ -236,7 +238,7 @@ def validate_config(config: dict) -> bool:
         "holidays": ["country", "subdivision"],
         "display": ["show_tail"],
         "visualization": ["plot", "color_scheme", "num_months", "rolling_average_window_size"],
-        "analyzer": ["analyze_work_patterns"],
+        "analyzer": ["analyze_work_patterns", "outlier_method", "outlier_threshold"],
     }
 
     # Validate all sections exist
@@ -319,6 +321,8 @@ def create_default_config(config_path: pathlib.Path) -> None:
         },
         "analyzer": {
             "analyze_work_patterns": True,
+            "outlier_method": "iqr",
+            "outlier_threshold": 1.5,
         },
     }
 

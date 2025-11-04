@@ -86,6 +86,8 @@ class Analyzer:
 
         self.standard_work_hours = data["standard_work_hours"]
         self.work_days = data["work_days"]
+        self.outlier_method = data["outlier_method"]
+        self.outlier_threshold = data["outlier_threshold"]
 
         self.sec_in_min = 60  # Number of seconds in a minute
         self.sec_in_hour = 3600  # Number of seconds in an hour
@@ -159,7 +161,7 @@ class Analyzer:
         # TODO: Implement comprehensive work pattern analysis
         raise NotImplementedError("Work pattern analysis not yet implemented")
 
-    def detect_outliers(self, *, method: str = "iqr", threshold: float = 1.5) -> pd.DataFrame:
+    def detect_outliers(self, *, method: str, threshold: float) -> pd.DataFrame:
         """
         Detect statistical outliers in work data.
 
@@ -371,7 +373,7 @@ class Analyzer:
         weekly_hours, _ = self.get_weekly_hours_from_log()
         weekly_standard_hours = self.standard_work_hours * len(self.work_days)
 
-        outliers = self.detect_outliers()
+        outliers = self.detect_outliers(method=self.outlier_method, threshold=self.outlier_threshold)
 
         # Handle case where mean_and_std returns None values
         if mean is not None and std is not None:

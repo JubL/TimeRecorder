@@ -48,6 +48,8 @@ def test_validate_config_success() -> None:
         },
         "analyzer": {
             "analyze_work_patterns": True,
+            "outlier_method": "iqr",
+            "outlier_threshold": 1.5,
         },
     }
 

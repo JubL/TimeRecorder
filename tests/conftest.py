@@ -142,5 +142,9 @@ def sample_config() -> dict:
         },
         "analyzer": {
             "analyze_work_patterns": True,
+            "outlier_method": "iqr",
+            "outlier_threshold": 1.5,
+            "standard_work_hours": 8,
+            "work_days": [0, 1, 2, 3, 4],
         },
     }

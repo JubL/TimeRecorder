@@ -82,7 +82,18 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
 
         # Analyzer arguments
         self.parser.add_argument("--analyze", action=argparse.BooleanOptionalAction, help="Analyze the logbook data")
-
+        self.parser.add_argument(
+            "--outlier_method",
+            type=str,
+            choices=["iqr", "zscore", "isolation_forest"],
+            help="Method for outlier detection",
+        )
+        self.parser.add_argument(
+            "--outlier_threshold",
+            type=float,
+            help="Threshold for outlier detection",
+            default=1.5,
+        )
         # Version argument
         self.parser.add_argument("--version", action="version", version=f"Version: {self.get_project_version()}")
 

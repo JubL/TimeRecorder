@@ -46,3 +46,5 @@ visualization:
 # Analyzer settings
 analyzer:
   analyze_work_patterns: false  # Calculate mean and standard deviation of overtime
+  outlier_method: "iqr"  # Method for outlier detection: iqr, zscore, isolation_forest
+  outlier_threshold: 1.5  # Threshold for outlier detection
