@@ -53,7 +53,7 @@ def main() -> None:
     config: dict[str, dict] = cu.load_config(config_path)
 
     if not cu.validate_config(config):
-        msg = f"Configuration validation failed. Please check the {args.config or 'config.yaml'} file."
+        msg = f"Configuration validation failed. Please check the {config_path!s} file."
         raise SystemExit(msg)
 
     # Update the config with the command line arguments

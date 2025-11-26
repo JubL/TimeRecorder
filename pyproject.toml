@@ -43,6 +43,7 @@ extend-exclude = [
 ]
 target-version = "py313"  # assume Python 3.13
 indent-width = 4  # use 4 spaces for indentation
+line-length = 140
 
 [tool.ruff.lint.per-file-ignores]
 # ignore some checks in test cases
