@@ -246,6 +246,8 @@ class Visualizer:
 
         ax.plot(self.df["date"], self.df["rolling_avg"], color="black", label="Rolling Average")
 
+        ax.axhline(y=10, color=self.work_colors[-1], linestyle="--", linewidth=0.4, label="10 hour threshold", zorder=0.9)
+
         ax.set_xlabel("Calendar Week")
         ax.set_ylabel("Work Hours")
         ax.set_title("Daily Work Hours")
