@@ -46,6 +46,8 @@ def main() -> None:
 
     # TODO: if --start is used --no-boot must be used too. that could be automatically done (by the arg parser).
 
+    # TODO: if work duration is less than 8 hours, calculate the time when 8 hours would be reached
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
