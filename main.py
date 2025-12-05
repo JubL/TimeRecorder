@@ -44,6 +44,10 @@ def main() -> None:
     # TODO: Das Ausführen dauert erstaunlich lange. Finde heraus, an welchen Stellen am meisten Zeit verloren geht.
     # TODO: Load the logbook only once!
 
+    # TODO: if --start is used --no-boot must be used too. that could be automatically done (by the arg parser).
+
+    # TODO: add a narrow line at 10 hours in the plot of the daily work hours. Use the appropriate color for the line.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
