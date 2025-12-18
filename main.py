@@ -48,6 +48,8 @@ def main() -> None:
 
     # TODO: if work duration is less than 8 hours, calculate the time at which 8 hours would be reached
 
+    # TODO: the x-tick interval in visualizer.py should be configurable in the config.yaml.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
