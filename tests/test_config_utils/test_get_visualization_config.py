@@ -16,6 +16,8 @@ def test_get_visualization_config_complete() -> None:
             "color_scheme": "ocean",
             "num_months": 12,
             "plot": True,
+            "rolling_average_window_size": 10,
+            "x_tick_interval": 3,
         },
         "work_schedule": {
             "standard_work_hours": 8,
@@ -52,6 +54,7 @@ def test_get_visualization_config_missing_all_sections() -> None:
     assert result["num_months"] is None
     assert result["plot"] is None
     assert result["standard_work_hours"] is None
+    assert result["x_tick_interval"] is None
     assert result["work_days"] is None
     assert result["full_format"] is None
 
@@ -72,6 +75,7 @@ def test_get_visualization_config_empty_sections() -> None:
     assert result["num_months"] is None
     assert result["plot"] is None
     assert result["standard_work_hours"] is None
+    assert result["x_tick_interval"] is None
     assert result["work_days"] is None
     assert result["full_format"] is None
 
@@ -99,6 +103,7 @@ def test_get_visualization_config_partial_configuration() -> None:
     assert result["num_months"] is None
     assert result["plot"] is None
     assert result["standard_work_hours"] == 7.5
+    assert result["x_tick_interval"] is None
     assert result["work_days"] is None
     assert result["full_format"] == "%Y-%m-%d %H:%M"
 
@@ -114,6 +119,7 @@ def test_get_visualization_config_different_data_types() -> None:
             "color_scheme": "plasma",
             "num_months": 0,  # Zero value
             "plot": False,  # False boolean
+            "x_tick_interval": 3,
         },
         "work_schedule": {
             "standard_work_hours": 6.0,  # Float value
@@ -129,6 +135,7 @@ def test_get_visualization_config_different_data_types() -> None:
     assert result["standard_work_hours"] == 6.0
     assert result["work_days"] == [1, 2, 3]
     assert result["full_format"] == "%d/%m/%Y"
+    assert result["x_tick_interval"] == 3
 
 
 @pytest.mark.fast
@@ -145,6 +152,7 @@ def test_get_visualization_config_with_other_sections() -> None:
             "num_months": 6,
             "rolling_average_window_size": 10,
             "plot": True,
+            "x_tick_interval": 4,
         },
         "work_schedule": {
             "standard_work_hours": 8,
@@ -168,6 +176,7 @@ def test_get_visualization_config_with_other_sections() -> None:
     assert result["standard_work_hours"] == 8
     assert result["work_days"] == [0, 1, 2, 3, 4, 5]
     assert result["full_format"] == "%d.%m.%Y %H:%M:%S"
+    assert result["x_tick_interval"] == 4
 
 
 @pytest.mark.fast
@@ -182,6 +191,7 @@ def test_get_visualization_config_return_structure() -> None:
             "num_months": 3,
             "rolling_average_window_size": 10,
             "plot": True,
+            "x_tick_interval": 3,
         },
         "work_schedule": {
             "standard_work_hours": 8,
@@ -201,6 +211,7 @@ def test_get_visualization_config_return_structure() -> None:
         "standard_work_hours",
         "work_days",
         "full_format",
+        "x_tick_interval",
     }
     assert set(result.keys()) == expected_keys
 
@@ -215,6 +226,7 @@ def test_get_visualization_config_missing_individual_sections() -> None:
             "num_months": 9,
             "rolling_average_window_size": 10,
             "plot": False,
+            "x_tick_interval": 3,
         },
         "work_schedule": {
             "standard_work_hours": 8,

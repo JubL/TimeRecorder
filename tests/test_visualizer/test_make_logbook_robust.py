@@ -25,6 +25,7 @@ def test_make_logbook_robust_basic_conversion() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -62,6 +63,7 @@ def test_make_logbook_robust_handle_missing_values() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -90,6 +92,7 @@ def test_make_logbook_robust_handle_invalid_numeric() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -118,6 +121,7 @@ def test_make_logbook_robust_negative_overtime_handling() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -156,6 +160,7 @@ def test_make_logbook_robust_date_format_parsing() -> None:
             "rolling_average_window_size": 10,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
+            "x_tick_interval": 3,
         }
 
         visualizer = viz.Visualizer(df, data)
@@ -182,8 +187,9 @@ def test_make_logbook_robust_mixed_data_types() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
+        "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
+        "standard_work_hours": 8.0,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -211,8 +217,9 @@ def test_make_logbook_robust_empty_dataframe() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
+        "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
+        "standard_work_hours": 8.0,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -241,8 +248,9 @@ def test_make_logbook_robust_zero_overtime_preserved() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
+        "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
+        "standard_work_hours": 8.0,
     }
 
     visualizer = viz.Visualizer(df, data)

@@ -46,6 +46,7 @@ def test_visualizer_integration_complete_workflow() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -92,6 +93,7 @@ def test_visualizer_integration_multiple_months() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -121,6 +123,7 @@ def test_visualizer_integration_all_color_schemes() -> None:
             "color_scheme": scheme,
             "num_months": 12,
             "rolling_average_window_size": 10,
+            "x_tick_interval": 3,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
         }
@@ -164,6 +167,7 @@ def test_visualizer_integration_different_formats() -> None:
             "rolling_average_window_size": 10,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
+            "x_tick_interval": 3,
         }
 
         visualizer = viz.Visualizer(df, data)
@@ -196,6 +200,7 @@ def test_visualizer_integration_edge_cases() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -229,6 +234,7 @@ def test_visualizer_integration_custom_work_days() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": custom_work_days,
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -256,6 +262,7 @@ def test_visualizer_integration_mixed_data_quality() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -292,6 +299,7 @@ def test_visualizer_integration_standard_work_hours_variations() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 7.5,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)

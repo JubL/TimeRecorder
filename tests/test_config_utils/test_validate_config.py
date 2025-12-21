@@ -45,6 +45,7 @@ def test_validate_config_success() -> None:
             "color_scheme": "ocean",
             "num_months": 13,
             "rolling_average_window_size": 10,
+            "x_tick_interval": 3,
         },
         "analyzer": {
             "analyze_work_patterns": True,

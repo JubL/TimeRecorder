@@ -25,6 +25,7 @@ def test_constructor_basic_initialization() -> None:
         "num_months": 12,
         "rolling_average_window_size": 10,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
     }
 
@@ -61,6 +62,7 @@ def test_constructor_all_color_schemes() -> None:
             "color_scheme": scheme,
             "num_months": 6,
             "rolling_average_window_size": 10,
+            "x_tick_interval": 3,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
         }
@@ -88,6 +90,7 @@ def test_constructor_data_filtering() -> None:
         "color_scheme": "ocean",
         "num_months": 3,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -116,8 +119,9 @@ def test_constructor_format_parsing() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
+        "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
+        "standard_work_hours": 8.0,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -145,8 +149,9 @@ def test_constructor_work_days_custom() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
+        "x_tick_interval": 3,
         "work_days": custom_work_days,
+        "standard_work_hours": 8.0,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -164,8 +169,9 @@ def test_constructor_empty_dataframe() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
+        "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
+        "standard_work_hours": 8.0,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -191,8 +197,9 @@ def test_constructor_standard_work_hours_float() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
-        "standard_work_hours": 7.5,
+        "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
+        "standard_work_hours": 7.5,
     }
 
     visualizer = viz.Visualizer(df, data)

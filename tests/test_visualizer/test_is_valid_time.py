@@ -23,6 +23,7 @@ def test_is_valid_time_with_timezone() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -52,6 +53,7 @@ def test_is_valid_time_without_timezone() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -83,6 +85,7 @@ def test_is_valid_time_invalid_formats() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -113,8 +116,10 @@ def test_is_valid_time_none_and_na_values() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -166,6 +171,7 @@ def test_is_valid_time_different_time_formats() -> None:
             "color_scheme": "ocean",
             "num_months": 12,
             "rolling_average_window_size": 10,
+            "x_tick_interval": 3,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
         }
@@ -193,6 +199,7 @@ def test_is_valid_time_timezone_parsing_edge_cases() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -226,6 +233,7 @@ def test_is_valid_time_malformed_timezone() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -255,6 +263,7 @@ def test_is_valid_time_boundary_values() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -287,6 +296,7 @@ def test_is_valid_time_whitespace_handling() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)

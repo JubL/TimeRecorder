@@ -24,6 +24,7 @@ def test_plot_daily_work_hours_basic_functionality() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -60,6 +61,7 @@ def test_plot_daily_work_hours_work_time_adjustment() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -94,6 +96,7 @@ def test_plot_daily_work_hours_no_adjustment_needed() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -128,6 +131,7 @@ def test_plot_daily_work_hours_mixed_scenarios() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -157,6 +161,7 @@ def test_plot_daily_work_hours_empty_dataframe() -> None:
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }
@@ -179,6 +184,7 @@ def test_plot_daily_work_hours_different_color_schemes(sample_logbook_df: pd.Dat
             "color_scheme": scheme,
             "num_months": 12,
             "rolling_average_window_size": 10,
+            "x_tick_interval": 3,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
         }
@@ -202,6 +208,7 @@ def test_plot_daily_work_hours_custom_work_days(sample_logbook_df: pd.DataFrame)
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": custom_work_days,
     }
@@ -221,6 +228,7 @@ def test_plot_daily_work_hours_large_overtime(sample_logbook_df: pd.DataFrame) -
         "color_scheme": "ocean",
         "num_months": 12,
         "rolling_average_window_size": 10,
+        "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
     }

@@ -39,6 +39,7 @@ def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock, mock_show: 
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -79,6 +80,7 @@ def test_plot_daily_work_hours_axis_configuration(mock_subplots: Mock) -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -124,6 +126,7 @@ def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock) -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -164,6 +167,7 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -203,6 +207,7 @@ def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock, mock_show: M
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -242,6 +247,7 @@ def test_plot_daily_work_hours_single_work_day(mock_subplots: Mock) -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0],  # Only Monday
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -282,6 +288,7 @@ def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock, mock_show: Mock
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [],  # No work days
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -323,6 +330,7 @@ def test_plot_daily_work_hours_all_negative_work_time(mock_subplots: Mock) -> No
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -362,6 +370,7 @@ def test_plot_daily_work_hours_zero_work_time(mock_subplots: Mock) -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -402,6 +411,7 @@ def test_plot_daily_work_hours_color_scheme_usage(mock_subplots: Mock) -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)

@@ -139,6 +139,8 @@ def sample_config() -> dict:
             "color_scheme": "ocean",
             "num_months": 13,
             "plot": True,
+            "rolling_average_window_size": 10,
+            "x_tick_interval": 3,
         },
         "analyzer": {
             "analyze_work_patterns": True,
