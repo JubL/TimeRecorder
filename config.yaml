@@ -42,7 +42,7 @@ visualization:
   color_scheme: "ocean"  # Color scheme: ocean, forest, sunset, lavender, coral
   num_months: 13  # Number of months to show in daily hours plot
   rolling_average_window_size: 10  # Number of days to include in the rolling average
-  x_tick_interval: 3  # Number of weeks between x-axis ticks
+  x_tick_interval: 4  # Number of weeks between x-axis ticks
 
 # Analyzer settings
 analyzer:

@@ -119,7 +119,6 @@ def test_is_valid_time_none_and_na_values() -> None:
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
     }
 
     visualizer = viz.Visualizer(df, data)
