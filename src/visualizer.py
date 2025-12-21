@@ -60,6 +60,7 @@ class Visualizer:
         - rolling_average_window_size: Number of days to include in the rolling average
         - standard_work_hours: Standard work hours per day
         - work_days: List of weekday numbers (0=Monday, 6=Sunday)
+        - x_tick_interval: Number of weeks between x-axis ticks
 
     Attributes
     ----------
@@ -79,6 +80,8 @@ class Visualizer:
         Standard work hours per day
     work_days : list
         List of weekday numbers to display
+    x_tick_interval : int
+        Number of weeks between x-axis ticks
     """
 
     def __init__(self, df: pd.DataFrame, data: dict) -> None:
@@ -101,7 +104,7 @@ class Visualizer:
         self.rolling_average_window_size = data["rolling_average_window_size"]
         self.standard_work_hours = data["standard_work_hours"]
         self.work_days = data["work_days"]
-
+        self.x_tick_interval = data["x_tick_interval"]  # TODO: make this an integer?
         self.make_logbook_robust()
 
         # filter the df to only include the last num_months months
@@ -212,7 +215,9 @@ class Visualizer:
 
         _, ax = plt.subplots(figsize=(8, 5))
 
-        ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.WE, interval=4))
+        ax.xaxis.set_major_locator(
+            mdates.WeekdayLocator(byweekday=mdates.WE, interval=self.x_tick_interval)
+        )  # what happens when x_tick_interval is not an integer?
         ax.xaxis.set_major_formatter(mdates.DateFormatter("KW%U"))
         ax.tick_params(axis="x", which="both", length=0)  # Set x-tick length to 0
 

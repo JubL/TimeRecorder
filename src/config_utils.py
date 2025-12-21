@@ -184,6 +184,7 @@ def get_visualization_config(config: dict) -> dict:
         "num_months": visualization.get("num_months"),
         "plot": visualization.get("plot"),
         "rolling_average_window_size": visualization.get("rolling_average_window_size"),
+        "x_tick_interval": visualization.get("x_tick_interval"),
         "standard_work_hours": work_schedule.get("standard_work_hours"),
         "work_days": work_schedule.get("work_days"),
         "full_format": time_tracking.get("full_format"),
@@ -237,7 +238,7 @@ def validate_config(config: dict) -> bool:
         "work_schedule": ["standard_work_hours", "work_days", "timezone"],
         "holidays": ["country", "subdivision"],
         "display": ["show_tail"],
-        "visualization": ["plot", "color_scheme", "num_months", "rolling_average_window_size"],
+        "visualization": ["plot", "color_scheme", "num_months", "rolling_average_window_size", "x_tick_interval"],
         "analyzer": ["analyze_work_patterns", "outlier_method", "outlier_threshold"],
     }
 
@@ -318,6 +319,7 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "num_months": 13,
             "plot": True,
             "rolling_average_window_size": 10,
+            "x_tick_interval": 3,
         },
         "analyzer": {
             "analyze_work_patterns": True,
@@ -378,6 +380,7 @@ def update_config(config: dict, args: argparse.Namespace) -> dict[str, dict]:
         ("num_months", "visualization.num_months"),
         ("color_scheme", "visualization.color_scheme"),
         ("rolling_average_window_size", "visualization.rolling_average_window_size"),
+        ("x_tick_interval", "visualization.x_tick_interval"),
         # Analyzer settings
         ("analyze", "analyzer.analyze_work_patterns"),
     ]
