@@ -158,3 +158,49 @@ def test_init_zero_duration_raises() -> None:
                 "standard_work_hours": 8,
             },
         )
+
+
+@pytest.mark.fast
+def test_init_end_now_sets_end_time_to_current_plus_one_minute() -> None:
+    """Test that when end_now is True, end_time is set to current time + 1 minute (line 173)."""
+    # Record time before creating TimeRecorder
+    timezone = "Europe/Berlin"
+    config_date = "24.04.2025"
+    before_time = datetime.now(tz=ZoneInfo(timezone))
+
+    # Create TimeRecorder with end_now=True
+    # Note: end_time is provided but will be overwritten by line 173
+    line = tr.TimeRecorder(
+        {
+            "date": config_date,
+            "start_time": "08:00",
+            "end_time": "16:00",  # This will be overwritten by line 173
+            "end_now": True,  # This triggers line 173
+            "lunch_break_duration": 30,
+            "timezone": timezone,
+            "full_format": "%d.%m.%Y %H:%M:%S",
+            "standard_work_hours": 8,
+        },
+    )
+
+    # Line 173 sets data["end_time"] to current time + 1 minute (as time string)
+    # Line 174 then parses it using _parse_datetime which combines config_date with the time string
+    # So end_time will be: config_date + (current_time + 1 minute)
+    expected_date = datetime.strptime(config_date, "%d.%m.%Y").date()
+
+    # Verify end_time uses the config date (not current date)
+    assert line.end_time.date() == expected_date
+    # Verify timezone is correct
+    assert line.end_time.tzinfo == ZoneInfo(timezone)
+    # Verify end_time is after start_time
+    assert line.end_time > line.start_time
+
+    # Verify the time component is approximately current time + 1 minute
+    # Calculate time difference in seconds (ignoring date)
+    current_time_seconds = before_time.hour * 3600 + before_time.minute * 60 + before_time.second
+    end_time_seconds = line.end_time.hour * 3600 + line.end_time.minute * 60 + line.end_time.second
+    time_diff = end_time_seconds - current_time_seconds
+
+    # Allow tolerance of 2 seconds for execution time
+    # Time diff should be approximately 60 seconds (1 minute), but account for wrapping
+    assert 58 <= time_diff <= 62 or time_diff >= 86398  # 60 ± 2 seconds, or wrapped around midnight
