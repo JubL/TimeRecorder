@@ -111,7 +111,7 @@ select = [
 # ignore some checks in test cases
 per-file-ignores = { "test_*.py" = ["DTZ", "D100", "D103", "INP001", "S101", "T201", "PLR2004"] }
 
-pylint = { max-locals = 16 }
+pylint = { max-locals = 18 }
 pydocstyle = { convention = "numpy" } # Docstring style
 pycodestyle = { max-line-length = 140 } # Maximum line length
 

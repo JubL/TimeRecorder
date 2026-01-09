@@ -276,8 +276,8 @@ def test_str_format_structure() -> None:
     result = str(line)
     lines = result.split("\n")
 
-    # Should have exactly 9 lines (empty, title, separator, date, start, end, lunch, work duration, status)
-    assert len(lines) == 9
+    # Should have exactly 9 lines (empty, title, separator, date, start, end, lunch, work duration, status, end of workday)
+    assert len(lines) == 10
 
     # First line should be empty
     assert not lines[0]

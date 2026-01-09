@@ -394,6 +394,7 @@ class TimeRecorder:
         work_hours_decimal_representation = round(self.work_time.total_seconds() / self.sec_in_hour, 2)
         overtime_hours, overtime_minutes = self.get_hours_minutes(self.overtime)
         overtime_decimal_representation = round(self.overtime.total_seconds() / self.sec_in_hour, 2)
+        end_of_workday = self.start_time + timedelta(hours=self.standard_work_hours) + self.lunch_break_duration
 
         title = "\nTime Recorder - Work Hours Calculator\n====================================="
         date = f"📅 Date: {self.weekday}, {self.date}"
@@ -403,9 +404,13 @@ class TimeRecorder:
         work_duration = f"⏱️  Work duration: {work_hours}h {work_minutes}m ({work_hours_decimal_representation}h)"
         color = GREEN if self.case == "overtime" else RED
         overtime_amount = f"📈 Status: {color}{self.case}{RESET} {overtime_hours}h {overtime_minutes}m ({overtime_decimal_representation}h)"
+        if self.case == "undertime":
+            end_of_workday_str = f"🏁 End of workday: {end_of_workday.strftime('%H:%M %Z')}"
+        else:
+            end_of_workday_str = ""
 
         # Combine all parts
-        items = [title, date, start_time, end_time, lunch_break_duration, work_duration, overtime_amount]
+        items = [title, date, start_time, end_time, lunch_break_duration, work_duration, overtime_amount, end_of_workday_str]
         return "\n".join(items)
 
     def get_hours_minutes(self, time: timedelta) -> tuple[int, int]:

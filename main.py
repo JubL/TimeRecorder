@@ -44,8 +44,6 @@ def main() -> None:
     # TODO: Das Ausführen dauert erstaunlich lange. Finde heraus, an welchen Stellen am meisten Zeit verloren geht.
     # TODO: Load the logbook only once!
 
-    # TODO: if work duration is less than 8 hours, calculate the time at which 8 hours would be reached
-
     # TODO: the tests should take the default config and then modify the values that need to be different
 
     args = ap.run_arg_parser()
