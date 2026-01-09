@@ -405,7 +405,7 @@ class TimeRecorder:
         color = GREEN if self.case == "overtime" else RED
         overtime_amount = f"📈 Status: {color}{self.case}{RESET} {overtime_hours}h {overtime_minutes}m ({overtime_decimal_representation}h)"
         if self.case == "undertime":
-            end_of_workday_str = f"🏁 End of workday: {end_of_workday.strftime('%H:%M %Z')}"
+            end_of_workday_str = f"🏁 End of workday would be at {end_of_workday.strftime('%H:%M %Z')}."
         else:
             end_of_workday_str = ""
 
