@@ -46,6 +46,8 @@ def main() -> None:
 
     # TODO: the tests should take the default config and then modify the values that need to be different
 
+    # TODO: have an overtime feature that tracks the overtime and let's you take off days from the overtime to compensate for it.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
