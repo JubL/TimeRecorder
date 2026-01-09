@@ -36,6 +36,9 @@ dev = [
     "mypy>=1.17.0",
 ]
 
+[tool.mypy]
+show_error_codes = true
+
 [tool.ruff]
 # do not check jupyter notebooks
 extend-exclude = [

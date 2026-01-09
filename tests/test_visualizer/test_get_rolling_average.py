@@ -161,7 +161,7 @@ def test_get_rolling_average_none_window(sample_visualizer_data: dict) -> None:
     )
 
     visualizer = viz.Visualizer(df, sample_visualizer_data)
-    result = visualizer.get_rolling_average(window=None)
+    result = visualizer.get_rolling_average(window=None)  # type: ignore [arg-type]
 
     assert isinstance(result, pd.Series)
     assert result.empty
