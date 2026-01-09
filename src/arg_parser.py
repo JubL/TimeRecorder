@@ -30,8 +30,7 @@ class TimeRecorderArgumentParser:
     def __init__(self) -> None:
         """Initialize the argument parser with all required arguments."""
         self.parser = argparse.ArgumentParser(
-            description="""
-Time recorder
+            description="""Time recorder
 A powerful and flexible Python tool for tracking and managing work hours.""",
             formatter_class=lambda prog: argparse.RawTextHelpFormatter(prog, width=105, max_help_position=45),
         )
