@@ -144,7 +144,8 @@ def test_get_rolling_average_zero_window() -> None:
     visualizer = viz.Visualizer(df, data)
     result = visualizer.get_rolling_average(window=0)
 
-    assert result == 0.0
+    assert isinstance(result, pd.Series)
+    assert result.empty
 
 
 @pytest.mark.fast
@@ -162,7 +163,8 @@ def test_get_rolling_average_none_window(sample_visualizer_data: dict) -> None:
     visualizer = viz.Visualizer(df, sample_visualizer_data)
     result = visualizer.get_rolling_average(window=None)
 
-    assert result == 0.0
+    assert isinstance(result, pd.Series)
+    assert result.empty
 
 
 @pytest.mark.fast
@@ -180,7 +182,8 @@ def test_get_rolling_average_false_window(sample_visualizer_data: dict) -> None:
     visualizer = viz.Visualizer(df, sample_visualizer_data)
     result = visualizer.get_rolling_average(window=False)
 
-    assert result == 0.0
+    assert isinstance(result, pd.Series)
+    assert result.empty
 
 
 @pytest.mark.fast

@@ -183,7 +183,7 @@ class Visualizer:
             The rolling average of the work hours over the last window days.
         """
         if not window:
-            return 0.0
+            return pd.Series(dtype=float)
         return self.df[self.df["work_time"] > 0]["work_time"].rolling(window=window, min_periods=1).mean()
 
     def plot_daily_work_hours(self) -> None:
