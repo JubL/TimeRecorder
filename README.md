@@ -62,7 +62,10 @@ python main.py --boot --log
 python main.py --config my_config.yaml
 
 # Override specific settings via command line
-python main.py --start-time "08:30" --end-time "17:30" --lunch-break 45
+python main.py --date "25.07.2025" --start "08:30" --end "17:30" --lunch 45
+
+# Note: When --date and --start are provided together, --no-boot is automatically set
+# You don't need to explicitly use --no-boot in this case
 
 # Show visualization with custom color scheme
 python main.py --plot --color-scheme ocean
@@ -270,6 +273,8 @@ TimeRecorder can automatically detect your work start time from system boot time
 time_tracking:
   use_boot_time: true  # Automatically use system boot time as start time
 ```
+
+**Note:** When you provide both `--date` and `--start` arguments together, the system automatically disables boot time usage. You don't need to explicitly use `--no-boot` in this case.
 
 ### Missing Day Detection
 

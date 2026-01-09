@@ -106,6 +106,11 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
             Parsed command line arguments.
         """
         args = self.parser.parse_args()
+
+        # if start and date are being used, boot shall be set to False automatically
+        if args.date and args.start:
+            args.boot = False
+
         self.validate_time_arguments(args)
         return args
 
@@ -139,7 +144,7 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
         elif (has_date or has_start) and not (has_date and has_start):
             logger.warning(
                 "When you want to set --start manually, both --date and --start must be provided. "
-                "Use either --boot OR --no-boot, --date and --start together.",
+                "Use either --boot OR --date and --start together.",
             )
 
         # Case 3: Both end and end_now were specified

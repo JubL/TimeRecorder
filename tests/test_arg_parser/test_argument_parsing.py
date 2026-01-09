@@ -65,7 +65,7 @@ def test_parse_args_date_and_start() -> None:
 
         assert args.date == "25.07.2025"
         assert args.start == "08:30"
-        assert args.boot is None
+        assert args.boot is False
 
 
 @pytest.mark.fast

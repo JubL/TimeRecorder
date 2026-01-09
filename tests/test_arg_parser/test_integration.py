@@ -34,7 +34,7 @@ def test_manual_time_recording_workflow() -> None:
         assert args.date == "25.07.2025"
         assert args.start == "08:30"
         assert args.end == "17:30"
-        assert args.boot is None
+        assert args.boot is False
         assert args.end_now is False
 
 
