@@ -130,10 +130,12 @@ class Visualizer:
             logger.warning("No data to visualize.")
             return
 
-        self.df.loc[~self.df["start_time"].apply(self.is_valid_time), "work_time"] = -self.standard_work_hours
-
-        # Convert to numeric, coercing errors to NaN, then fill NaN with 0.0
-        self.df["work_time"] = pd.to_numeric(self.df["work_time"], errors="coerce").fillna(0.0)
+        # Convert work_time to numeric first so we can assign -standard_work_hours without
+        # triggering "Invalid value for dtype 'str'" on strict pandas (e.g. on CI).
+        work_time_num = pd.to_numeric(self.df["work_time"], errors="coerce")
+        invalid_start = ~self.df["start_time"].apply(self.is_valid_time)
+        work_time_num = work_time_num.where(~invalid_start, -self.standard_work_hours)
+        self.df["work_time"] = work_time_num.fillna(0.0)
         self.df["overtime"] = pd.to_numeric(self.df["overtime"], errors="coerce").fillna(0.0)
 
         self.df["overtime"] = self.df["overtime"].where(self.df["overtime"] >= 0.0, 0.0)
