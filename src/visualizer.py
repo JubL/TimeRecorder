@@ -152,7 +152,8 @@ class Visualizer:
         bool
             True if the time string matches the format, False otherwise.
         """
-        if not time_string or pd.isna(time_string):
+        # Check pd.isna first to avoid "boolean value of NA is ambiguous" on pd.NA
+        if pd.isna(time_string) or not time_string:
             return False
 
         try:

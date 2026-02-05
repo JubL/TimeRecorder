@@ -99,7 +99,7 @@ def test_make_logbook_robust_none_start_time() -> None:
 
 @pytest.mark.fast
 def test_make_logbook_robust_nan_start_time() -> None:
-    """Test make_logbook_robust with NaN start_time values."""
+    """Test make_logbook_robust with NaN/NA start_time values (treated as invalid)."""
     df = pd.DataFrame(
         {
             "date": ["01.01.2024", "02.01.2024"],
@@ -119,9 +119,11 @@ def test_make_logbook_robust_nan_start_time() -> None:
         "x_tick_interval": 3,
     }
 
-    # pd.NA in boolean context raises TypeError
-    with pytest.raises(TypeError, match="boolean value of NA is ambiguous"):
-        viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, data)
+
+    # NA/NaN start_time should be treated as invalid -> work_time set to -standard_work_hours
+    assert visualizer.df["work_time"].iloc[0] == -8.0  # pd.NA start_time
+    assert visualizer.df["work_time"].iloc[1] == 7.5  # valid start_time
 
 
 @pytest.mark.fast
