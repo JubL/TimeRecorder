@@ -18,35 +18,36 @@ from src.visualizer import Visualizer
 
 def main() -> None:
     """Run the main function of the time recorder."""
-    # TODO: visualization of work hours per day, week, month, year in one plot with four graphs.
-    # TODO: give a notice if there is too little data to show the graphs
+    # TODO: Visualize work hours per day, week, month, year in one plot with four graphs.
+    # TODO: Give the user a notice if there is too little data to show the graphs.
+    # TODO: Show histogramm of work start time and work end time.
+    # TODO: Show histogramm of work time, lunch break duration and overtime.
 
-    # TODO: implement outlier detection, consistency checks?
+    # TODO: Implement outlier detection, consistency checks?
 
-    # TODO: shall tail() be controlled by the --log flag? maybe put it in a analyse category together with features yet to come?
+    # TODO: Shall tail() be controlled by the --log flag? Maybe put it in a analyse category together with features yet to come?
 
-    # TODO: add this weeks or last weeks average work hours and compare with the historic weekly work hours
+    # TODO: Add this weeks or last weeks average work hours and compare with the historic weekly work hours.
 
-    # TODO: show histogramm of work start time and work end time.
-    # TODO: show histogramm of work time, lunch break duration and overtime.
+    # TODO: Shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
-    # TODO: shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
+    # TODO: Implement report generation in PDF and HTML format.
 
-    # TODO: implement report generation in PDF and HTML format
+    # TODO: Write floats into the log with exactly two decimal places.
 
-    # TODO: write floats into the log with exactly two decimal places
+    # TODO: Is squashing the log a bad idea?
+    # TODO: Maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
 
-    # TODO: is squashing the log a bad idea?
-    # TODO: maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
+    # TODO: Switch to using loguru for logging over logger? (create a branch for experimenting on this approach)
 
-    # TODO: switch to using loguru for logging over logger? (create a branch for experimenting on this approach)
-
-    # TODO: Das Ausführen dauert erstaunlich lange. Finde heraus, an welchen Stellen am meisten Zeit verloren geht.
+    # TODO: Execution take surprisingly long. Find out where the time is lost. Use a profiler to find the bottlenecks.
     # TODO: Load the logbook only once!
 
-    # TODO: the tests should take the default config and then modify the values that need to be different
+    # TODO: The tests should take the default config and then modify the values that need to be different.
 
-    # TODO: have an overtime feature that tracks the overtime and let's you take off days from the overtime to compensate for it.
+    # TODO: Have an overtime feature that tracks the overtime and let's you take off days from the overtime to compensate for it.
+
+    # TODO: Build an UI for the time recorder with Figma Make?
 
     args = ap.run_arg_parser()
 

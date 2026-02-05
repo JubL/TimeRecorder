@@ -3,7 +3,7 @@
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Mypy](https://img.shields.io/badge/Mypy-checked-blue.svg)](https://mypy-lang.org/)
+[![Mypy](https://img.shields.io/badge/Mypy-passing-brightgreen.svg)](https://mypy-lang.org/)
 [![Test Status](https://github.com/python/mypy/actions/workflows/test.yml/badge.svg)](https://github.com/JubL/TimeRecorder/actions)
 [![Test Coverage](https://img.shields.io/badge/Test%20Coverage-85%25-brightgreen.svg)](https://github.com/JubL/TimeRecorder)
 

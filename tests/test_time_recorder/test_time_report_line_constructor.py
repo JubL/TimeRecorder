@@ -162,7 +162,7 @@ def test_init_zero_duration_raises() -> None:
 
 @pytest.mark.fast
 def test_init_end_now_sets_end_time_to_current_plus_one_minute() -> None:
-    """Test that when end_now is True, end_time is set to current time + 1 minute (line 173)."""
+    r"""Test that when end_now is True, end_time is set to current time + 1 minute (line 173 in src\time_recorder.py)."""
     # Record time before creating TimeRecorder
     timezone = "Europe/Berlin"
     config_date = "24.04.2025"
