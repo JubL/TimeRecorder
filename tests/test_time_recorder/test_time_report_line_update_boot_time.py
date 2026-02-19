@@ -13,18 +13,18 @@ import src.time_recorder as tr
 def test_update_boot_time_sets_start_time_to_boot_time(
     mock_boot_time: Mock,
     line: tr.TimeRecorder,
-    fake_boot_timestamp_with_timezone: float,
+    fake_boot_timestamp: float,
 ) -> None:
     """Test that update_boot_time sets start_time to the system boot time."""
-    mock_boot_time.return_value = fake_boot_timestamp_with_timezone
+    mock_boot_time.return_value = fake_boot_timestamp
 
     old_end_time = line.end_time
 
     line.update_boot_time()
 
-    assert line.start_time == datetime.fromtimestamp(fake_boot_timestamp_with_timezone, tz=ZoneInfo(line.timezone))
+    assert line.start_time == datetime.fromtimestamp(fake_boot_timestamp, tz=ZoneInfo(line.timezone))
     # End time should have the same date as boot time, but same time as before
-    assert line.end_time.date() == datetime.fromtimestamp(fake_boot_timestamp_with_timezone).date()
+    assert line.end_time.date() == datetime.fromtimestamp(fake_boot_timestamp).date()
     assert line.end_time.time() == old_end_time.time()
     # Work hours and overtime should be recalculated
     assert isinstance(line.work_time, timedelta)

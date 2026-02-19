@@ -28,12 +28,6 @@ def fake_boot_timestamp() -> float:
 
 
 @pytest.fixture
-def fake_boot_timestamp_with_timezone() -> float:
-    """Fixture to provide a fake boot timestamp with timezone."""
-    return datetime(2025, 4, 25, 6, 30, 0, tzinfo=ZoneInfo("Europe/Berlin")).timestamp()
-
-
-@pytest.fixture
 def line() -> tr.TimeRecorder:
     """Fixture to create a sample TimeRecorder for calculate_overtime tests."""
     return tr.TimeRecorder(
