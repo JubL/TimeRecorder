@@ -28,6 +28,7 @@ def test_constructor_data_filtering_exact_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -58,6 +59,7 @@ def test_constructor_data_filtering_more_than_num_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -93,6 +95,7 @@ def test_constructor_data_filtering_less_than_num_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -122,6 +125,7 @@ def test_constructor_data_filtering_zero_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -152,6 +156,7 @@ def test_constructor_data_filtering_negative_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -181,6 +186,7 @@ def test_constructor_data_filtering_single_day() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -225,6 +231,7 @@ def test_constructor_data_filtering_irregular_dates() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -256,6 +263,7 @@ def test_constructor_data_filtering_leap_year() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -286,6 +294,7 @@ def test_constructor_data_filtering_year_boundary() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -320,6 +329,7 @@ def test_constructor_data_filtering_very_large_num_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -350,6 +360,7 @@ def test_constructor_data_filtering_float_num_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     with pytest.raises(ValueError, match="Non-integer years and months are ambiguous"):

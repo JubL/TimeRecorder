@@ -47,6 +47,7 @@ def test_visualizer_integration_complete_workflow() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -58,7 +59,7 @@ def test_visualizer_integration_complete_workflow() -> None:
     assert pd.api.types.is_numeric_dtype(visualizer.df["overtime"])
 
     # Test that work_time adjustment works correctly
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Check that Monday's work_time was adjusted (8.5 + 0.5 = 9.0, should become 8.0)
     monday_data = visualizer.df[visualizer.df["date"].dt.weekday == 0]
@@ -94,6 +95,7 @@ def test_visualizer_integration_multiple_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -126,6 +128,7 @@ def test_visualizer_integration_all_color_schemes() -> None:
             "x_tick_interval": 3,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
+            "histogram_bins": 64,
         }
 
         visualizer = viz.Visualizer(df, data)
@@ -134,7 +137,7 @@ def test_visualizer_integration_all_color_schemes() -> None:
         assert visualizer.work_colors == viz.COLOR_SCHEMES_WORK[scheme]
 
         # Test plotting with each scheme
-        visualizer.plot_daily_work_hours()
+        visualizer.create_daily_work_hours_plot()
 
         # Verify work_time adjustment
         assert visualizer.df["work_time"].iloc[1] == 8.0  # 8.5 - 0.5
@@ -168,6 +171,7 @@ def test_visualizer_integration_different_formats() -> None:
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
             "x_tick_interval": 3,
+            "histogram_bins": 64,
         }
 
         visualizer = viz.Visualizer(df, data)
@@ -177,7 +181,7 @@ def test_visualizer_integration_different_formats() -> None:
         assert not visualizer.df["date"].isna().any()
 
         # Test plotting
-        visualizer.plot_daily_work_hours()
+        visualizer.create_daily_work_hours_plot()
 
 
 @pytest.mark.fast
@@ -201,10 +205,11 @@ def test_visualizer_integration_edge_cases() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Work time should be adjusted to standard hours
     assert visualizer.df["work_time"].iloc[0] == 8.0  # 12.0 - 4.0
@@ -235,12 +240,13 @@ def test_visualizer_integration_custom_work_days() -> None:
         "standard_work_hours": 8.0,
         "work_days": custom_work_days,
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
 
     assert visualizer.work_days == custom_work_days
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
 
 @pytest.mark.fast
@@ -263,6 +269,7 @@ def test_visualizer_integration_mixed_data_quality() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -276,7 +283,7 @@ def test_visualizer_integration_mixed_data_quality() -> None:
     assert visualizer.df["work_time"].iloc[2] == 0.0  # Invalid string
     assert visualizer.df["overtime"].iloc[2] == 0.0  # Empty string
 
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
 
 @pytest.mark.fast
@@ -300,10 +307,11 @@ def test_visualizer_integration_standard_work_hours_variations() -> None:
         "standard_work_hours": 7.5,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Day 1: 7.5 + 0.0 = 7.5 (no adjustment)
     # Day 2: 8.5 + 0.5 = 9.0 (adjust to 7.5)

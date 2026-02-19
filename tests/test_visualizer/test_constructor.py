@@ -27,6 +27,7 @@ def test_constructor_basic_initialization() -> None:
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -65,6 +66,7 @@ def test_constructor_all_color_schemes() -> None:
             "x_tick_interval": 3,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
+            "histogram_bins": 64,
         }
 
         visualizer = viz.Visualizer(df, data)
@@ -93,6 +95,7 @@ def test_constructor_data_filtering() -> None:
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -122,6 +125,7 @@ def test_constructor_format_parsing() -> None:
         "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -152,6 +156,7 @@ def test_constructor_work_days_custom() -> None:
         "x_tick_interval": 3,
         "work_days": custom_work_days,
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -172,6 +177,7 @@ def test_constructor_empty_dataframe() -> None:
         "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -200,6 +206,7 @@ def test_constructor_standard_work_hours_float() -> None:
         "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
         "standard_work_hours": 7.5,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)

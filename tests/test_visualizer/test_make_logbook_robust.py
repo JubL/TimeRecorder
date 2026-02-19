@@ -26,6 +26,7 @@ def test_make_logbook_robust_basic_conversion() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -64,6 +65,7 @@ def test_make_logbook_robust_handle_missing_values() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -93,6 +95,7 @@ def test_make_logbook_robust_handle_invalid_numeric() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -122,6 +125,7 @@ def test_make_logbook_robust_negative_overtime_handling() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -161,6 +165,7 @@ def test_make_logbook_robust_date_format_parsing() -> None:
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
             "x_tick_interval": 3,
+            "histogram_bins": 64,
         }
 
         visualizer = viz.Visualizer(df, data)
@@ -190,6 +195,7 @@ def test_make_logbook_robust_mixed_data_types() -> None:
         "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -220,6 +226,7 @@ def test_make_logbook_robust_empty_dataframe() -> None:
         "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -251,6 +258,7 @@ def test_make_logbook_robust_zero_overtime_preserved() -> None:
         "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)

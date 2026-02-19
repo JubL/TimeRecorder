@@ -26,6 +26,7 @@ def test_make_logbook_robust_invalid_time_handling() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -55,6 +56,7 @@ def test_make_logbook_robust_mixed_valid_invalid_times() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -88,6 +90,7 @@ def test_make_logbook_robust_none_start_time() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -117,6 +120,7 @@ def test_make_logbook_robust_nan_start_time() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -146,6 +150,7 @@ def test_make_logbook_robust_extreme_numeric_values() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -178,6 +183,7 @@ def test_make_logbook_robust_string_numeric_conversion() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -213,6 +219,7 @@ def test_make_logbook_robust_boolean_values() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -249,6 +256,7 @@ def test_make_logbook_robust_complex_invalid_strings() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -288,6 +296,7 @@ def test_make_logbook_robust_unicode_values() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)

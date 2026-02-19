@@ -27,6 +27,7 @@ def test_plot_daily_work_hours_basic_functionality() -> None:
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -36,7 +37,7 @@ def test_plot_daily_work_hours_basic_functionality() -> None:
     # But we can test that the method modifies the DataFrame correctly
 
     # The method should adjust work_time when it exceeds standard hours
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Check that work_time was adjusted for overtime cases
     # Day 2: 7.5 + 0.5 = 8.0 (no adjustment needed)
@@ -64,6 +65,7 @@ def test_plot_daily_work_hours_work_time_adjustment() -> None:
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -72,7 +74,7 @@ def test_plot_daily_work_hours_work_time_adjustment() -> None:
     assert visualizer.df["work_time"].iloc[0] == 9.0
     assert visualizer.df["work_time"].iloc[1] == 10.0
 
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # After adjustment: work_time should be reduced by overtime
     assert visualizer.df["work_time"].iloc[0] == 8.0  # 9.0 - 1.0
@@ -99,6 +101,7 @@ def test_plot_daily_work_hours_no_adjustment_needed() -> None:
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -107,7 +110,7 @@ def test_plot_daily_work_hours_no_adjustment_needed() -> None:
     assert visualizer.df["work_time"].iloc[0] == 7.0
     assert visualizer.df["work_time"].iloc[1] == 8.0
 
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # After adjustment: work_time should remain unchanged
     assert visualizer.df["work_time"].iloc[0] == 7.0
@@ -134,11 +137,12 @@ def test_plot_daily_work_hours_mixed_scenarios() -> None:
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
 
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Check adjustments:
     # Day 1: 7.0 + 0.0 = 7.0 (no adjustment)
@@ -164,12 +168,13 @@ def test_plot_daily_work_hours_empty_dataframe() -> None:
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
 
     # Should handle empty DataFrame gracefully
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
     assert visualizer.df.empty
 
 
@@ -187,12 +192,13 @@ def test_plot_daily_work_hours_different_color_schemes(sample_logbook_df: pd.Dat
             "x_tick_interval": 3,
             "standard_work_hours": 8.0,
             "work_days": [0, 1, 2, 3, 4],
+            "histogram_bins": 64,
         }
 
         visualizer = viz.Visualizer(sample_logbook_df, data)
 
         # Should run without errors for all color schemes
-        visualizer.plot_daily_work_hours()
+        visualizer.create_daily_work_hours_plot()
 
         # Verify color schemes are correctly assigned
         assert visualizer.work_colors == viz.COLOR_SCHEMES_WORK[scheme]
@@ -211,12 +217,13 @@ def test_plot_daily_work_hours_custom_work_days(sample_logbook_df: pd.DataFrame)
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": custom_work_days,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(sample_logbook_df, data)
 
     # Should run without errors with custom work days
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
     assert visualizer.work_days == custom_work_days
 
 
@@ -231,11 +238,12 @@ def test_plot_daily_work_hours_large_overtime(sample_logbook_df: pd.DataFrame) -
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(sample_logbook_df, data)
 
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Should adjust to 8.0 (12.0 - 4.0)
     assert visualizer.df["work_time"].iloc[0] == 7.0

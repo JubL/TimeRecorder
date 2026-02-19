@@ -107,7 +107,9 @@ def main() -> None:
 
     if visualization_config["plot"]:
         visualizer = Visualizer(logbook.load_logbook(), visualization_config)
-        visualizer.plot_daily_work_hours()
+        visualizer.create_histogram()
+        visualizer.create_daily_work_hours_plot()
+        visualizer.display_all_plots()
 
 
 if __name__ == "__main__":

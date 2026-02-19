@@ -24,6 +24,7 @@ def test_constructor_invalid_color_scheme() -> None:
         "num_months": 12,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     with pytest.raises(KeyError):
@@ -48,6 +49,7 @@ def test_constructor_missing_required_keys() -> None:
         "num_months": 12,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     with pytest.raises(KeyError):
@@ -72,6 +74,7 @@ def test_constructor_missing_color_scheme() -> None:
         "num_months": 12,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     with pytest.raises(KeyError):
@@ -96,6 +99,7 @@ def test_constructor_missing_num_months() -> None:
         # Missing 'num_months'
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     with pytest.raises(KeyError):
@@ -120,6 +124,7 @@ def test_constructor_missing_standard_work_hours() -> None:
         "num_months": 12,
         # Missing 'standard_work_hours'
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     with pytest.raises(KeyError):
@@ -145,6 +150,7 @@ def test_constructor_missing_work_days() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         # Missing 'work_days'
+        "histogram_bins": 64,
     }
 
     with pytest.raises(KeyError):
@@ -170,6 +176,7 @@ def test_constructor_invalid_full_format() -> None:
         "rolling_average_window_size": 10,
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     with pytest.raises(ValueError, match="not enough values to unpack"):
@@ -196,6 +203,7 @@ def test_constructor_negative_num_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -222,6 +230,7 @@ def test_constructor_zero_num_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -248,6 +257,7 @@ def test_constructor_negative_standard_work_hours() -> None:
         "standard_work_hours": -8.0,  # Negative work hours
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -274,6 +284,7 @@ def test_constructor_zero_standard_work_hours() -> None:
         "standard_work_hours": 0.0,  # Zero work hours
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -300,6 +311,7 @@ def test_constructor_empty_work_days() -> None:
         "standard_work_hours": 8.0,
         "work_days": [],  # Empty work days
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -326,6 +338,7 @@ def test_constructor_invalid_work_days() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4, 5, 6, 7, 8],  # Invalid weekday numbers
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -352,6 +365,7 @@ def test_constructor_float_num_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     with pytest.raises(ValueError, match="Non-integer years and months are ambiguous"):
@@ -378,6 +392,7 @@ def test_constructor_float_standard_work_hours() -> None:
         "standard_work_hours": 7.5,  # Float work hours
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -404,6 +419,7 @@ def test_constructor_very_large_num_months() -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -430,6 +446,7 @@ def test_constructor_very_large_standard_work_hours() -> None:
         "standard_work_hours": 1000.0,  # Very large work hours
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -456,6 +473,7 @@ def test_constructor_none_values_in_config() -> None:
         "standard_work_hours": 8.0,
         "x_tick_interval": 3,
         "work_days": [0, 1, 2, 3, 4],
+        "histogram_bins": 64,
     }
 
     with pytest.raises(AttributeError):

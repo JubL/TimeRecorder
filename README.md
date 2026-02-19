@@ -22,7 +22,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **📱 Missing Day Detection**: Automatically add missing days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 - **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
-- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime with rolling average trends
+- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime with rolling average trends, plus a histogram of work hours distribution
 - **📈 Rolling Average Analysis**: Track work time trends with configurable rolling average window
 - **🧪 Comprehensive Testing**: Extensive test suite with high coverage across all modules
 
@@ -130,6 +130,7 @@ visualization:
   num_months: 13         # Number of months to display in visualization
   rolling_average_window_size: 10  # Number of days for rolling average calculation
   x_tick_interval: 4     # Number of weeks between x-axis ticks
+  histogram_bins: 64     # Number of bins for the work hours histogram
 ```
 
 For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.md).
@@ -191,7 +192,12 @@ pytest -l
 
 ## 📊 Data Visualization
 
-TimeRecorder includes a powerful visualization feature that creates beautiful bar charts showing your daily work hours and overtime with rolling average trend lines. The visualization helps you identify patterns in your work schedule, track overtime trends, and analyze long-term work patterns.
+TimeRecorder includes a powerful visualization feature that creates two complementary plots when enabled:
+
+1. **Daily Work Hours Chart**: A bar chart showing your daily work hours and overtime with a rolling average trend line
+2. **Work Hours Histogram**: A histogram showing the distribution of total work hours per day across your work days
+
+Both plots are displayed simultaneously in separate windows. The visualization helps you identify patterns in your work schedule, track overtime trends, and analyze long-term work patterns.
 
 ### Available Color Schemes
 
@@ -225,6 +231,8 @@ python main.py --plot --color-scheme coral
 
 ### Visualization Features
 
+- **Dual Plot Display**: Daily work hours chart and work hours histogram shown simultaneously in separate windows
+- **Work Hours Histogram**: Distribution of total work hours per day (days with work > 0 only), with configurable bin count
 - **Separate Work and Overtime**: Work hours and overtime are displayed as separate bars with distinct colors
 - **Rolling Average Trend Line**: Black trend line shows the rolling average of work hours over a configurable window
 - **Color-Coded by Weekday**: Each weekday has its own color within the selected scheme
@@ -235,6 +243,7 @@ python main.py --plot --color-scheme coral
 - **Calendar Week Display**: X-axis shows calendar weeks for easy reference
 - **Configurable Rolling Window**: Adjust the rolling average window size
 - **Customizable X-Axis Tick Interval**: Control the spacing of x-axis ticks (e.g., every 4 weeks)
+- **Configurable Histogram Bins**: Adjust the number of bins in the work hours histogram (default: 64)
 
 ### Configuration
 
@@ -247,6 +256,7 @@ visualization:
   num_months: 13               # Number of months to display
   rolling_average_window_size: 10  # Days to include in rolling average (default: 10)
   x_tick_interval: 4           # Number of weeks between x-axis ticks (default: 4)
+  histogram_bins: 64           # Number of bins for work hours histogram (default: 64)
 ```
 
 ### Rolling Average Configuration

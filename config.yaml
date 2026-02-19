@@ -43,6 +43,7 @@ visualization:
   num_months: 13  # Number of months to show in daily hours plot
   rolling_average_window_size: 10  # Number of days to include in the rolling average
   x_tick_interval: 4  # Number of weeks between x-axis ticks
+  histogram_bins: 64  # Number of bins for the work hours histogram
 
 # Analyzer settings
 analyzer:

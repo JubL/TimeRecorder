@@ -185,6 +185,7 @@ def get_visualization_config(config: dict) -> dict:
         "plot": visualization.get("plot"),
         "rolling_average_window_size": visualization.get("rolling_average_window_size"),
         "x_tick_interval": visualization.get("x_tick_interval"),
+        "histogram_bins": visualization.get("histogram_bins", 64),
         "standard_work_hours": work_schedule.get("standard_work_hours"),
         "work_days": work_schedule.get("work_days"),
         "full_format": time_tracking.get("full_format"),
@@ -320,6 +321,7 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "plot": True,
             "rolling_average_window_size": 10,
             "x_tick_interval": 3,
+            "histogram_bins": 64,
         },
         "analyzer": {
             "analyze_work_patterns": True,

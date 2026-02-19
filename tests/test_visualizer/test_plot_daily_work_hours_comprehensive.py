@@ -9,9 +9,8 @@ import src.visualizer as viz
 
 
 @pytest.mark.fast
-@patch("matplotlib.pyplot.show")
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock, mock_show: Mock) -> None:
+def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock) -> None:
     """Test that plot_daily_work_hours makes correct matplotlib calls."""
     # Setup mock
     mock_fig = Mock()
@@ -40,14 +39,14 @@ def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock, mock_show: 
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Verify matplotlib calls
     mock_subplots.assert_called_once_with(figsize=(8, 5))
-    mock_show.assert_called_once()
 
 
 @pytest.mark.fast
@@ -81,10 +80,11 @@ def test_plot_daily_work_hours_axis_configuration(mock_subplots: Mock) -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Verify axis configuration
     mock_ax.xaxis.set_major_locator.assert_called_once()
@@ -127,10 +127,11 @@ def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock) -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Verify bar calls - should be called for each work day
     assert mock_ax.bar.call_count >= 3  # At least 3 calls (work, overtime, free days)
@@ -168,6 +169,7 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
@@ -177,7 +179,7 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -
     assert visualizer.df["work_time"].iloc[1] == 8.0
     assert visualizer.df["work_time"].iloc[2] == 10.0
 
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # After adjustment
     assert visualizer.df["work_time"].iloc[0] == 7.0  # 7.0 <= 8.0, no change
@@ -186,9 +188,8 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -
 
 
 @pytest.mark.fast
-@patch("matplotlib.pyplot.show")
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock, mock_show: Mock) -> None:
+def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock) -> None:
     """Test plot_daily_work_hours with empty DataFrame."""
     # Setup mock
     mock_fig = Mock()
@@ -208,14 +209,14 @@ def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock, mock_show: M
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Should still make matplotlib calls even with empty data
     mock_subplots.assert_called_once()
-    mock_show.assert_called_once()
 
 
 @pytest.mark.fast
@@ -248,19 +249,19 @@ def test_plot_daily_work_hours_single_work_day(mock_subplots: Mock) -> None:
         "standard_work_hours": 8.0,
         "work_days": [0],  # Only Monday
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Should make bar calls for the single work day
     assert mock_ax.bar.call_count >= 1
 
 
 @pytest.mark.fast
-@patch("matplotlib.pyplot.show")
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock, mock_show: Mock) -> None:
+def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock) -> None:
     """Test plot_daily_work_hours with no work days."""
     # Setup mock
     mock_fig = Mock()
@@ -289,14 +290,14 @@ def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock, mock_show: Mock
         "standard_work_hours": 8.0,
         "work_days": [],  # No work days
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Should still make matplotlib calls but no bar calls
     mock_subplots.assert_called_once()
-    mock_show.assert_called_once()
     assert mock_ax.bar.call_count == 0
 
 
@@ -331,10 +332,11 @@ def test_plot_daily_work_hours_all_negative_work_time(mock_subplots: Mock) -> No
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Should make bar calls for free days (negative work_time)
     assert mock_ax.bar.call_count >= 2  # At least 2 calls for free days
@@ -371,10 +373,11 @@ def test_plot_daily_work_hours_zero_work_time(mock_subplots: Mock) -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Should make bar calls even for zero work_time because the plotting logic
     # still processes all work days, even if they have zero work time
@@ -412,10 +415,11 @@ def test_plot_daily_work_hours_color_scheme_usage(mock_subplots: Mock) -> None:
         "standard_work_hours": 8.0,
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
-    visualizer.plot_daily_work_hours()
+    visualizer.create_daily_work_hours_plot()
 
     # Verify that forest colors are used
     forest_colors = viz.COLOR_SCHEMES_WORK["forest"]

@@ -61,6 +61,7 @@ class Visualizer:
         - standard_work_hours: Standard work hours per day
         - work_days: List of weekday numbers (0=Monday, 6=Sunday)
         - x_tick_interval: Number of weeks between x-axis ticks
+        - histogram_bins: Number of bins for the work hours histogram
 
     Attributes
     ----------
@@ -76,6 +77,8 @@ class Visualizer:
         Number of months to display in the chart
     rolling_average_window_size : int
         Number of days to include in the rolling average
+    histogram_bins : int
+        Number of bins for the work hours histogram
     standard_work_hours : float
         Standard work hours per day
     work_days : list
@@ -102,6 +105,7 @@ class Visualizer:
         self.work_colors = COLOR_SCHEMES_WORK[data["color_scheme"]]
         self.num_months = data["num_months"]
         self.rolling_average_window_size = data["rolling_average_window_size"]
+        self.histogram_bins = int(data["histogram_bins"])
         self.standard_work_hours = data["standard_work_hours"]
         self.work_days = data["work_days"]
         self.x_tick_interval = int(data["x_tick_interval"])
@@ -189,7 +193,7 @@ class Visualizer:
             return pd.Series(dtype=float)
         return self.df[self.df["work_time"] > 0]["work_time"].rolling(window=window, min_periods=1).mean()
 
-    def plot_daily_work_hours(self) -> None:
+    def create_daily_work_hours_plot(self) -> None:
         """
         Create and display a bar chart of daily work hours and overtime.
 
@@ -202,10 +206,6 @@ class Visualizer:
 
         The chart automatically adjusts work time to exclude overtime
         when total hours exceed standard work hours.
-
-        Returns
-        -------
-        None
         """
         self.df["rolling_avg"] = self.get_rolling_average(self.rolling_average_window_size)
         self.df["rolling_avg"] = self.df["rolling_avg"].ffill()
@@ -260,4 +260,35 @@ class Visualizer:
         ax.set_ylabel("Work Hours")
         ax.set_title("Daily Work Hours")
 
+    def create_histogram(self) -> None:
+        """
+        Create and display a histogram of daily work hours.
+
+        Shows the distribution of total work hours per day for days with work_time > 0.
+        The number of bins is configurable via histogram_bins in the visualization config.
+        """
+        work_hours = self.df[self.df["work_time"] > 0]["work_time"]
+
+        if work_hours.empty:
+            logger.warning("No work days with positive hours to display in histogram.")
+            return
+
+        _, ax = plt.subplots(figsize=(8, 5))
+        ax.hist(work_hours, bins=self.histogram_bins, color=self.work_colors[0], edgecolor="white")
+        ax.set_xlabel("Work Hours")
+        ax.set_ylabel("Frequency")
+        ax.set_title("Distribution of Daily Work Hours")
+
+    @staticmethod
+    def display_all_plots() -> None:
+        """
+        Display all created plot figures.
+
+        Call this after creating plots to display multiple
+        figures simultaneously in separate windows.
+
+        Returns
+        -------
+        None
+        """
         plt.show()

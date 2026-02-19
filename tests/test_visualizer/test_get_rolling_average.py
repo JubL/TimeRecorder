@@ -17,6 +17,7 @@ def sample_visualizer_data() -> dict:
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
 
@@ -139,6 +140,7 @@ def test_get_rolling_average_zero_window() -> None:
         "work_days": [0, 1, 2, 3, 4],
         "x_tick_interval": 3,
         "standard_work_hours": 8.0,
+        "histogram_bins": 64,
     }
 
     visualizer = viz.Visualizer(df, data)
