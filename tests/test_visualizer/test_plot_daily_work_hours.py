@@ -3,11 +3,12 @@
 import pandas as pd
 import pytest
 
+import src.config_utils as cu
 import src.visualizer as viz
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_basic_functionality() -> None:
+def test_plot_daily_work_hours_basic_functionality(sample_config: dict) -> None:
     """Test basic plotting functionality with simple data."""
     # Create sample data for one week
     df = pd.DataFrame(
@@ -19,18 +20,10 @@ def test_plot_daily_work_hours_basic_functionality() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test that the method runs without errors
     # Note: We can't easily test the actual plot output without complex mocking
@@ -46,7 +39,7 @@ def test_plot_daily_work_hours_basic_functionality() -> None:
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_work_time_adjustment() -> None:
+def test_plot_daily_work_hours_work_time_adjustment(sample_config: dict) -> None:
     """Test that work_time is correctly adjusted when total exceeds standard hours."""
     df = pd.DataFrame(
         {
@@ -57,18 +50,10 @@ def test_plot_daily_work_hours_work_time_adjustment() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Before adjustment
     assert visualizer.df["work_time"].iloc[0] == 9.0
@@ -82,7 +67,7 @@ def test_plot_daily_work_hours_work_time_adjustment() -> None:
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_no_adjustment_needed() -> None:
+def test_plot_daily_work_hours_no_adjustment_needed(sample_config: dict) -> None:
     """Test that work_time is not adjusted when total doesn't exceed standard hours."""
     df = pd.DataFrame(
         {
@@ -93,18 +78,10 @@ def test_plot_daily_work_hours_no_adjustment_needed() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Before adjustment
     assert visualizer.df["work_time"].iloc[0] == 7.0
@@ -118,7 +95,7 @@ def test_plot_daily_work_hours_no_adjustment_needed() -> None:
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_mixed_scenarios() -> None:
+def test_plot_daily_work_hours_mixed_scenarios(sample_config: dict) -> None:
     """Test work_time adjustment with mixed scenarios."""
     df = pd.DataFrame(
         {
@@ -129,18 +106,10 @@ def test_plot_daily_work_hours_mixed_scenarios() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     visualizer.create_daily_work_hours_plot()
 
@@ -156,22 +125,14 @@ def test_plot_daily_work_hours_mixed_scenarios() -> None:
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_empty_dataframe() -> None:
+def test_plot_daily_work_hours_empty_dataframe(sample_config: dict) -> None:
     """Test plotting with empty DataFrame."""
     df = pd.DataFrame(columns=["date", "work_time", "overtime"])
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Should handle empty DataFrame gracefully
     visualizer.create_daily_work_hours_plot()
@@ -179,23 +140,18 @@ def test_plot_daily_work_hours_empty_dataframe() -> None:
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_different_color_schemes(sample_logbook_df: pd.DataFrame) -> None:
+def test_plot_daily_work_hours_different_color_schemes(
+    sample_logbook_df: pd.DataFrame, sample_config: dict
+) -> None:
     """Test plotting with different color schemes."""
     color_schemes = ["ocean", "forest", "sunset", "lavender", "coral"]
 
     for scheme in color_schemes:
-        data = {
-            "full_format": "%d.%m.%Y %H:%M:%S",
-            "color_scheme": scheme,
-            "num_months": 12,
-            "rolling_average_window_size": 10,
-            "x_tick_interval": 3,
-            "standard_work_hours": 8.0,
-            "work_days": [0, 1, 2, 3, 4],
-            "histogram_bins": 64,
-        }
+        visualization_config = cu.get_visualization_config(sample_config)
+        visualization_config["color_scheme"] = scheme
+        visualization_config["num_months"] = 12
 
-        visualizer = viz.Visualizer(sample_logbook_df, data)
+        visualizer = viz.Visualizer(sample_logbook_df, visualization_config)
 
         # Should run without errors for all color schemes
         visualizer.create_daily_work_hours_plot()
@@ -205,22 +161,17 @@ def test_plot_daily_work_hours_different_color_schemes(sample_logbook_df: pd.Dat
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_custom_work_days(sample_logbook_df: pd.DataFrame) -> None:
+def test_plot_daily_work_hours_custom_work_days(
+    sample_logbook_df: pd.DataFrame, sample_config: dict
+) -> None:
     """Test plotting with custom work days."""
     custom_work_days = [1, 2]  # Only Tuesday and Wednesday
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": custom_work_days,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["work_days"] = custom_work_days
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(sample_logbook_df, data)
+    visualizer = viz.Visualizer(sample_logbook_df, visualization_config)
 
     # Should run without errors with custom work days
     visualizer.create_daily_work_hours_plot()
@@ -228,20 +179,14 @@ def test_plot_daily_work_hours_custom_work_days(sample_logbook_df: pd.DataFrame)
 
 
 @pytest.mark.fast
-def test_plot_daily_work_hours_large_overtime(sample_logbook_df: pd.DataFrame) -> None:
+def test_plot_daily_work_hours_large_overtime(
+    sample_logbook_df: pd.DataFrame, sample_config: dict
+) -> None:
     """Test work_time adjustment with large overtime values."""
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(sample_logbook_df, data)
+    visualizer = viz.Visualizer(sample_logbook_df, visualization_config)
 
     visualizer.create_daily_work_hours_plot()
 

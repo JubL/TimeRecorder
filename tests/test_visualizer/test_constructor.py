@@ -3,11 +3,12 @@
 import pandas as pd
 import pytest
 
+import src.config_utils as cu
 import src.visualizer as viz
 
 
 @pytest.mark.fast
-def test_constructor_basic_initialization() -> None:
+def test_constructor_basic_initialization(sample_config: dict) -> None:
     """Test basic Visualizer initialization with minimal data."""
     # Create sample DataFrame
     df = pd.DataFrame(
@@ -19,18 +20,10 @@ def test_constructor_basic_initialization() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     assert visualizer.df is not None
     assert visualizer.full_format == "%d.%m.%Y %H:%M:%S"
@@ -44,7 +37,7 @@ def test_constructor_basic_initialization() -> None:
 
 
 @pytest.mark.fast
-def test_constructor_all_color_schemes() -> None:
+def test_constructor_all_color_schemes(sample_config: dict) -> None:
     """Test Visualizer initialization with all available color schemes."""
     df = pd.DataFrame(
         {
@@ -58,23 +51,16 @@ def test_constructor_all_color_schemes() -> None:
     color_schemes = ["ocean", "forest", "sunset", "lavender", "coral"]
 
     for scheme in color_schemes:
-        data = {
-            "full_format": "%d.%m.%Y %H:%M:%S",
-            "color_scheme": scheme,
-            "num_months": 6,
-            "rolling_average_window_size": 10,
-            "x_tick_interval": 3,
-            "standard_work_hours": 8.0,
-            "work_days": [0, 1, 2, 3, 4],
-            "histogram_bins": 64,
-        }
+        visualization_config = cu.get_visualization_config(sample_config)
+        visualization_config["color_scheme"] = scheme
+        visualization_config["num_months"] = 6
 
-        visualizer = viz.Visualizer(df, data)
+        visualizer = viz.Visualizer(df, visualization_config)
         assert visualizer.work_colors == viz.COLOR_SCHEMES_WORK[scheme]
 
 
 @pytest.mark.fast
-def test_constructor_data_filtering() -> None:
+def test_constructor_data_filtering(sample_config: dict) -> None:
     """Test that constructor filters data to last num_months."""
     # Create DataFrame with dates spanning multiple months
     dates = pd.date_range(start="2024-01-01", end="2024-12-31", freq="D")
@@ -87,18 +73,10 @@ def test_constructor_data_filtering() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 3,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 3
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Should filter to last 3 months
     expected_start_date = pd.Timestamp("2024-10-01")
@@ -106,7 +84,7 @@ def test_constructor_data_filtering() -> None:
 
 
 @pytest.mark.fast
-def test_constructor_format_parsing() -> None:
+def test_constructor_format_parsing(sample_config: dict) -> None:
     """Test constructor correctly parses different format strings."""
     df = pd.DataFrame(
         {
@@ -117,25 +95,18 @@ def test_constructor_format_parsing() -> None:
         },
     )
 
-    data = {
-        "full_format": "%Y-%m-%d %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "work_days": [0, 1, 2, 3, 4],
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["full_format"] = "%Y-%m-%d %H:%M:%S"
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     assert visualizer.date_format == "%Y-%m-%d"
     assert visualizer.time_format == "%H:%M:%S"
 
 
 @pytest.mark.fast
-def test_constructor_work_days_custom() -> None:
+def test_constructor_work_days_custom(sample_config: dict) -> None:
     """Test constructor with custom work days."""
     df = pd.DataFrame(
         {
@@ -148,46 +119,31 @@ def test_constructor_work_days_custom() -> None:
 
     custom_work_days = [1, 2, 3, 4, 5]  # Tuesday to Saturday
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "work_days": custom_work_days,
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualization_config["work_days"] = custom_work_days
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     assert visualizer.work_days == custom_work_days
 
 
 @pytest.mark.fast
-def test_constructor_empty_dataframe() -> None:
+def test_constructor_empty_dataframe(sample_config: dict) -> None:
     """Test constructor with empty DataFrame."""
     df = pd.DataFrame(columns=["date", "work_time", "overtime"])
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "work_days": [0, 1, 2, 3, 4],
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     assert visualizer.df.empty
     assert len(visualizer.work_colors) == 6
 
 
 @pytest.mark.fast
-def test_constructor_standard_work_hours_float() -> None:
+def test_constructor_standard_work_hours_float(sample_config: dict) -> None:
     """Test constructor with float standard work hours."""
     df = pd.DataFrame(
         {
@@ -198,17 +154,10 @@ def test_constructor_standard_work_hours_float() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "work_days": [0, 1, 2, 3, 4],
-        "standard_work_hours": 7.5,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualization_config["standard_work_hours"] = 7.5
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     assert visualizer.standard_work_hours == 7.5

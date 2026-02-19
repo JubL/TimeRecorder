@@ -3,11 +3,12 @@
 import pandas as pd
 import pytest
 
+import src.config_utils as cu
 import src.visualizer as viz
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_basic_conversion() -> None:
+def test_make_logbook_robust_basic_conversion(sample_config: dict) -> None:
     """Test basic data type conversion and cleaning."""
     df = pd.DataFrame(
         {
@@ -18,18 +19,10 @@ def test_make_logbook_robust_basic_conversion() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Check that date column is converted to datetime
     assert pd.api.types.is_datetime64_any_dtype(visualizer.df["date"])
@@ -46,7 +39,7 @@ def test_make_logbook_robust_basic_conversion() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_handle_missing_values() -> None:
+def test_make_logbook_robust_handle_missing_values(sample_config: dict) -> None:
     """Test handling of missing values in work_time and overtime."""
     df = pd.DataFrame(
         {
@@ -57,18 +50,10 @@ def test_make_logbook_robust_handle_missing_values() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Missing values should be filled with 0.0
     assert visualizer.df["work_time"].iloc[1] == 0.0
@@ -76,7 +61,7 @@ def test_make_logbook_robust_handle_missing_values() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_handle_invalid_numeric() -> None:
+def test_make_logbook_robust_handle_invalid_numeric(sample_config: dict) -> None:
     """Test handling of invalid numeric values."""
     df = pd.DataFrame(
         {
@@ -87,18 +72,10 @@ def test_make_logbook_robust_handle_invalid_numeric() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Invalid values should be converted to NaN and then filled with 0.0
     assert visualizer.df["work_time"].iloc[1] == 0.0
@@ -106,7 +83,7 @@ def test_make_logbook_robust_handle_invalid_numeric() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_negative_overtime_handling() -> None:
+def test_make_logbook_robust_negative_overtime_handling(sample_config: dict) -> None:
     """Test that negative overtime values are set to 0.0."""
     df = pd.DataFrame(
         {
@@ -117,18 +94,10 @@ def test_make_logbook_robust_negative_overtime_handling() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Negative overtime should be set to 0.0
     assert visualizer.df["overtime"].iloc[0] == 0.0
@@ -137,7 +106,7 @@ def test_make_logbook_robust_negative_overtime_handling() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_date_format_parsing() -> None:
+def test_make_logbook_robust_date_format_parsing(sample_config: dict) -> None:
     """Test date format parsing with different formats."""
     # Test with different date formats
     test_cases = [  # TODO: use parametrize fixture instead
@@ -157,18 +126,11 @@ def test_make_logbook_robust_date_format_parsing() -> None:
             },
         )
 
-        data = {
-            "full_format": full_format,
-            "color_scheme": "ocean",
-            "num_months": 12,
-            "rolling_average_window_size": 10,
-            "standard_work_hours": 8.0,
-            "work_days": [0, 1, 2, 3, 4],
-            "x_tick_interval": 3,
-            "histogram_bins": 64,
-        }
+        visualization_config = cu.get_visualization_config(sample_config)
+        visualization_config["full_format"] = full_format
+        visualization_config["num_months"] = 12
 
-        visualizer = viz.Visualizer(df, data)
+        visualizer = viz.Visualizer(df, visualization_config)
 
         # Date should be successfully converted to datetime
         assert pd.api.types.is_datetime64_any_dtype(visualizer.df["date"])
@@ -176,7 +138,7 @@ def test_make_logbook_robust_date_format_parsing() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_mixed_data_types() -> None:
+def test_make_logbook_robust_mixed_data_types(sample_config: dict) -> None:
     """Test handling of mixed data types in numeric columns."""
     df = pd.DataFrame(
         {
@@ -187,18 +149,10 @@ def test_make_logbook_robust_mixed_data_types() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "work_days": [0, 1, 2, 3, 4],
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # All values should be converted to float
     assert pd.api.types.is_numeric_dtype(visualizer.df["work_time"])
@@ -214,22 +168,14 @@ def test_make_logbook_robust_mixed_data_types() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_empty_dataframe() -> None:
+def test_make_logbook_robust_empty_dataframe(sample_config: dict) -> None:
     """Test make_logbook_robust with empty DataFrame."""
     df = pd.DataFrame(columns=["date", "work_time", "overtime"])
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "work_days": [0, 1, 2, 3, 4],
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Should handle empty DataFrame gracefully
     assert visualizer.df.empty
@@ -239,7 +185,7 @@ def test_make_logbook_robust_empty_dataframe() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_zero_overtime_preserved() -> None:
+def test_make_logbook_robust_zero_overtime_preserved(sample_config: dict) -> None:
     """Test that zero overtime values are preserved."""
     df = pd.DataFrame(
         {
@@ -250,18 +196,10 @@ def test_make_logbook_robust_zero_overtime_preserved() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "work_days": [0, 1, 2, 3, 4],
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Zero values should be preserved
     assert visualizer.df["overtime"].iloc[0] == 0.0

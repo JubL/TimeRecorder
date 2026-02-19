@@ -3,11 +3,12 @@
 import pandas as pd
 import pytest
 
+import src.config_utils as cu
 import src.visualizer as viz
 
 
 @pytest.mark.fast
-def test_is_valid_time_with_timezone() -> None:
+def test_is_valid_time_with_timezone(sample_config: dict) -> None:
     """Test is_valid_time with timezone information."""
     df = pd.DataFrame(
         {
@@ -18,18 +19,10 @@ def test_is_valid_time_with_timezone() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test valid time with timezone
     assert visualizer.is_valid_time("08:00:00 CEST") is True
@@ -38,7 +31,7 @@ def test_is_valid_time_with_timezone() -> None:
 
 
 @pytest.mark.fast
-def test_is_valid_time_without_timezone() -> None:
+def test_is_valid_time_without_timezone(sample_config: dict) -> None:
     """Test is_valid_time without timezone information."""
     df = pd.DataFrame(
         {
@@ -49,18 +42,10 @@ def test_is_valid_time_without_timezone() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test valid time without timezone
     assert visualizer.is_valid_time("08:00:00") is True
@@ -69,7 +54,7 @@ def test_is_valid_time_without_timezone() -> None:
 
 
 @pytest.mark.fast
-def test_is_valid_time_invalid_formats() -> None:
+def test_is_valid_time_invalid_formats(sample_config: dict) -> None:
     """Test is_valid_time with invalid time formats."""
     df = pd.DataFrame(
         {
@@ -80,18 +65,10 @@ def test_is_valid_time_invalid_formats() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test invalid time formats
     assert visualizer.is_valid_time("08:00") is False  # Missing seconds
@@ -103,7 +80,7 @@ def test_is_valid_time_invalid_formats() -> None:
 
 
 @pytest.mark.fast
-def test_is_valid_time_none_and_na_values() -> None:
+def test_is_valid_time_none_and_na_values(sample_config: dict) -> None:
     """Test is_valid_time with None and NaN values."""
     df = pd.DataFrame(
         {
@@ -114,18 +91,10 @@ def test_is_valid_time_none_and_na_values() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test None and NaN values
     assert visualizer.is_valid_time(None) is False  # type: ignore[arg-type]
@@ -146,7 +115,7 @@ def test_is_valid_time_none_and_na_values() -> None:
 
 
 @pytest.mark.fast
-def test_is_valid_time_different_time_formats() -> None:
+def test_is_valid_time_different_time_formats(sample_config: dict) -> None:
     """Test is_valid_time with different time format configurations."""
     # Test with different time formats
     test_cases = [
@@ -169,23 +138,16 @@ def test_is_valid_time_different_time_formats() -> None:
             },
         )
 
-        data = {
-            "full_format": full_format,
-            "color_scheme": "ocean",
-            "num_months": 12,
-            "rolling_average_window_size": 10,
-            "x_tick_interval": 3,
-            "standard_work_hours": 8.0,
-            "work_days": [0, 1, 2, 3, 4],
-            "histogram_bins": 64,
-        }
+        visualization_config = cu.get_visualization_config(sample_config)
+        visualization_config["full_format"] = full_format
+        visualization_config["num_months"] = 12
 
-        visualizer = viz.Visualizer(df, data)
+        visualizer = viz.Visualizer(df, visualization_config)
         assert visualizer.is_valid_time(time_str) is expected
 
 
 @pytest.mark.fast
-def test_is_valid_time_timezone_parsing_edge_cases() -> None:
+def test_is_valid_time_timezone_parsing_edge_cases(sample_config: dict) -> None:
     """Test is_valid_time with timezone parsing edge cases."""
     df = pd.DataFrame(
         {
@@ -196,18 +158,10 @@ def test_is_valid_time_timezone_parsing_edge_cases() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test timezone parsing edge cases
     assert visualizer.is_valid_time("08:00:00 CEST") is True
@@ -220,7 +174,7 @@ def test_is_valid_time_timezone_parsing_edge_cases() -> None:
 
 
 @pytest.mark.fast
-def test_is_valid_time_malformed_timezone() -> None:
+def test_is_valid_time_malformed_timezone(sample_config: dict) -> None:
     """Test is_valid_time with malformed timezone information."""
     df = pd.DataFrame(
         {
@@ -231,18 +185,10 @@ def test_is_valid_time_malformed_timezone() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test malformed timezone cases
     assert visualizer.is_valid_time("08:00:00 INVALID") is True  # Actually valid - strips timezone and parses time
@@ -251,7 +197,7 @@ def test_is_valid_time_malformed_timezone() -> None:
 
 
 @pytest.mark.fast
-def test_is_valid_time_boundary_values() -> None:
+def test_is_valid_time_boundary_values(sample_config: dict) -> None:
     """Test is_valid_time with boundary time values."""
     df = pd.DataFrame(
         {
@@ -262,18 +208,10 @@ def test_is_valid_time_boundary_values() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test boundary values
     assert visualizer.is_valid_time("00:00:00") is True  # Midnight
@@ -285,7 +223,7 @@ def test_is_valid_time_boundary_values() -> None:
 
 
 @pytest.mark.fast
-def test_is_valid_time_whitespace_handling() -> None:
+def test_is_valid_time_whitespace_handling(sample_config: dict) -> None:
     """Test is_valid_time with various whitespace scenarios."""
     df = pd.DataFrame(
         {
@@ -296,18 +234,10 @@ def test_is_valid_time_whitespace_handling() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test whitespace handling
     assert visualizer.is_valid_time(" 08:00:00 ") is True  # Actually valid - strips timezone and parses time

@@ -3,11 +3,12 @@
 import pandas as pd
 import pytest
 
+import src.config_utils as cu
 import src.visualizer as viz
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_invalid_time_handling() -> None:
+def test_make_logbook_robust_invalid_time_handling(sample_config: dict) -> None:
     """Test make_logbook_robust with invalid time strings."""
     df = pd.DataFrame(
         {
@@ -18,18 +19,10 @@ def test_make_logbook_robust_invalid_time_handling() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Invalid times should result in work_time being set to -standard_work_hours
     assert visualizer.df["work_time"].iloc[1] == -8.0  # invalid_time
@@ -37,7 +30,7 @@ def test_make_logbook_robust_invalid_time_handling() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_mixed_valid_invalid_times() -> None:
+def test_make_logbook_robust_mixed_valid_invalid_times(sample_config: dict) -> None:
     """Test make_logbook_robust with mix of valid and invalid times."""
     df = pd.DataFrame(
         {
@@ -48,18 +41,10 @@ def test_make_logbook_robust_mixed_valid_invalid_times() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Valid times should keep original work_time
     assert visualizer.df["work_time"].iloc[0] == 8.0  # Valid time
@@ -71,7 +56,7 @@ def test_make_logbook_robust_mixed_valid_invalid_times() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_none_start_time() -> None:
+def test_make_logbook_robust_none_start_time(sample_config: dict) -> None:
     """Test make_logbook_robust with None start_time values."""
     df = pd.DataFrame(
         {
@@ -82,18 +67,10 @@ def test_make_logbook_robust_none_start_time() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # None start_time should result in work_time being set to -standard_work_hours
     assert visualizer.df["work_time"].iloc[0] == -8.0  # None start_time
@@ -101,7 +78,7 @@ def test_make_logbook_robust_none_start_time() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_nan_start_time() -> None:
+def test_make_logbook_robust_nan_start_time(sample_config: dict) -> None:
     """Test make_logbook_robust with NaN/NA start_time values (treated as invalid)."""
     df = pd.DataFrame(
         {
@@ -112,18 +89,10 @@ def test_make_logbook_robust_nan_start_time() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # NA/NaN start_time should be treated as invalid -> work_time set to -standard_work_hours
     assert visualizer.df["work_time"].iloc[0] == -8.0  # pd.NA start_time
@@ -131,7 +100,7 @@ def test_make_logbook_robust_nan_start_time() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_extreme_numeric_values() -> None:
+def test_make_logbook_robust_extreme_numeric_values(sample_config: dict) -> None:
     """Test make_logbook_robust with extreme numeric values."""
     df = pd.DataFrame(
         {
@@ -142,18 +111,10 @@ def test_make_logbook_robust_extreme_numeric_values() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # All values should be converted to numeric and handled appropriately
     assert pd.api.types.is_numeric_dtype(visualizer.df["work_time"])
@@ -164,7 +125,7 @@ def test_make_logbook_robust_extreme_numeric_values() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_string_numeric_conversion() -> None:
+def test_make_logbook_robust_string_numeric_conversion(sample_config: dict) -> None:
     """Test make_logbook_robust with various string numeric formats."""
     df = pd.DataFrame(
         {
@@ -175,18 +136,10 @@ def test_make_logbook_robust_string_numeric_conversion() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # All should be converted to numeric
     assert pd.api.types.is_numeric_dtype(visualizer.df["work_time"])
@@ -200,7 +153,7 @@ def test_make_logbook_robust_string_numeric_conversion() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_boolean_values() -> None:
+def test_make_logbook_robust_boolean_values(sample_config: dict) -> None:
     """Test make_logbook_robust with boolean values in numeric columns."""
     df = pd.DataFrame(
         {
@@ -211,18 +164,10 @@ def test_make_logbook_robust_boolean_values() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Boolean values are converted to numeric by pd.to_numeric
     # They become bool dtype which is considered numeric
@@ -237,7 +182,7 @@ def test_make_logbook_robust_boolean_values() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_complex_invalid_strings() -> None:
+def test_make_logbook_robust_complex_invalid_strings(sample_config: dict) -> None:
     """Test make_logbook_robust with complex invalid string values."""
     df = pd.DataFrame(
         {
@@ -248,18 +193,10 @@ def test_make_logbook_robust_complex_invalid_strings() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # All invalid strings should be converted to NaN and then filled with 0.0
     assert pd.api.types.is_numeric_dtype(visualizer.df["work_time"])
@@ -277,7 +214,7 @@ def test_make_logbook_robust_complex_invalid_strings() -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_unicode_values() -> None:
+def test_make_logbook_robust_unicode_values(sample_config: dict) -> None:
     """Test make_logbook_robust with unicode numeric values."""
     df = pd.DataFrame(
         {
@@ -288,18 +225,10 @@ def test_make_logbook_robust_unicode_values() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Unicode numbers are actually converted to numeric by pd.to_numeric
     assert pd.api.types.is_numeric_dtype(visualizer.df["work_time"])

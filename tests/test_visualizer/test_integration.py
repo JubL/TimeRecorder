@@ -3,11 +3,12 @@
 import pandas as pd
 import pytest
 
+import src.config_utils as cu
 import src.visualizer as viz
 
 
 @pytest.mark.fast
-def test_visualizer_integration_complete_workflow() -> None:
+def test_visualizer_integration_complete_workflow(sample_config: dict) -> None:
     """Test complete visualizer workflow with realistic data."""
     # Create realistic work data for a month
     dates = pd.date_range(start="2024-01-01", end="2024-01-31", freq="D")
@@ -39,18 +40,10 @@ def test_visualizer_integration_complete_workflow() -> None:
 
     df = pd.DataFrame(work_data)
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Test that data was processed correctly
     assert len(visualizer.df) > 0
@@ -68,7 +61,7 @@ def test_visualizer_integration_complete_workflow() -> None:
 
 
 @pytest.mark.fast
-def test_visualizer_integration_multiple_months() -> None:
+def test_visualizer_integration_multiple_months(sample_config: dict) -> None:
     """Test visualizer with data spanning multiple months."""
     # Create data for 3 months
     dates = pd.date_range(start="2024-01-01", end="2024-03-31", freq="D")
@@ -87,18 +80,11 @@ def test_visualizer_integration_multiple_months() -> None:
 
     df = pd.DataFrame(work_data)
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "forest",
-        "num_months": 2,  # Only show last 2 months
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["color_scheme"] = "forest"
+    visualization_config["num_months"] = 2  # Only show last 2 months
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Should filter to last 2 months
     assert len(visualizer.df) < len(df)
@@ -106,7 +92,7 @@ def test_visualizer_integration_multiple_months() -> None:
 
 
 @pytest.mark.fast
-def test_visualizer_integration_all_color_schemes() -> None:
+def test_visualizer_integration_all_color_schemes(sample_config: dict) -> None:
     """Test visualizer with all available color schemes."""
     df = pd.DataFrame(
         {
@@ -120,18 +106,11 @@ def test_visualizer_integration_all_color_schemes() -> None:
     color_schemes = ["ocean", "forest", "sunset", "lavender", "coral"]
 
     for scheme in color_schemes:  # TODO: use parametrize fixture instead
-        data = {
-            "full_format": "%d.%m.%Y %H:%M:%S",
-            "color_scheme": scheme,
-            "num_months": 12,
-            "rolling_average_window_size": 10,
-            "x_tick_interval": 3,
-            "standard_work_hours": 8.0,
-            "work_days": [0, 1, 2, 3, 4],
-            "histogram_bins": 64,
-        }
+        visualization_config = cu.get_visualization_config(sample_config)
+        visualization_config["color_scheme"] = scheme
+        visualization_config["num_months"] = 12
 
-        visualizer = viz.Visualizer(df, data)
+        visualizer = viz.Visualizer(df, visualization_config)
 
         # Test that each color scheme works correctly
         assert visualizer.work_colors == viz.COLOR_SCHEMES_WORK[scheme]
@@ -144,7 +123,7 @@ def test_visualizer_integration_all_color_schemes() -> None:
 
 
 @pytest.mark.fast
-def test_visualizer_integration_different_formats() -> None:
+def test_visualizer_integration_different_formats(sample_config: dict) -> None:
     """Test visualizer with different date formats."""
     test_cases = [  # TODO: use parametrize fixture instead
         ("%d.%m.%Y", "01.01.2024"),
@@ -163,18 +142,11 @@ def test_visualizer_integration_different_formats() -> None:
             },
         )
 
-        data = {
-            "full_format": full_format,
-            "color_scheme": "ocean",
-            "num_months": 12,
-            "rolling_average_window_size": 10,
-            "standard_work_hours": 8.0,
-            "work_days": [0, 1, 2, 3, 4],
-            "x_tick_interval": 3,
-            "histogram_bins": 64,
-        }
+        visualization_config = cu.get_visualization_config(sample_config)
+        visualization_config["full_format"] = full_format
+        visualization_config["num_months"] = 12
 
-        visualizer = viz.Visualizer(df, data)
+        visualizer = viz.Visualizer(df, visualization_config)
 
         # Test that date parsing works correctly
         assert pd.api.types.is_datetime64_any_dtype(visualizer.df["date"])
@@ -185,7 +157,7 @@ def test_visualizer_integration_different_formats() -> None:
 
 
 @pytest.mark.fast
-def test_visualizer_integration_edge_cases() -> None:
+def test_visualizer_integration_edge_cases(sample_config: dict) -> None:
     """Test visualizer with various edge cases."""
     # Test with very large overtime
     df = pd.DataFrame(
@@ -197,18 +169,10 @@ def test_visualizer_integration_edge_cases() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Work time should be adjusted to standard hours
@@ -217,7 +181,7 @@ def test_visualizer_integration_edge_cases() -> None:
 
 
 @pytest.mark.fast
-def test_visualizer_integration_custom_work_days() -> None:
+def test_visualizer_integration_custom_work_days(sample_config: dict) -> None:
     """Test visualizer with custom work days."""
     # Create data for a week
     df = pd.DataFrame(
@@ -232,25 +196,19 @@ def test_visualizer_integration_custom_work_days() -> None:
     # Test with Tuesday-Saturday work schedule
     custom_work_days = [1, 2, 3, 4, 5]
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "sunset",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": custom_work_days,
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["color_scheme"] = "sunset"
+    visualization_config["num_months"] = 12
+    visualization_config["work_days"] = custom_work_days
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     assert visualizer.work_days == custom_work_days
     visualizer.create_daily_work_hours_plot()
 
 
 @pytest.mark.fast
-def test_visualizer_integration_mixed_data_quality() -> None:
+def test_visualizer_integration_mixed_data_quality(sample_config: dict) -> None:
     """Test visualizer with mixed data quality (missing values, invalid data)."""
     df = pd.DataFrame(
         {
@@ -261,18 +219,11 @@ def test_visualizer_integration_mixed_data_quality() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "lavender",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["color_scheme"] = "lavender"
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Should handle all data quality issues gracefully
     assert pd.api.types.is_numeric_dtype(visualizer.df["work_time"])
@@ -287,7 +238,7 @@ def test_visualizer_integration_mixed_data_quality() -> None:
 
 
 @pytest.mark.fast
-def test_visualizer_integration_standard_work_hours_variations() -> None:
+def test_visualizer_integration_standard_work_hours_variations(sample_config: dict) -> None:
     """Test visualizer with different standard work hours."""
     df = pd.DataFrame(
         {
@@ -299,18 +250,12 @@ def test_visualizer_integration_standard_work_hours_variations() -> None:
     )
 
     # Test with 7.5 hour work day
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "coral",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 7.5,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["color_scheme"] = "coral"
+    visualization_config["num_months"] = 12
+    visualization_config["standard_work_hours"] = 7.5
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Day 1: 7.5 + 0.0 = 7.5 (no adjustment)

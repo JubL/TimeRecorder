@@ -3,27 +3,13 @@
 import pandas as pd
 import pytest
 
+import src.config_utils as cu
 import src.visualizer as viz
-
-
-@pytest.fixture
-def sample_visualizer_data() -> dict:
-    """Fixture to provide standard visualizer configuration."""
-    return {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
 
 
 # Expected cases
 @pytest.mark.fast
-def test_get_rolling_average_normal_operation(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_normal_operation(sample_config: dict) -> None:
     """Test get_rolling_average with normal operation and multiple data points."""
     df = pd.DataFrame(
         {
@@ -34,7 +20,9 @@ def test_get_rolling_average_normal_operation(sample_visualizer_data: dict) -> N
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average(window=3)
 
     # Should return a Series with rolling averages
@@ -47,7 +35,7 @@ def test_get_rolling_average_normal_operation(sample_visualizer_data: dict) -> N
 
 
 @pytest.mark.fast
-def test_get_rolling_average_different_window_sizes(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_different_window_sizes(sample_config: dict) -> None:
     """Test get_rolling_average with different window sizes."""
     df = pd.DataFrame(
         {
@@ -58,7 +46,9 @@ def test_get_rolling_average_different_window_sizes(sample_visualizer_data: dict
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Window size 1
     result_1 = visualizer.get_rolling_average(window=1)
@@ -78,7 +68,7 @@ def test_get_rolling_average_different_window_sizes(sample_visualizer_data: dict
 
 
 @pytest.mark.fast
-def test_get_rolling_average_single_data_point(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_single_data_point(sample_config: dict) -> None:
     """Test get_rolling_average with a single data point."""
     df = pd.DataFrame(
         {
@@ -89,7 +79,9 @@ def test_get_rolling_average_single_data_point(sample_visualizer_data: dict) -> 
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average(window=5)
 
     assert isinstance(result, pd.Series)
@@ -98,7 +90,7 @@ def test_get_rolling_average_single_data_point(sample_visualizer_data: dict) -> 
 
 
 @pytest.mark.fast
-def test_get_rolling_average_filters_positive_work_time(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_filters_positive_work_time(sample_config: dict) -> None:
     """Test that get_rolling_average only includes rows with work_time > 0."""
     df = pd.DataFrame(
         {
@@ -109,7 +101,9 @@ def test_get_rolling_average_filters_positive_work_time(sample_visualizer_data: 
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average(window=2)
 
     # Should only include rows with work_time > 0 (first and last)
@@ -121,7 +115,7 @@ def test_get_rolling_average_filters_positive_work_time(sample_visualizer_data: 
 
 # Edge cases
 @pytest.mark.fast
-def test_get_rolling_average_zero_window() -> None:
+def test_get_rolling_average_zero_window(sample_config: dict) -> None:
     """Test get_rolling_average returns 0.0 when window is 0 (lines 185-186)."""
     df = pd.DataFrame(
         {
@@ -132,18 +126,10 @@ def test_get_rolling_average_zero_window() -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "standard_work_hours": 8.0,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average(window=0)
 
     assert isinstance(result, pd.Series)
@@ -151,7 +137,7 @@ def test_get_rolling_average_zero_window() -> None:
 
 
 @pytest.mark.fast
-def test_get_rolling_average_none_window(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_none_window(sample_config: dict) -> None:
     """Test get_rolling_average returns 0.0 when window is None (falsy)."""
     df = pd.DataFrame(
         {
@@ -162,7 +148,9 @@ def test_get_rolling_average_none_window(sample_visualizer_data: dict) -> None:
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average(window=None)  # type: ignore [arg-type]
 
     assert isinstance(result, pd.Series)
@@ -170,7 +158,7 @@ def test_get_rolling_average_none_window(sample_visualizer_data: dict) -> None:
 
 
 @pytest.mark.fast
-def test_get_rolling_average_false_window(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_false_window(sample_config: dict) -> None:
     """Test get_rolling_average returns 0.0 when window is False (falsy)."""
     df = pd.DataFrame(
         {
@@ -181,7 +169,9 @@ def test_get_rolling_average_false_window(sample_visualizer_data: dict) -> None:
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average(window=False)
 
     assert isinstance(result, pd.Series)
@@ -189,7 +179,7 @@ def test_get_rolling_average_false_window(sample_visualizer_data: dict) -> None:
 
 
 @pytest.mark.fast
-def test_get_rolling_average_empty_dataframe(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_empty_dataframe(sample_config: dict) -> None:
     """Test get_rolling_average with empty DataFrame."""
     df = pd.DataFrame(
         {
@@ -200,7 +190,9 @@ def test_get_rolling_average_empty_dataframe(sample_visualizer_data: dict) -> No
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average(window=5)
 
     assert isinstance(result, pd.Series)
@@ -208,7 +200,7 @@ def test_get_rolling_average_empty_dataframe(sample_visualizer_data: dict) -> No
 
 
 @pytest.mark.fast
-def test_get_rolling_average_all_zero_work_time(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_all_zero_work_time(sample_config: dict) -> None:
     """Test get_rolling_average when all work_time values are 0 or negative."""
     df = pd.DataFrame(
         {
@@ -219,7 +211,9 @@ def test_get_rolling_average_all_zero_work_time(sample_visualizer_data: dict) ->
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average(window=3)
 
     # Should return empty Series since no rows have work_time > 0
@@ -228,7 +222,7 @@ def test_get_rolling_average_all_zero_work_time(sample_visualizer_data: dict) ->
 
 
 @pytest.mark.fast
-def test_get_rolling_average_default_window(sample_visualizer_data: dict) -> None:
+def test_get_rolling_average_default_window(sample_config: dict) -> None:
     """Test get_rolling_average with default window parameter."""
     df = pd.DataFrame(
         {
@@ -239,7 +233,9 @@ def test_get_rolling_average_default_window(sample_visualizer_data: dict) -> Non
         },
     )
 
-    visualizer = viz.Visualizer(df, sample_visualizer_data)
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualizer = viz.Visualizer(df, visualization_config)
     result = visualizer.get_rolling_average()  # Uses default window=10
 
     assert isinstance(result, pd.Series)

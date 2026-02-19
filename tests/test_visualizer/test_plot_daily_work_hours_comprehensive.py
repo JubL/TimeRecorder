@@ -5,12 +5,13 @@ from unittest.mock import Mock, patch
 import pandas as pd
 import pytest
 
+import src.config_utils as cu
 import src.visualizer as viz
 
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock, sample_config: dict) -> None:
     """Test that plot_daily_work_hours makes correct matplotlib calls."""
     # Setup mock
     mock_fig = Mock()
@@ -31,18 +32,10 @@ def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock) -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Verify matplotlib calls
@@ -51,7 +44,9 @@ def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock) -> None:
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_axis_configuration(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_axis_configuration(
+    mock_subplots: Mock, sample_config: dict
+) -> None:
     """Test that plot_daily_work_hours configures the axis correctly."""
     # Setup mock
     mock_fig = Mock()
@@ -72,18 +67,10 @@ def test_plot_daily_work_hours_axis_configuration(mock_subplots: Mock) -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Verify axis configuration
@@ -97,7 +84,7 @@ def test_plot_daily_work_hours_axis_configuration(mock_subplots: Mock) -> None:
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock, sample_config: dict) -> None:
     """Test that plot_daily_work_hours makes correct bar calls."""
     # Setup mock
     mock_fig = Mock()
@@ -119,18 +106,10 @@ def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock) -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Verify bar calls - should be called for each work day
@@ -139,7 +118,9 @@ def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock) -> None:
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_work_time_adjustment_logic(
+    mock_subplots: Mock, sample_config: dict
+) -> None:
     """Test the work_time adjustment logic in plot_daily_work_hours."""
     # Setup mock
     mock_fig = Mock()
@@ -161,18 +142,10 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
 
     # Before adjustment
     assert visualizer.df["work_time"].iloc[0] == 7.0
@@ -189,7 +162,9 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(mock_subplots: Mock) -
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_empty_dataframe(
+    mock_subplots: Mock, sample_config: dict
+) -> None:
     """Test plot_daily_work_hours with empty DataFrame."""
     # Setup mock
     mock_fig = Mock()
@@ -201,18 +176,10 @@ def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock) -> None:
 
     df = pd.DataFrame(columns=["date", "work_time", "overtime"])
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Should still make matplotlib calls even with empty data
@@ -221,7 +188,9 @@ def test_plot_daily_work_hours_empty_dataframe(mock_subplots: Mock) -> None:
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_single_work_day(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_single_work_day(
+    mock_subplots: Mock, sample_config: dict
+) -> None:
     """Test plot_daily_work_hours with only one work day."""
     # Setup mock
     mock_fig = Mock()
@@ -241,18 +210,11 @@ def test_plot_daily_work_hours_single_work_day(mock_subplots: Mock) -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0],  # Only Monday
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualization_config["work_days"] = [0]  # Only Monday
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Should make bar calls for the single work day
@@ -261,7 +223,9 @@ def test_plot_daily_work_hours_single_work_day(mock_subplots: Mock) -> None:
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_no_work_days(
+    mock_subplots: Mock, sample_config: dict
+) -> None:
     """Test plot_daily_work_hours with no work days."""
     # Setup mock
     mock_fig = Mock()
@@ -282,18 +246,11 @@ def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock) -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [],  # No work days
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
+    visualization_config["work_days"] = []  # No work days
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Should still make matplotlib calls but no bar calls
@@ -303,7 +260,9 @@ def test_plot_daily_work_hours_no_work_days(mock_subplots: Mock) -> None:
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_all_negative_work_time(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_all_negative_work_time(
+    mock_subplots: Mock, sample_config: dict
+) -> None:
     """Test plot_daily_work_hours with all negative work_time (free days)."""
     # Setup mock
     mock_fig = Mock()
@@ -324,18 +283,10 @@ def test_plot_daily_work_hours_all_negative_work_time(mock_subplots: Mock) -> No
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Should make bar calls for free days (negative work_time)
@@ -344,7 +295,9 @@ def test_plot_daily_work_hours_all_negative_work_time(mock_subplots: Mock) -> No
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_zero_work_time(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_zero_work_time(
+    mock_subplots: Mock, sample_config: dict
+) -> None:
     """Test plot_daily_work_hours with zero work_time values."""
     # Setup mock
     mock_fig = Mock()
@@ -365,18 +318,10 @@ def test_plot_daily_work_hours_zero_work_time(mock_subplots: Mock) -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "ocean",
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Should make bar calls even for zero work_time because the plotting logic
@@ -386,7 +331,9 @@ def test_plot_daily_work_hours_zero_work_time(mock_subplots: Mock) -> None:
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_color_scheme_usage(mock_subplots: Mock) -> None:
+def test_plot_daily_work_hours_color_scheme_usage(
+    mock_subplots: Mock, sample_config: dict
+) -> None:
     """Test that plot_daily_work_hours uses the correct color scheme."""
     # Setup mock
     mock_fig = Mock()
@@ -407,18 +354,11 @@ def test_plot_daily_work_hours_color_scheme_usage(mock_subplots: Mock) -> None:
         },
     )
 
-    data = {
-        "full_format": "%d.%m.%Y %H:%M:%S",
-        "color_scheme": "forest",  # Use forest color scheme
-        "num_months": 12,
-        "rolling_average_window_size": 10,
-        "standard_work_hours": 8.0,
-        "work_days": [0, 1, 2, 3, 4],
-        "x_tick_interval": 3,
-        "histogram_bins": 64,
-    }
+    visualization_config = cu.get_visualization_config(sample_config)
+    visualization_config["color_scheme"] = "forest"  # Use forest color scheme
+    visualization_config["num_months"] = 12
 
-    visualizer = viz.Visualizer(df, data)
+    visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_daily_work_hours_plot()
 
     # Verify that forest colors are used
