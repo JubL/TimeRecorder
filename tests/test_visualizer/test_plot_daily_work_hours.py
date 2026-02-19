@@ -141,7 +141,8 @@ def test_plot_daily_work_hours_empty_dataframe(sample_config: dict) -> None:
 
 @pytest.mark.fast
 def test_plot_daily_work_hours_different_color_schemes(
-    sample_logbook_df: pd.DataFrame, sample_config: dict
+    sample_logbook_df: pd.DataFrame,
+    sample_config: dict,
 ) -> None:
     """Test plotting with different color schemes."""
     color_schemes = ["ocean", "forest", "sunset", "lavender", "coral"]
@@ -162,7 +163,8 @@ def test_plot_daily_work_hours_different_color_schemes(
 
 @pytest.mark.fast
 def test_plot_daily_work_hours_custom_work_days(
-    sample_logbook_df: pd.DataFrame, sample_config: dict
+    sample_logbook_df: pd.DataFrame,
+    sample_config: dict,
 ) -> None:
     """Test plotting with custom work days."""
     custom_work_days = [1, 2]  # Only Tuesday and Wednesday
@@ -180,7 +182,8 @@ def test_plot_daily_work_hours_custom_work_days(
 
 @pytest.mark.fast
 def test_plot_daily_work_hours_large_overtime(
-    sample_logbook_df: pd.DataFrame, sample_config: dict
+    sample_logbook_df: pd.DataFrame,
+    sample_config: dict,
 ) -> None:
     """Test work_time adjustment with large overtime values."""
     visualization_config = cu.get_visualization_config(sample_config)

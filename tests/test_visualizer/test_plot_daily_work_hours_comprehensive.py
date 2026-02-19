@@ -45,7 +45,8 @@ def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock, sample_conf
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_axis_configuration(
-    mock_subplots: Mock, sample_config: dict
+    mock_subplots: Mock,
+    sample_config: dict,
 ) -> None:
     """Test that plot_daily_work_hours configures the axis correctly."""
     # Setup mock
@@ -119,7 +120,8 @@ def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock, sample_config: dic
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_work_time_adjustment_logic(
-    mock_subplots: Mock, sample_config: dict
+    mock_subplots: Mock,
+    sample_config: dict,
 ) -> None:
     """Test the work_time adjustment logic in plot_daily_work_hours."""
     # Setup mock
@@ -163,7 +165,8 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_empty_dataframe(
-    mock_subplots: Mock, sample_config: dict
+    mock_subplots: Mock,
+    sample_config: dict,
 ) -> None:
     """Test plot_daily_work_hours with empty DataFrame."""
     # Setup mock
@@ -189,7 +192,8 @@ def test_plot_daily_work_hours_empty_dataframe(
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_single_work_day(
-    mock_subplots: Mock, sample_config: dict
+    mock_subplots: Mock,
+    sample_config: dict,
 ) -> None:
     """Test plot_daily_work_hours with only one work day."""
     # Setup mock
@@ -224,7 +228,8 @@ def test_plot_daily_work_hours_single_work_day(
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_no_work_days(
-    mock_subplots: Mock, sample_config: dict
+    mock_subplots: Mock,
+    sample_config: dict,
 ) -> None:
     """Test plot_daily_work_hours with no work days."""
     # Setup mock
@@ -261,7 +266,8 @@ def test_plot_daily_work_hours_no_work_days(
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_all_negative_work_time(
-    mock_subplots: Mock, sample_config: dict
+    mock_subplots: Mock,
+    sample_config: dict,
 ) -> None:
     """Test plot_daily_work_hours with all negative work_time (free days)."""
     # Setup mock
@@ -296,7 +302,8 @@ def test_plot_daily_work_hours_all_negative_work_time(
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_zero_work_time(
-    mock_subplots: Mock, sample_config: dict
+    mock_subplots: Mock,
+    sample_config: dict,
 ) -> None:
     """Test plot_daily_work_hours with zero work_time values."""
     # Setup mock
@@ -332,7 +339,8 @@ def test_plot_daily_work_hours_zero_work_time(
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_color_scheme_usage(
-    mock_subplots: Mock, sample_config: dict
+    mock_subplots: Mock,
+    sample_config: dict,
 ) -> None:
     """Test that plot_daily_work_hours uses the correct color scheme."""
     # Setup mock
