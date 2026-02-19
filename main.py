@@ -49,6 +49,8 @@ def main() -> None:
 
     # TODO: Build an UI for the time recorder with Figma Make?
 
+    # TODO: check that test use fixtures (done for test_visualizer)
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
