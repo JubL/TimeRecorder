@@ -27,8 +27,6 @@ def main() -> None:
 
     # TODO: Shall tail() be controlled by the --log flag? Maybe put it in a analyse category together with features yet to come?
 
-    # TODO: Add this weeks or last weeks average work hours and compare with the historic weekly work hours.
-
     # TODO: Shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
     # TODO: Implement report generation in PDF and HTML format.
@@ -38,17 +36,14 @@ def main() -> None:
     # TODO: Is squashing the log a bad idea?
     # TODO: Maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
 
-    # TODO: Switch to using loguru for logging over logger? (create a branch for experimenting on this approach)
-
     # TODO: Execution take surprisingly long. Find out where the time is lost. Use a profiler to find the bottlenecks.
     # TODO: Load the logbook only once!
-
-    # TODO: The tests should take the default config and then modify the values that need to be different.
 
     # TODO: Have an overtime feature that tracks the overtime and let's you take off days from the overtime to compensate for it.
 
     # TODO: Build an UI for the time recorder with Figma Make?
 
+    # TODO: The tests should take the default config and then modify the values that need to be different. (done for test_visualizer)
     # TODO: check that test use fixtures (done for test_visualizer)
 
     args = ap.run_arg_parser()
