@@ -176,7 +176,7 @@ def test_init_end_now_sets_end_time_to_current_plus_one_minute() -> None:
             "start_time": "08:00",
             "end_time": "16:00",  # This will be overwritten by line 173
             "end_now": True,  # This triggers line 173
-            "lunch_break_duration": 30,
+            "lunch_break_duration": 0,
             "timezone": timezone,
             "full_format": "%d.%m.%Y %H:%M:%S",
             "standard_work_hours": 8,
