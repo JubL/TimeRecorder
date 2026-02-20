@@ -130,7 +130,7 @@ visualization:
   num_months: 13         # Number of months to display in visualization
   rolling_average_window_size: 10  # Number of days for rolling average calculation
   x_tick_interval: 4     # Number of weeks between x-axis ticks
-  histogram_bins: 64     # Number of bins for the work hours histogram
+  histogram_bin_width: 10  # Width of bins for the work hours histogram in minutes
 ```
 
 For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.md).
@@ -232,7 +232,7 @@ python main.py --plot --color-scheme coral
 ### Visualization Features
 
 - **Dual Plot Display**: Daily work hours chart and work hours histogram shown simultaneously in separate windows
-- **Work Hours Histogram**: Distribution of total work hours per day (days with work > 0 only), with configurable bin count
+- **Work Hours Histogram**: Distribution of total work hours per day (days with work > 0 only), with configurable bin width
 - **Separate Work and Overtime**: Work hours and overtime are displayed as separate bars with distinct colors
 - **Rolling Average Trend Line**: Black trend line shows the rolling average of work hours over a configurable window
 - **Color-Coded by Weekday**: Each weekday has its own color within the selected scheme
@@ -243,7 +243,7 @@ python main.py --plot --color-scheme coral
 - **Calendar Week Display**: X-axis shows calendar weeks for easy reference
 - **Configurable Rolling Window**: Adjust the rolling average window size
 - **Customizable X-Axis Tick Interval**: Control the spacing of x-axis ticks (e.g., every 4 weeks)
-- **Configurable Histogram Bins**: Adjust the number of bins in the work hours histogram (default: 64)
+- **Configurable Histogram Bin Width**: Adjust the bin width in the work hours histogram in minutes (default: 10)
 
 ### Configuration
 
@@ -256,7 +256,7 @@ visualization:
   num_months: 13               # Number of months to display
   rolling_average_window_size: 10  # Days to include in rolling average (default: 10)
   x_tick_interval: 4           # Number of weeks between x-axis ticks (default: 4)
-  histogram_bins: 64           # Number of bins for work hours histogram (default: 64)
+  histogram_bin_width: 10      # Bin width for work hours histogram in minutes (default: 10)
 ```
 
 ### Rolling Average Configuration

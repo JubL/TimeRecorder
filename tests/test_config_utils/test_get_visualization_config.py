@@ -212,7 +212,7 @@ def test_get_visualization_config_return_structure() -> None:
         "work_days",
         "full_format",
         "x_tick_interval",
-        "histogram_bins",
+        "histogram_bin_width",
     }
     assert set(result.keys()) == expected_keys
 

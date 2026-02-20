@@ -3,6 +3,7 @@
 import logging
 from unittest.mock import Mock, patch
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -32,7 +33,7 @@ def test_create_histogram_with_positive_work_hours(
 
     visualization_config = cu.get_visualization_config(sample_config)
     visualization_config["num_months"] = 12
-    visualization_config["histogram_bins"] = 32
+    visualization_config["histogram_bin_width"] = 30  # 30 minutes
 
     visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_histogram()
@@ -41,7 +42,10 @@ def test_create_histogram_with_positive_work_hours(
     mock_ax.hist.assert_called_once()
     call_args = mock_ax.hist.call_args
     assert len(call_args[0][0]) == 3  # work_hours for 3 days
-    assert call_args[1]["bins"] == 32
+    bins = call_args[1]["bins"]
+    assert isinstance(bins, np.ndarray)
+    bin_width_hours = 30 / 60  # 0.5 hours
+    assert np.allclose(np.diff(bins), bin_width_hours)
     assert call_args[1]["color"] == visualizer.work_colors[0]
     assert call_args[1]["edgecolor"] == "white"
     mock_ax.set_xlabel.assert_called_once_with("Work Hours")
@@ -102,11 +106,11 @@ def test_create_histogram_empty_work_hours_no_subplots(
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_create_histogram_uses_histogram_bins(
+def test_create_histogram_uses_histogram_bin_width(
     mock_subplots: Mock,
     sample_config: dict,
 ) -> None:
-    """Test create_histogram uses histogram_bins from config."""
+    """Test create_histogram uses histogram_bin_width from config."""
     mock_fig = Mock()
     mock_ax = Mock()
     mock_subplots.return_value = (mock_fig, mock_ax)
@@ -122,9 +126,11 @@ def test_create_histogram_uses_histogram_bins(
 
     visualization_config = cu.get_visualization_config(sample_config)
     visualization_config["num_months"] = 12
-    visualization_config["histogram_bins"] = 16
+    visualization_config["histogram_bin_width"] = 15  # 15 minutes
 
     visualizer = viz.Visualizer(df, visualization_config)
     visualizer.create_histogram()
 
-    assert mock_ax.hist.call_args[1]["bins"] == 16
+    bins = mock_ax.hist.call_args[1]["bins"]
+    expected_bin_width = 15 / 60  # 0.25 hours
+    assert np.allclose(np.diff(bins), expected_bin_width)

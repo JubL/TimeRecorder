@@ -20,9 +20,11 @@ from datetime import datetime
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 import src.logging_utils as lu
+from src.constants import MIN_IN_HOUR
 
 # Set up logger with centralized configuration
 logger = lu.setup_logger(__name__)
@@ -61,7 +63,7 @@ class Visualizer:
         - standard_work_hours: Standard work hours per day
         - work_days: List of weekday numbers (0=Monday, 6=Sunday)
         - x_tick_interval: Number of weeks between x-axis ticks
-        - histogram_bins: Number of bins for the work hours histogram
+        - histogram_bin_width: Width of the bins for the work hours histogram in minutes
 
     Attributes
     ----------
@@ -77,8 +79,8 @@ class Visualizer:
         Number of months to display in the chart
     rolling_average_window_size : int
         Number of days to include in the rolling average
-    histogram_bins : int
-        Number of bins for the work hours histogram
+    histogram_bin_width : int
+        Width of the bins for the work hours histogram in minutes
     standard_work_hours : float
         Standard work hours per day
     work_days : list
@@ -105,7 +107,7 @@ class Visualizer:
         self.work_colors = COLOR_SCHEMES_WORK[data["color_scheme"]]
         self.num_months = data["num_months"]
         self.rolling_average_window_size = data["rolling_average_window_size"]
-        self.histogram_bins = int(data["histogram_bins"])
+        self.histogram_bin_width = int(data["histogram_bin_width"])
         self.standard_work_hours = data["standard_work_hours"]
         self.work_days = data["work_days"]
         self.x_tick_interval = int(data["x_tick_interval"])
@@ -265,7 +267,7 @@ class Visualizer:
         Create and display a histogram of daily work hours.
 
         Shows the distribution of total work hours per day for days with work_time > 0.
-        The number of bins is configurable via histogram_bins in the visualization config.
+        The width of the bins is configurable via histogram_bin_width in the visualization config.
         """
         work_hours = self.df[self.df["work_time"] > 0]["work_time"]
 
@@ -273,8 +275,11 @@ class Visualizer:
             logger.warning("No work days with positive hours to display in histogram.")
             return
 
+        bin_width = self.histogram_bin_width / MIN_IN_HOUR
+        bins = np.arange(work_hours.min(), work_hours.max() + bin_width, bin_width)
+
         _, ax = plt.subplots(figsize=(8, 5))
-        ax.hist(work_hours, bins=self.histogram_bins, color=self.work_colors[0], edgecolor="white")
+        ax.hist(work_hours, bins=bins, color=self.work_colors[0], edgecolor="white")
         ax.set_xlabel("Work Hours")
         ax.set_ylabel("Frequency")
         ax.set_title("Distribution of Daily Work Hours")

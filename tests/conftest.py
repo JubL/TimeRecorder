@@ -137,7 +137,7 @@ def sample_config() -> dict:
             "plot": True,
             "rolling_average_window_size": 10,
             "x_tick_interval": 3,
-            "histogram_bins": 64,
+            "histogram_bin_width": 10,
         },
         "analyzer": {
             "analyze_work_patterns": True,
