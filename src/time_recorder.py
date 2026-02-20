@@ -151,7 +151,8 @@ class TimeRecorder:
             try:
                 return datetime.strptime(date + " " + time, full_format).replace(tzinfo=ZoneInfo(tz))
             except ValueError as e:
-                msg = f"{const.RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{const.RESET}"
+                msg = f"{const.RED}Failed to parse datetime from date='{date}' and "
+                msg += f"time='{time}' using format '{full_format}': {e}{const.RESET}"
                 raise ValueError(msg) from e
 
         self.full_format = data["full_format"]
@@ -269,11 +270,13 @@ class TimeRecorder:
         """
         # Validate that start time is not after end time
         if self.start_time >= self.end_time:
-            msg = f"{const.RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{const.RESET}"
+            msg = f"{const.RED}The start time must be before the end time. "
+            msg += f"Start time: {self.start_time}, End time: {self.end_time}{const.RESET}"
             raise ValueError(msg)
 
         if self.lunch_break_duration < timedelta(0):
-            msg = f"{const.RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{const.RESET}"
+            msg = f"{const.RED}The lunch break duration must be a non-negative integer. "
+            msg += f"Lunch break duration: {self.lunch_break_duration}{const.RESET}"
             raise ValueError(msg)
 
         # Calculate the total duration between start and end times
