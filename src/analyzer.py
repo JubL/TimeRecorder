@@ -12,17 +12,12 @@ Key Features:
 - Data quality checks and validation
 """
 
-import colorama
 import pandas as pd
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
 
+import src.constants as const
 import src.logging_utils as lu
-
-colorama.init(autoreset=True)
-RED = colorama.Fore.RED
-GREEN = colorama.Fore.GREEN
-RESET = colorama.Style.RESET_ALL
 
 logger = lu.setup_logger(__name__)
 
@@ -45,7 +40,7 @@ class Analyzer:
 
     Methods
     -------
-        mean_and_std(): Calculate mean and standard deviation of overtime
+        _mean_and_std(): Calculate mean and standard deviation of overtime
         analyze_work_patterns(): Analyze weekly and monthly work patterns
         detect_outliers(): Identify statistical outliers in work data
         validate_data_quality(): Check for data quality issues
@@ -89,13 +84,13 @@ class Analyzer:
         self.outlier_method = data["outlier_method"]
         self.outlier_threshold = data["outlier_threshold"]
 
-        self.sec_in_min = 60  # Number of seconds in a minute
-        self.sec_in_hour = 3600  # Number of seconds in an hour
-        self.min_in_hour = 60  # Number of minutes in an hour
+        self.sec_in_min = const.SEC_IN_MIN
+        self.sec_in_hour = const.SEC_IN_HOUR
+        self.min_in_hour = const.MIN_IN_HOUR
 
         logger.debug(f"Analyzer initialized with DataFrame containing {len(logbook_df)} rows")
 
-    def mean_and_std(self) -> tuple[float | None, float | None]:
+    def _mean_and_std(self) -> tuple[float | None, float | None]:
         """
         Calculate and log the mean and standard deviation of overtime.
 
@@ -133,7 +128,7 @@ class Analyzer:
         valid_overtime = df["overtime"].dropna()
 
         if valid_overtime.empty:
-            logger.warning(f"{RED}No valid overtime data found for analysis{RESET}")
+            logger.warning(f"{const.RED}No valid overtime data found for analysis{const.RESET}")
             return None, None
 
         return valid_overtime.mean(), valid_overtime.std()
@@ -351,7 +346,7 @@ class Analyzer:
                 weekly_result = round(weekly_hours, 2)
                 daily_result = round(daily_overtime, 2)
         except (ValueError, TypeError):
-            msg = f"{RED}Error converting 'work_time' to timedelta{RESET}"
+            msg = f"{const.RED}Error converting 'work_time' to timedelta{const.RESET}"
             logger.exception(msg)
             weekly_result = 0.0
             daily_result = 0.0
@@ -369,7 +364,7 @@ class Analyzer:
         str
             Formatted summary report as a string
         """
-        mean, std = self.mean_and_std()
+        mean, std = self._mean_and_std()
         weekly_hours, _ = self.get_weekly_hours_from_log()
         weekly_standard_hours = self.standard_work_hours * len(self.work_days)
 

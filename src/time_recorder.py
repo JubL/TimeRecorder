@@ -42,18 +42,13 @@ Key Features:
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-import colorama
 import psutil
 
+import src.constants as const
 import src.logging_utils as lu
 
 # Set up logger with centralized configuration
 logger = lu.setup_logger(__name__)
-
-colorama.init(autoreset=True)
-RED = colorama.Fore.RED
-GREEN = colorama.Fore.GREEN
-RESET = colorama.Style.RESET_ALL
 
 
 class BootTimeError(Exception):
@@ -156,7 +151,7 @@ class TimeRecorder:
             try:
                 return datetime.strptime(date + " " + time, full_format).replace(tzinfo=ZoneInfo(tz))
             except ValueError as e:
-                msg = f"{RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{RESET}"
+                msg = f"{const.RED}Failed to parse datetime from date='{date}' and time='{time}' using format '{full_format}': {e}{const.RESET}"
                 raise ValueError(msg) from e
 
         self.full_format = data["full_format"]
@@ -178,9 +173,9 @@ class TimeRecorder:
 
         self.evaluate_work_hours()
 
-        self.sec_in_min = 60  # Number of seconds in a minute
-        self.sec_in_hour = 3600  # Number of seconds in an hour
-        self.min_in_hour = 60  # Number of minutes in an hour
+        self.sec_in_min = const.SEC_IN_MIN
+        self.sec_in_hour = const.SEC_IN_HOUR
+        self.min_in_hour = const.MIN_IN_HOUR
 
     def update_boot_time(self) -> None:
         """
@@ -205,7 +200,7 @@ class TimeRecorder:
             # Get system boot time
             boot_timestamp = psutil.boot_time()
         except psutil.Error as e:
-            msg = f"{RED}Error accessing system information: {e}{RESET}"
+            msg = f"{const.RED}Error accessing system information: {e}{const.RESET}"
             raise BootTimeError(msg) from e
 
         # Update start time to boot time (convert to timezone-aware)
@@ -223,7 +218,7 @@ class TimeRecorder:
                 self.full_format,
             ).replace(tzinfo=ZoneInfo(self.timezone))
         except ValueError as e:
-            msg = f"{RED}Failed to adjust end time: {e}{RESET}"
+            msg = f"{const.RED}Failed to adjust end time: {e}{const.RESET}"
             raise BootTimeError(msg) from e
 
         # Recalculate work hours
@@ -274,11 +269,11 @@ class TimeRecorder:
         """
         # Validate that start time is not after end time
         if self.start_time >= self.end_time:
-            msg = f"{RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{RESET}"
+            msg = f"{const.RED}The start time must be before the end time. Start time: {self.start_time}, End time: {self.end_time}{const.RESET}"
             raise ValueError(msg)
 
         if self.lunch_break_duration < timedelta(0):
-            msg = f"{RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{RESET}"
+            msg = f"{const.RED}The lunch break duration must be a non-negative integer. Lunch break duration: {self.lunch_break_duration}{const.RESET}"
             raise ValueError(msg)
 
         # Calculate the total duration between start and end times
@@ -288,7 +283,7 @@ class TimeRecorder:
 
         # Sanity check: work duration must not be negative
         if work_duration <= timedelta(0):
-            msg = f"{RED}The work duration must be positive. Start time: {self.start_time}, End time: {self.end_time}{RESET}"
+            msg = f"{const.RED}The work duration must be positive. Start time: {self.start_time}, End time: {self.end_time}{const.RESET}"
             raise ValueError(msg)
 
         msg = f"Total duration: {total_duration}, Lunch break: {self.lunch_break_duration}, Work duration: {work_duration}"
@@ -385,7 +380,7 @@ class TimeRecorder:
         """
         # Validate case value
         if self.case not in {"overtime", "undertime"}:
-            msg = f"{RED}Unexpected value for case: {self.case}. Expected 'overtime' or 'undertime'.{RESET}"
+            msg = f"{const.RED}Unexpected value for case: {self.case}. Expected 'overtime' or 'undertime'.{const.RESET}"
             raise ValueError(msg)
 
         # Build output strings
@@ -402,8 +397,10 @@ class TimeRecorder:
         end_time = f"⏰ End time: {self.end_time.strftime('%H:%M %Z')}"
         lunch_break_duration = f"🍽️  Lunch break: {int(self.lunch_break_duration.total_seconds() // self.sec_in_min)}m"
         work_duration = f"⏱️  Work duration: {work_hours}h {work_minutes}m ({work_hours_decimal_representation}h)"
-        color = GREEN if self.case == "overtime" else RED
-        overtime_amount = f"📈 Status: {color}{self.case}{RESET} {overtime_hours}h {overtime_minutes}m ({overtime_decimal_representation}h)"
+        color = const.GREEN if self.case == "overtime" else const.RED
+        overtime_amount = (
+            f"📈 Status: {color}{self.case}{const.RESET} {overtime_hours}h {overtime_minutes}m ({overtime_decimal_representation}h)"
+        )
         if self.case == "undertime":
             end_of_workday_str = f"🏁 End of workday would be at {end_of_workday.strftime('%H:%M %Z')}."
         else:

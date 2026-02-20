@@ -45,20 +45,15 @@ Error Handling:
 import pathlib
 from datetime import datetime, timedelta
 
-import colorama
 import holidays
 import pandas as pd
 
+import src.constants as const
 import src.logging_utils as lu
 from src import formats
 
 # Set up logger with centralized configuration
 logger = lu.setup_logger(__name__)
-
-colorama.init(autoreset=True)
-RED = colorama.Fore.RED
-GREEN = colorama.Fore.GREEN
-RESET = colorama.Style.RESET_ALL
 
 
 class Logbook:
@@ -107,9 +102,9 @@ class Logbook:
         self.full_format = data["full_format"]
         self.date_format, self.time_format = self.full_format.split(" ")
 
-        self.sec_in_min = 60  # Number of seconds in a minute
-        self.sec_in_hour = 3600  # Number of seconds in an hour
-        self.min_in_hour = 60  # Number of minutes in an hour
+        self.sec_in_min = const.SEC_IN_MIN
+        self.sec_in_hour = const.SEC_IN_HOUR
+        self.min_in_hour = const.MIN_IN_HOUR
 
         self.standard_work_hours = data["standard_work_hours"]
         self.work_days = data["work_days"]
@@ -164,7 +159,7 @@ class Logbook:
 
         # count the number of columns
         if len(df.columns) != len(required_columns):
-            msg = f"{RED}Log file has an unexpected number of columns: {len(df.columns)}. Expected 8 columns.{RESET}"
+            msg = f"{const.RED}Log file has an unexpected number of columns: {len(df.columns)}. Expected 8 columns.{const.RESET}"
             raise ValueError(msg)
 
         # Convert columns to their expected types after validation
@@ -179,7 +174,7 @@ class Logbook:
 
         # case is one of three values
         if not all(df["case"].isin(["overtime", "undertime", ""])):
-            msg = f"{RED}Log file has invalid case values: {df['case'].unique()}.{RESET}"
+            msg = f"{const.RED}Log file has invalid case values: {df['case'].unique()}.{const.RESET}"
             raise ValueError(msg)
 
         return df
@@ -292,7 +287,7 @@ class Logbook:
                 # Keep the first occurrence, remove the rest
                 rows_to_remove = row_indices[1:]  # All except the first
 
-                msg = f"{RED}Removing {len(rows_to_remove)} duplicate(s) at row(s) {rows_to_remove}: {duplicate_dict}{RESET}"
+                msg = f"{const.RED}Removing {len(rows_to_remove)} duplicate(s) at row(s) {rows_to_remove}: {duplicate_dict}{const.RESET}"
                 logger.warning(msg)
 
         # Remove duplicates, keeping the first occurrence
@@ -394,7 +389,7 @@ class Logbook:
 
         # Only log if squashing actually occurred
         if squashing_occurred:
-            msg = f"{GREEN}Logbook squashed. {original_count - squashed_count} entries removed.{RESET}"
+            msg = f"{const.GREEN}Logbook squashed. {original_count - squashed_count} entries removed.{const.RESET}"
             logger.info(msg)
 
     def find_and_add_missing_days(self) -> None:
@@ -437,7 +432,7 @@ class Logbook:
         df = self.load_logbook()
 
         if df.empty:
-            msg = f"{RED}Log file is empty. Cannot add weekend days.{RESET}"
+            msg = f"{const.RED}Log file is empty. Cannot add weekend days.{const.RESET}"
             logger.warning(msg)
             return []
 
@@ -448,8 +443,8 @@ class Logbook:
         gaps = []
         for i in range(len(df) - 1):
             if (df["date"].iloc[i + 1] - df["date"].iloc[i]).days > 1:
-                msg = f"{RED}There are gaps in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
-                msg += f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{RESET}"
+                msg = f"{const.RED}There are gaps in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
+                msg += f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{const.RESET}"
                 logger.warning(msg)
                 gaps.append((df["date"].iloc[i], df["date"].iloc[i + 1]))
 
@@ -553,7 +548,7 @@ class Logbook:
 
         # sanity check
         if df["work_time"].isna().any() or df["overtime"].isna().any():
-            msg = f"{RED}Non-numeric values found in work_time or overtime columns. Please check the logbook file.{RESET}"
+            msg = f"{const.RED}Non-numeric values found in work_time or overtime columns. Please check the logbook file.{const.RESET}"
             logger.error(msg)
             return
 
