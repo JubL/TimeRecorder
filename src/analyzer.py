@@ -40,7 +40,7 @@ class Analyzer:
 
     Methods
     -------
-        _mean_and_std(): Calculate mean and standard deviation of overtime
+        mean_and_std(): Calculate mean and standard deviation of overtime
         analyze_work_patterns(): Analyze weekly and monthly work patterns
         detect_outliers(): Identify statistical outliers in work data
         validate_data_quality(): Check for data quality issues
@@ -90,7 +90,7 @@ class Analyzer:
 
         logger.debug(f"Analyzer initialized with DataFrame containing {len(logbook_df)} rows")
 
-    def _mean_and_std(self) -> tuple[float | None, float | None]:
+    def mean_and_std(self) -> tuple[float | None, float | None]:
         """
         Calculate and log the mean and standard deviation of overtime.
 
@@ -364,7 +364,7 @@ class Analyzer:
         str
             Formatted summary report as a string
         """
-        mean, std = self._mean_and_std()
+        mean, std = self.mean_and_std()
         weekly_hours, _ = self.get_weekly_hours_from_log()
         weekly_standard_hours = self.standard_work_hours * len(self.work_days)
 

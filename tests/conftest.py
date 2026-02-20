@@ -11,6 +11,8 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import pytest
 
+import src.analyzer as analyzer
+import src.config_utils as cu
 import src.logbook as lb
 import src.time_recorder as tr
 
@@ -145,3 +147,32 @@ def sample_config() -> dict:
             "work_days": [0, 1, 2, 3, 4],
         },
     }
+
+
+@pytest.fixture
+def analyzer_data(sample_config: dict) -> dict:
+    """Analyzer config with required outlier_method and outlier_threshold."""
+    data = cu.get_analyzer_config(sample_config)
+    if data.get("outlier_method") is None:
+        data["outlier_method"] = "iqr"
+    if data.get("outlier_threshold") is None:
+        data["outlier_threshold"] = 1.5
+    return data
+
+
+@pytest.fixture
+def analyzer_instance(analyzer_data: dict, sample_logbook_df: pd.DataFrame) -> analyzer.Analyzer:
+    """Create an Analyzer instance with sample data."""
+    return analyzer.Analyzer(analyzer_data, sample_logbook_df)
+
+
+@pytest.fixture
+def analyzer_df_with_overtime() -> pd.DataFrame:
+    """Logbook DataFrame with varied overtime for outlier detection tests."""
+    return pd.DataFrame(
+        {
+            "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024", "08.01.2024"],
+            "work_time": [8.0, 8.0, 8.0, 8.0, 8.0, 8.0],
+            "overtime": [0.5, 0.0, -0.5, 1.0, 0.25, 5.0],  # 5.0 is outlier
+        },
+    )
