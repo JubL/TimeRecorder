@@ -11,10 +11,10 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import pytest
 
-import src.analyzer as analyzer
 import src.config_utils as cu
 import src.logbook as lb
 import src.time_recorder as tr
+from src import analyzer
 
 
 @pytest.fixture
