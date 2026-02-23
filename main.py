@@ -21,7 +21,7 @@ def main() -> None:
     # TODO: Visualize work hours per day, week, month, year in one plot with four graphs.
     # TODO: Give the user a notice if there is too little data to show the graphs.
     # TODO: Show histogramm of work start time and work end time.
-    # TODO: Show histogramm of work time, lunch break duration and overtime.
+    # TODO: Show histogramm of lunch break duration and overtime.
 
     # TODO: Implement outlier detection, consistency checks?
 
@@ -29,7 +29,7 @@ def main() -> None:
 
     # TODO: Shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
-    # TODO: Implement report generation in PDF and HTML format.
+    # TODO: Implement report generation in PDF, XLSX, and HTML format.
 
     # TODO: Write floats into the log with exactly two decimal places.
 
