@@ -62,3 +62,26 @@ def test_generate_summary_report_with_no_valid_overtime(
         ana.generate_summary_report()
 
     assert "No valid data available" in caplog.text
+
+
+@pytest.mark.fast
+def test_generate_summary_report_with_fractional_standard_hours(
+    analyzer_data: dict,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test generate_summary_report includes minutes when standard hours are fractional."""
+    analyzer_data["standard_work_hours"] = 8.5
+    analyzer_data["work_days"] = [0, 1, 2, 3, 4]
+    df = pd.DataFrame(
+        {
+            "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
+            "work_time": [8.0, 8.0, 8.0],
+            "overtime": [0.5, 0.0, -0.5],
+        },
+    )
+    ana = analyzer.Analyzer(analyzer_data, df)
+
+    with caplog.at_level(logging.INFO, logger="src.analyzer"):
+        ana.generate_summary_report()
+
+    assert "42h 30m" in caplog.text

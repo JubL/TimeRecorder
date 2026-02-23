@@ -39,8 +39,6 @@ def main() -> None:
     # TODO: Execution take surprisingly long. Find out where the time is lost. Use a profiler to find the bottlenecks.
     # TODO: Load the logbook only once!
 
-    # TODO: Have an overtime feature that tracks the overtime and let's you take off days from the overtime to compensate for it.
-
     # TODO: Build an UI for the time recorder with Figma Make?
 
     # TODO: The tests should take the default config and then modify the values that need to be different. (done for test_visualizer)

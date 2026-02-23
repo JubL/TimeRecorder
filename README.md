@@ -14,6 +14,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **🕐 Time Tracking**: Record work hours with start/end times and lunch breaks
 - **⚡ System Boot Integration**: Automatically detect work start time from system boot
 - **📊 Overtime Calculations**: Calculate overtime/undertime based on standard eight-hour work days (configurable)
+- **⏱️ Overtime Balance Tracking**: Accrue and monitor your total overtime balance; days off with negative overtime (e.g. -8 hours) are automatically deducted from your balance
 - **📈 Weekly Reports**: Generate weekly work hour summaries with detailed analysis
 - **🎨 Colored Output**: Visual feedback with color-coded overtime (green) and undertime (red)
 - **📝 Multi-Format Logbook**: Persistent storage of all time records in multiple file formats
@@ -77,6 +78,9 @@ python main.py --plot --color-scheme coral
 # Show visualization for last 6 months
 python main.py --plot --num-months 6
 
+# Run the analyzer to view overtime balance and statistics
+python main.py --analyze --plot
+
 ```
 
 ## 📋 Configuration
@@ -123,6 +127,10 @@ output:
   export_format: "csv"   # Export format: csv, json, excel
   show_tail: 5           # Show the last n lines of the logbook
 
+# Analyzer settings
+analyzer:
+  analyze_work_patterns: false  # Enable to show overtime balance and statistics
+
 # Visualization settings
 visualization:
   plot: false            # Show work hours visualization
@@ -151,6 +159,7 @@ Weekly Summary:
 ==============
 Average Weekly Hours: 42h 15m
 Standard Hours: 40h 0m
+Total overtime balance: +12.50h
 Mean Daily Overtime: +2h 15m
 
 Recent Entries:
@@ -274,6 +283,12 @@ The rolling average feature helps you identify trends in your work patterns by c
 - **Large Window (20-30 days)**: Shows long-term trends and smooths out daily variations
 
 ## 🔧 Advanced Features
+
+### Overtime Balance & Days Off
+
+TimeRecorder tracks your total overtime balance by summing all overtime values in your logbook. When the analyzer is enabled (`analyzer.analyze_work_patterns: true` in config or `--analyze` on the command line), the summary report includes your **Total overtime balance**, which is positive for accumulated overtime and negative for undertime.
+
+**Tracking days off against overtime:** If you take a day off and enter a negative value in the overtime column for that day (e.g. -8 hours for a standard 8-hour day), this time is automatically deducted from your overtime balance. This lets you monitor your overtime and track days taken off against it. Days with no work (work_time = 0) are automatically recorded as undertime based on your configured standard work hours.
 
 ### System Boot Time Integration
 

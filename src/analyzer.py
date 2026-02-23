@@ -41,6 +41,7 @@ class Analyzer:
     Methods
     -------
         mean_and_std(): Calculate mean and standard deviation of overtime
+        get_total_overtime_balance(): Sum overtime/undertime to get net balance
         analyze_work_patterns(): Analyze weekly and monthly work patterns
         detect_outliers(): Identify statistical outliers in work data
         validate_data_quality(): Check for data quality issues
@@ -352,6 +353,25 @@ class Analyzer:
             daily_result = 0.0
         return weekly_result, daily_result
 
+    def get_total_overtime_balance(self) -> float:
+        """
+        Calculate the total overtime balance by summing all overtime values.
+
+        Positive values indicate overtime, negative values indicate undertime.
+        The result is the net balance: positive = accumulated overtime,
+        negative = accumulated undertime.
+
+        Returns
+        -------
+        float
+            Total overtime balance in hours. Positive for overtime,
+            negative for undertime.
+        """
+        valid_overtime = self.df["overtime"].dropna()
+        if valid_overtime.empty:
+            return 0.0
+        return float(valid_overtime.sum())
+
     def generate_summary_report(self) -> None:
         """
         Generate a comprehensive summary report of all analyses.
@@ -367,6 +387,7 @@ class Analyzer:
         mean, std = self.mean_and_std()
         weekly_hours, _ = self.get_weekly_hours_from_log()
         weekly_standard_hours = self.standard_work_hours * len(self.work_days)
+        total_overtime_balance = self.get_total_overtime_balance()
 
         outliers = self.detect_outliers(method=self.outlier_method, threshold=self.outlier_threshold)
 
@@ -381,10 +402,21 @@ class Analyzer:
         avr_weekly_hours = f"Average Weekly Hours: {int(weekly_hours)}h {int(weekly_hours % 1 * 60)}m"
         if weekly_standard_hours % 1 != 0:
             standard_hours_str += f" {int(weekly_standard_hours % 1 * 60)}m"
+        sign = "+" if total_overtime_balance >= 0 else ""
+        overtime_balance_str = f"Total overtime balance: {sign}{total_overtime_balance:.2f}h"
         outliers_str = f"Outliers: {outliers}"
 
         title = "\nAnalytics\n========="
 
         # Combine all parts
-        items = [title, standard_hours_str, avr_weekly_hours, mean_str, std_str, "", outliers_str]
+        items = [
+            title,
+            standard_hours_str,
+            avr_weekly_hours,
+            overtime_balance_str,
+            mean_str,
+            std_str,
+            "",
+            outliers_str,
+        ]
         logger.info("\n".join(items))
