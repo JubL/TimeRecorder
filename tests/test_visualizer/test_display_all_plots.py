@@ -8,8 +8,8 @@ import src.visualizer as viz
 
 
 @pytest.mark.fast
-@patch("src.visualizer.plt.show")
-def test_display_all_plots_calls_plt_show(mock_show: patch) -> None:
+def test_display_all_plots_calls_plt_show() -> None:
     """Test display_all_plots calls plt.show() (line 294)."""
-    viz.Visualizer.display_all_plots()
-    mock_show.assert_called_once()
+    with patch("src.visualizer.plt.show") as mock_show:
+        viz.Visualizer.display_all_plots()
+        mock_show.assert_called_once()

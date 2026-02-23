@@ -43,7 +43,7 @@ def test_create_histogram_with_positive_work_hours(
     call_args = mock_ax.hist.call_args
     assert len(call_args[0][0]) == 3  # work_hours for 3 days
     bins = call_args[1]["bins"]
-    assert isinstance(bins, np.ndarray)
+    assert isinstance(bins, list)
     bin_width_hours = 30 / 60  # 0.5 hours
     assert np.allclose(np.diff(bins), bin_width_hours)
     assert call_args[1]["color"] == visualizer.work_colors[0]

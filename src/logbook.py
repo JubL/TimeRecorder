@@ -348,6 +348,14 @@ class Logbook:
             case, overtime = calculate_overtime_from_work_time(work_time_val)
             return case, overtime
 
+        def agg_lunch_break(x: pd.Series) -> int | str:
+            """Aggregate lunch_break_duration: sum if any valid values, else empty string."""
+            return x.sum() if x.notna().any() else ""
+
+        def agg_work_time(x: pd.Series) -> float | int:
+            """Aggregate work_time: sum if any valid values, else 0."""
+            return x.sum() if x.notna().any() else 0
+
         # Load original data to compare before and after squashing
         original_df = self.load_logbook()
 
@@ -365,8 +373,8 @@ class Logbook:
                 {
                     "start_time": "first",
                     "end_time": "last",
-                    "lunch_break_duration": lambda x: x.sum() if x.notna().any() else "",
-                    "work_time": lambda x: x.sum() if x.notna().any() else 0,
+                    "lunch_break_duration": agg_lunch_break,
+                    "work_time": agg_work_time,
                 },
             )
             .reset_index(drop=True)

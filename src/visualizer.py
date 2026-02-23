@@ -279,7 +279,7 @@ class Visualizer:
         bins = np.arange(work_hours.min(), work_hours.max() + bin_width, bin_width)
 
         _, ax = plt.subplots(figsize=(8, 5))
-        ax.hist(work_hours, bins=bins, color=self.work_colors[0], edgecolor="white")
+        ax.hist(work_hours, bins=bins.tolist(), color=self.work_colors[0], edgecolor="white")
         ax.set_xlabel("Work Hours")
         ax.set_ylabel("Frequency")
         ax.set_title("Distribution of Daily Work Hours")
