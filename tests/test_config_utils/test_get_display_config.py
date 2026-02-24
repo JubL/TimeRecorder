@@ -6,13 +6,9 @@ import src.config_utils as cu
 
 
 @pytest.mark.fast
-def test_get_display_config_complete() -> None:
+def test_get_display_config_complete(sample_config: dict) -> None:
     """Test extraction of complete display configuration."""
-    config = {
-        "display": {
-            "show_tail": 5,
-        },
-    }
+    config = {**sample_config, "display": {**sample_config["display"], "show_tail": 5}}
 
     result = cu.get_display_config(config)
 
@@ -20,17 +16,9 @@ def test_get_display_config_complete() -> None:
 
 
 @pytest.mark.fast
-def test_get_display_config_missing_display_section() -> None:
+def test_get_display_config_missing_display_section(sample_config: dict) -> None:
     """Test extraction when display section is missing from config."""
-    config = {
-        "time_tracking": {
-            "date": "25.07.2025",
-            "start_time": "07:00",
-        },
-        "logging": {
-            "log_path": "test.csv",
-        },
-    }
+    config = {k: v for k, v in sample_config.items() if k != "display"}
 
     result = cu.get_display_config(config)
 
@@ -39,11 +27,9 @@ def test_get_display_config_missing_display_section() -> None:
 
 
 @pytest.mark.fast
-def test_get_display_config_empty_display_section() -> None:
+def test_get_display_config_empty_display_section(sample_config: dict) -> None:
     """Test extraction when display section exists but is empty."""
-    config: dict[str, dict] = {
-        "display": {},
-    }
+    config = {**sample_config, "display": {}}
 
     result = cu.get_display_config(config)
 
@@ -52,23 +38,9 @@ def test_get_display_config_empty_display_section() -> None:
 
 
 @pytest.mark.fast
-def test_get_display_config_with_other_sections() -> None:
+def test_get_display_config_with_other_sections(sample_config: dict) -> None:
     """Test extraction when config contains other sections alongside display."""
-    config = {
-        "time_tracking": {
-            "date": "25.07.2025",
-            "start_time": "07:00",
-        },
-        "display": {
-            "show_tail": 3,
-        },
-        "logging": {
-            "log_path": "test.csv",
-        },
-        "work_schedule": {
-            "standard_work_hours": 8,
-        },
-    }
+    config = {**sample_config, "display": {**sample_config["display"], "show_tail": 3}}
 
     result = cu.get_display_config(config)
 
@@ -76,13 +48,9 @@ def test_get_display_config_with_other_sections() -> None:
 
 
 @pytest.mark.fast
-def test_get_display_config_return_structure() -> None:
+def test_get_display_config_return_structure(sample_config: dict) -> None:
     """Test that the function returns the expected dictionary structure."""
-    config = {
-        "display": {
-            "show_tail": 7,
-        },
-    }
+    config = {**sample_config, "display": {**sample_config["display"], "show_tail": 7}}
 
     result = cu.get_display_config(config)
 

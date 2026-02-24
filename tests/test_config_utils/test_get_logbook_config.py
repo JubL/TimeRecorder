@@ -8,18 +8,14 @@ import src.config_utils as cu
 
 
 @pytest.mark.fast
-def test_get_logbook_config() -> None:
+def test_get_logbook_config(sample_config: dict) -> None:
     """Test extraction of Logbook configuration."""
-    config: dict = {
-        "logging": {
-            "log_path": "test_logbook.txt",
-        },
-        "time_tracking": {
-            "full_format": "%d.%m.%Y %H:%M:%S",
-        },
+    config = {
+        **sample_config,
+        "logging": {**sample_config["logging"], "log_path": "test_logbook.txt"},
     }
 
     result = cu.get_logbook_config(config)
 
     assert result["log_path"] == pathlib.Path.cwd() / "test_logbook.txt"
-    assert result["full_format"] == "%d.%m.%Y %H:%M:%S"
+    assert result["full_format"] == sample_config["time_tracking"]["full_format"]

@@ -6,22 +6,15 @@ import src.config_utils as cu
 
 
 @pytest.mark.fast
-def test_get_time_recorder_config(relative_precision: float) -> None:
+def test_get_time_recorder_config(sample_config: dict, relative_precision: float) -> None:
     """Test extraction of TimeRecorder configuration."""
-    config = {
-        "time_tracking": {
-            "date": "25.07.2025",
-            "start_time": "07:00",
-            "end_time": "17:25",
-            "lunch_break_duration": 60,
-            "full_format": "%d.%m.%Y %H:%M:%S",
-        },
-    }
+    result = cu.get_time_recorder_config(sample_config)
 
-    result = cu.get_time_recorder_config(config)
-
-    assert result["date"] == "25.07.2025"
-    assert result["start_time"] == "07:00"
-    assert result["end_time"] == "17:25"
-    assert result["lunch_break_duration"] == pytest.approx(60, rel=relative_precision)
-    assert result["full_format"] == "%d.%m.%Y %H:%M:%S"
+    assert result["date"] == sample_config["time_tracking"]["date"]
+    assert result["start_time"] == sample_config["time_tracking"]["start_time"]
+    assert result["end_time"] == sample_config["time_tracking"]["end_time"]
+    assert result["lunch_break_duration"] == pytest.approx(
+        sample_config["time_tracking"]["lunch_break_duration"],
+        rel=relative_precision,
+    )
+    assert result["full_format"] == sample_config["time_tracking"]["full_format"]

@@ -6,46 +6,27 @@ import src.config_utils as cu
 
 
 @pytest.mark.fast
-def test_get_visualization_config_complete() -> None:
+def test_get_visualization_config_complete(sample_config: dict) -> None:
     """Test extraction of complete visualization configuration."""
     config = {
-        "time_tracking": {
-            "full_format": "%d.%m.%Y %H:%M:%S",
-        },
-        "visualization": {
-            "color_scheme": "ocean",
-            "num_months": 12,
-            "plot": True,
-            "rolling_average_window_size": 10,
-            "x_tick_interval": 3,
-        },
-        "work_schedule": {
-            "standard_work_hours": 8,
-            "work_days": [0, 1, 2, 3, 4],
-        },
+        **sample_config,
+        "visualization": {**sample_config["visualization"], "num_months": 12},
     }
 
     result = cu.get_visualization_config(config)
 
-    assert result["color_scheme"] == "ocean"
+    assert result["color_scheme"] == sample_config["visualization"]["color_scheme"]
     assert result["num_months"] == 12
     assert result["plot"] is True
-    assert result["standard_work_hours"] == 8
-    assert result["work_days"] == [0, 1, 2, 3, 4]
-    assert result["full_format"] == "%d.%m.%Y %H:%M:%S"
+    assert result["standard_work_hours"] == sample_config["work_schedule"]["standard_work_hours"]
+    assert result["work_days"] == sample_config["work_schedule"]["work_days"]
+    assert result["full_format"] == sample_config["time_tracking"]["full_format"]
 
 
 @pytest.mark.fast
-def test_get_visualization_config_missing_all_sections() -> None:
+def test_get_visualization_config_missing_all_sections(sample_config: dict) -> None:
     """Test extraction when all required sections are missing from config."""
-    config = {
-        "logging": {
-            "log_path": "test.csv",
-        },
-        "data_processing": {
-            "use_boot_time": True,
-        },
-    }
+    config = {k: v for k, v in sample_config.items() if k not in ("time_tracking", "visualization", "work_schedule")}
 
     result = cu.get_visualization_config(config)
 
@@ -60,13 +41,9 @@ def test_get_visualization_config_missing_all_sections() -> None:
 
 
 @pytest.mark.fast
-def test_get_visualization_config_empty_sections() -> None:
+def test_get_visualization_config_empty_sections(sample_config: dict) -> None:
     """Test extraction when sections exist but are empty."""
-    config: dict[str, dict] = {
-        "time_tracking": {},
-        "visualization": {},
-        "work_schedule": {},
-    }
+    config = {**sample_config, "time_tracking": {}, "visualization": {}, "work_schedule": {}}
 
     result = cu.get_visualization_config(config)
 
@@ -81,20 +58,13 @@ def test_get_visualization_config_empty_sections() -> None:
 
 
 @pytest.mark.fast
-def test_get_visualization_config_partial_configuration() -> None:
+def test_get_visualization_config_partial_configuration(sample_config: dict) -> None:
     """Test extraction when only some visualization options are provided."""
     config = {
-        "time_tracking": {
-            "full_format": "%Y-%m-%d %H:%M",
-        },
-        "visualization": {
-            "color_scheme": "viridis",
-            # num_months and plot are missing
-        },
-        "work_schedule": {
-            "standard_work_hours": 7.5,
-            # work_days is missing
-        },
+        **sample_config,
+        "time_tracking": {"full_format": "%Y-%m-%d %H:%M"},
+        "visualization": {"color_scheme": "viridis"},  # num_months and plot are missing
+        "work_schedule": {"standard_work_hours": 7.5},  # work_days is missing
     }
 
     result = cu.get_visualization_config(config)
@@ -109,19 +79,20 @@ def test_get_visualization_config_partial_configuration() -> None:
 
 
 @pytest.mark.fast
-def test_get_visualization_config_different_data_types() -> None:
+def test_get_visualization_config_different_data_types(sample_config: dict) -> None:
     """Test extraction with different data types for visualization options."""
     config = {
-        "time_tracking": {
-            "full_format": "%d/%m/%Y",
-        },
+        **sample_config,
+        "time_tracking": {**sample_config["time_tracking"], "full_format": "%d/%m/%Y"},
         "visualization": {
+            **sample_config["visualization"],
             "color_scheme": "plasma",
             "num_months": 0,  # Zero value
             "plot": False,  # False boolean
             "x_tick_interval": 3,
         },
         "work_schedule": {
+            **sample_config["work_schedule"],
             "standard_work_hours": 6.0,  # Float value
             "work_days": [1, 2, 3],  # Partial week
         },
@@ -139,32 +110,17 @@ def test_get_visualization_config_different_data_types() -> None:
 
 
 @pytest.mark.fast
-def test_get_visualization_config_with_other_sections() -> None:
+def test_get_visualization_config_with_other_sections(sample_config: dict) -> None:
     """Test extraction when config contains other sections alongside visualization."""
     config = {
-        "time_tracking": {
-            "date": "25.07.2025",
-            "start_time": "07:00",
-            "full_format": "%d.%m.%Y %H:%M:%S",
-        },
+        **sample_config,
         "visualization": {
+            **sample_config["visualization"],
             "color_scheme": "magma",
             "num_months": 6,
-            "rolling_average_window_size": 10,
-            "plot": True,
             "x_tick_interval": 4,
         },
-        "work_schedule": {
-            "standard_work_hours": 8,
-            "work_days": [0, 1, 2, 3, 4, 5],
-            "timezone": "Europe/Berlin",
-        },
-        "logging": {
-            "log_path": "test.csv",
-        },
-        "data_processing": {
-            "use_boot_time": True,
-        },
+        "work_schedule": {**sample_config["work_schedule"], "work_days": [0, 1, 2, 3, 4, 5]},
     }
 
     result = cu.get_visualization_config(config)
@@ -175,28 +131,22 @@ def test_get_visualization_config_with_other_sections() -> None:
     assert result["plot"] is True
     assert result["standard_work_hours"] == 8
     assert result["work_days"] == [0, 1, 2, 3, 4, 5]
-    assert result["full_format"] == "%d.%m.%Y %H:%M:%S"
+    assert result["full_format"] == sample_config["time_tracking"]["full_format"]
     assert result["x_tick_interval"] == 4
 
 
 @pytest.mark.fast
-def test_get_visualization_config_return_structure() -> None:
+def test_get_visualization_config_return_structure(sample_config: dict) -> None:
     """Test that the function returns the expected dictionary structure."""
     config = {
-        "time_tracking": {
-            "full_format": "%d.%m.%Y",
-        },
+        **sample_config,
+        "time_tracking": {**sample_config["time_tracking"], "full_format": "%d.%m.%Y"},
         "visualization": {
+            **sample_config["visualization"],
             "color_scheme": "inferno",
             "num_months": 3,
-            "rolling_average_window_size": 10,
-            "plot": True,
-            "x_tick_interval": 3,
         },
-        "work_schedule": {
-            "standard_work_hours": 8,
-            "work_days": [1, 2, 3, 4, 5],
-        },
+        "work_schedule": {**sample_config["work_schedule"], "work_days": [1, 2, 3, 4, 5]},
     }
 
     result = cu.get_visualization_config(config)
@@ -218,21 +168,15 @@ def test_get_visualization_config_return_structure() -> None:
 
 
 @pytest.mark.fast
-def test_get_visualization_config_missing_individual_sections() -> None:
+def test_get_visualization_config_missing_individual_sections(sample_config: dict) -> None:
     """Test extraction when individual sections are missing."""
     # Missing time_tracking section
-    config_no_time_tracking = {
-        "visualization": {
-            "color_scheme": "cividis",
-            "num_months": 9,
-            "rolling_average_window_size": 10,
-            "plot": False,
-            "x_tick_interval": 3,
-        },
-        "work_schedule": {
-            "standard_work_hours": 8,
-            "work_days": [0, 1, 2, 3, 4],
-        },
+    config_no_time_tracking = {k: v for k, v in sample_config.items() if k != "time_tracking"}
+    config_no_time_tracking["visualization"] = {
+        **sample_config["visualization"],
+        "color_scheme": "cividis",
+        "num_months": 9,
+        "plot": False,
     }
 
     result = cu.get_visualization_config(config_no_time_tracking)
@@ -246,14 +190,12 @@ def test_get_visualization_config_missing_individual_sections() -> None:
     assert result["full_format"] is None
 
     # Missing visualization section
-    config_no_visualization = {
-        "time_tracking": {
-            "full_format": "%Y-%m-%d",
-        },
-        "work_schedule": {
-            "standard_work_hours": 7,
-            "work_days": [1, 2, 3, 4, 5],
-        },
+    config_no_visualization = {k: v for k, v in sample_config.items() if k != "visualization"}
+    config_no_visualization["time_tracking"] = {"full_format": "%Y-%m-%d"}
+    config_no_visualization["work_schedule"] = {
+        **sample_config["work_schedule"],
+        "standard_work_hours": 7,
+        "work_days": [1, 2, 3, 4, 5],
     }
 
     result = cu.get_visualization_config(config_no_visualization)
@@ -267,16 +209,12 @@ def test_get_visualization_config_missing_individual_sections() -> None:
     assert result["full_format"] == "%Y-%m-%d"
 
     # Missing work_schedule section
-    config_no_work_schedule = {
-        "time_tracking": {
-            "full_format": "%d.%m.%Y %H:%M",
-        },
-        "visualization": {
-            "color_scheme": "twilight",
-            "num_months": 15,
-            "rolling_average_window_size": 10,
-            "plot": True,
-        },
+    config_no_work_schedule = {k: v for k, v in sample_config.items() if k != "work_schedule"}
+    config_no_work_schedule["time_tracking"] = {"full_format": "%d.%m.%Y %H:%M"}
+    config_no_work_schedule["visualization"] = {
+        **sample_config["visualization"],
+        "color_scheme": "twilight",
+        "num_months": 15,
     }
 
     result = cu.get_visualization_config(config_no_work_schedule)

@@ -6,14 +6,13 @@ import src.config_utils as cu
 
 
 @pytest.mark.fast
-def test_get_processing_config() -> None:
+def test_get_processing_config(sample_config: dict) -> None:
     """Test extraction of processing configuration."""
-    config: dict = {
+    config = {
+        **sample_config,
         "data_processing": {
-            "use_boot_time": True,
+            **sample_config["data_processing"],
             "logging_enabled": True,
-            "auto_squash": True,
-            "add_missing_days": True,
         },
     }
 
