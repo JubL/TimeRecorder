@@ -203,6 +203,21 @@ class Logbook:
             # Convert 'date' column to string format if it is in datetime format
             df["date"] = df["date"].dt.strftime(self.date_format)
 
+        # Format work_time and overtime with 2 decimal places (including trailing zeros).
+        # float_format in to_csv only applies to float columns; overtime is object dtype
+        # (can contain empty strings), so we format these columns explicitly.
+        def _format_two_decimals(x: float | str) -> float | str:
+            if pd.isna(x) or (isinstance(x, str) and not x):
+                return x
+            try:
+                return f"{float(x):.2f}"
+            except (TypeError, ValueError):
+                return x
+
+        for col in ["work_time", "overtime"]:
+            if col in df.columns:
+                df[col] = df[col].apply(_format_two_decimals)
+
         # Get the appropriate format handler based on file extension
         format_handler = formats.get_format_handler(self.log_path)
         try:

@@ -31,8 +31,6 @@ def main() -> None:
 
     # TODO: Implement report generation in PDF, XLSX, and HTML format.
 
-    # TODO: Write floats into the log with exactly two decimal places.
-
     # TODO: Is squashing the log a bad idea?
     # TODO: Maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
 
