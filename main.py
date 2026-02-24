@@ -39,9 +39,6 @@ def main() -> None:
 
     # TODO: Build an UI for the time recorder with Figma Make?
 
-    # TODO: The tests should take the default config and then modify the values that need to be different. (done for test_visualizer, test_config_utils)
-    # TODO: check that test use fixtures (done for test_visualizer, test_config_utils)
-
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist

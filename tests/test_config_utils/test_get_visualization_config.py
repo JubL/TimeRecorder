@@ -26,7 +26,7 @@ def test_get_visualization_config_complete(sample_config: dict) -> None:
 @pytest.mark.fast
 def test_get_visualization_config_missing_all_sections(sample_config: dict) -> None:
     """Test extraction when all required sections are missing from config."""
-    config = {k: v for k, v in sample_config.items() if k not in ("time_tracking", "visualization", "work_schedule")}
+    config = {k: v for k, v in sample_config.items() if k not in {"time_tracking", "visualization", "work_schedule"}}
 
     result = cu.get_visualization_config(config)
 
