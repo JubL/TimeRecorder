@@ -490,6 +490,7 @@ class Logbook:
         for start_date, end_date in gaps:
             # Generate all dates between start_date and end_date (exclusive)
             all_dates = pd.date_range(start=start_date + timedelta(days=1), end=end_date - timedelta(days=1), freq="D")
+            added_weekdays = []
             for date in all_dates:
                 date_str = date.strftime(self.date_format)
                 if any(df["date"] == date_str):
@@ -503,6 +504,7 @@ class Logbook:
                     msg = f"Added missing holiday on {date_str} - {reason}"
                     logger.info(msg)
 
+                added_weekdays.append(date.strftime("%a"))
                 df.loc[len(df)] = {
                     "weekday": date.strftime("%a"),
                     "date": date_str,
@@ -514,8 +516,9 @@ class Logbook:
                     "overtime": "",
                 }
 
-            msg = f"Added {len(all_dates)} missing days to the logbook."
-            logger.info(msg)
+            if added_weekdays:
+                msg = f"Added {len(added_weekdays)} missing days to the logbook: {', '.join(added_weekdays)}."
+                logger.info(msg)
 
         # Sort and save the updated DataFrame back to the log file
         df = df.sort_values(by="date", key=lambda x: pd.to_datetime(x, format=self.date_format))

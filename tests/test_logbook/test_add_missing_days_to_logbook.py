@@ -74,7 +74,7 @@ def test_add_missing_days_saturday(logbook: lb.Logbook, relative_precision: floa
         assert not saturday_row["overtime"]
 
         # Verify logging
-        mock_logger.info.assert_any_call("Added 2 missing days to the logbook.")
+        mock_logger.info.assert_any_call("Added 2 missing days to the logbook: Sat, Sun.")
 
 
 @pytest.mark.fast
@@ -116,7 +116,7 @@ def test_add_missing_days_sunday(logbook: lb.Logbook, relative_precision: float)
         assert not sunday_row["overtime"]
 
         # Verify logging
-        mock_logger.info.assert_called_with("Added 1 missing days to the logbook.")
+        mock_logger.info.assert_called_with("Added 1 missing days to the logbook: Sun.")
 
 
 @pytest.mark.fast
