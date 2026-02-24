@@ -9,7 +9,7 @@ import src.visualizer as viz
 
 # Expected cases
 @pytest.mark.fast
-def test_get_rolling_average_normal_operation(sample_config: dict) -> None:
+def test_get_rolling_average_normal_operation(sample_config: dict, relative_precision: float) -> None:
     """Test get_rolling_average with normal operation and multiple data points."""
     df = pd.DataFrame(
         {
@@ -31,11 +31,11 @@ def test_get_rolling_average_normal_operation(sample_config: dict) -> None:
     # First value should be the first work_time (window=3, min_periods=1)
     assert result.iloc[0] == 8.0
     # Third value should be average of first 3 values
-    assert result.iloc[2] == pytest.approx((8.0 + 7.5 + 9.0) / 3, rel=1e-6)
+    assert result.iloc[2] == pytest.approx((8.0 + 7.5 + 9.0) / 3, rel=relative_precision)
 
 
 @pytest.mark.fast
-def test_get_rolling_average_different_window_sizes(sample_config: dict) -> None:
+def test_get_rolling_average_different_window_sizes(sample_config: dict, relative_precision: float) -> None:
     """Test get_rolling_average with different window sizes."""
     df = pd.DataFrame(
         {
@@ -59,7 +59,7 @@ def test_get_rolling_average_different_window_sizes(sample_config: dict) -> None
     # Window size 2
     result_2 = visualizer.get_rolling_average(window=2)
     assert len(result_2) == 5
-    assert result_2.iloc[1] == pytest.approx((8.0 + 7.0) / 2, rel=1e-6)
+    assert result_2.iloc[1] == pytest.approx((8.0 + 7.0) / 2, rel=relative_precision)
 
     # Window size larger than data points (should still work with min_periods=1)
     result_10 = visualizer.get_rolling_average(window=10)
@@ -90,7 +90,7 @@ def test_get_rolling_average_single_data_point(sample_config: dict) -> None:
 
 
 @pytest.mark.fast
-def test_get_rolling_average_filters_positive_work_time(sample_config: dict) -> None:
+def test_get_rolling_average_filters_positive_work_time(sample_config: dict, relative_precision: float) -> None:
     """Test that get_rolling_average only includes rows with work_time > 0."""
     df = pd.DataFrame(
         {
@@ -110,7 +110,7 @@ def test_get_rolling_average_filters_positive_work_time(sample_config: dict) -> 
     assert isinstance(result, pd.Series)
     assert len(result) == 2  # Only 2 rows have work_time > 0
     assert result.iloc[0] == 8.0
-    assert result.iloc[1] == pytest.approx((8.0 + 7.5) / 2, rel=1e-6)
+    assert result.iloc[1] == pytest.approx((8.0 + 7.5) / 2, rel=relative_precision)
 
 
 # Edge cases

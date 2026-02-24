@@ -22,6 +22,7 @@ def test_mean_and_std_with_valid_data(analyzer_instance: analyzer.Analyzer) -> N
 @pytest.mark.fast
 def test_mean_and_std_with_varied_overtime(
     analyzer_data: dict,
+    relative_precision: float,
 ) -> None:
     """Test mean_and_std with varied overtime values."""
     df = pd.DataFrame(
@@ -34,8 +35,8 @@ def test_mean_and_std_with_varied_overtime(
     ana = analyzer.Analyzer(analyzer_data, df)
     mean, std = ana.mean_and_std()
 
-    assert mean == pytest.approx(2.0, rel=1e-6)
-    assert std == pytest.approx(1.0, rel=1e-6)
+    assert mean == pytest.approx(2.0, rel=relative_precision)
+    assert std == pytest.approx(1.0, rel=relative_precision)
 
 
 @pytest.mark.fast
@@ -64,6 +65,7 @@ def test_mean_and_std_with_all_nan_returns_none(
 @pytest.mark.fast
 def test_mean_and_std_with_mixed_valid_and_nan(
     analyzer_data: dict,
+    relative_precision: float,
 ) -> None:
     """Test mean_and_std excludes NaN and computes from valid values only."""
     df = pd.DataFrame(
@@ -76,5 +78,5 @@ def test_mean_and_std_with_mixed_valid_and_nan(
     ana = analyzer.Analyzer(analyzer_data, df)
     mean, std = ana.mean_and_std()
 
-    assert mean == pytest.approx(2.0, rel=1e-6)  # (1 + 3) / 2
+    assert mean == pytest.approx(2.0, rel=relative_precision)  # (1 + 3) / 2
     assert std is not None
