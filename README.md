@@ -23,7 +23,7 @@ A powerful and flexible Python tool for tracking and managing work hours with au
 - **📱 Missing Day Detection**: Automatically add missing days (weekends, holidays) to your logbook
 - **🔄 Data Processing**: Automatic duplicate removal and data aggregation
 - **📋 Recent Entries Display**: View the last n entries from your logbook with formatted time display
-- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime with rolling average trends, plus a histogram of work hours distribution
+- **📊 Advanced Data Visualization**: Generate bar charts showing daily work hours and overtime with rolling average trends, a histogram of work hours distribution, and a histogram of work hours per weekday
 - **📈 Rolling Average Analysis**: Track work time trends with configurable rolling average window
 - **🧪 Comprehensive Testing**: Extensive test suite with high coverage across all modules
 
@@ -201,12 +201,13 @@ pytest -l
 
 ## 📊 Data Visualization
 
-TimeRecorder includes a powerful visualization feature that creates two complementary plots when enabled:
+TimeRecorder includes a powerful visualization feature that creates three complementary plots when enabled:
 
 1. **Daily Work Hours Chart**: A bar chart showing your daily work hours and overtime with a rolling average trend line
 2. **Work Hours Histogram**: A histogram showing the distribution of total work hours per day across your work days
+3. **Work Hours per Weekday Histogram**: A bar chart showing the average work hours per weekday (Mon, Tue, etc.). Each weekday's total is divided by the number of occurrences of that weekday in your data, so you see how much you typically work on a Monday when you work that day.
 
-Both plots are displayed simultaneously in separate windows. The visualization helps you identify patterns in your work schedule, track overtime trends, and analyze long-term work patterns.
+All three plots are displayed simultaneously in separate windows. The visualization helps you identify patterns in your work schedule, track overtime trends, and analyze long-term work patterns.
 
 ### Available Color Schemes
 
@@ -240,8 +241,9 @@ python main.py --plot --color-scheme coral
 
 ### Visualization Features
 
-- **Dual Plot Display**: Daily work hours chart and work hours histogram shown simultaneously in separate windows
+- **Triple Plot Display**: Daily work hours chart and both histograms shown simultaneously in separate windows
 - **Work Hours Histogram**: Distribution of total work hours per day (days with work > 0 only), with configurable bin width
+- **Work Hours per Weekday Histogram**: Average hours per weekday. Uses per-weekday averages so the chart reflects typical effort per weekday type, not the raw distribution of total hours
 - **Separate Work and Overtime**: Work hours and overtime are displayed as separate bars with distinct colors
 - **Rolling Average Trend Line**: Black trend line shows the rolling average of work hours over a configurable window
 - **Color-Coded by Weekday**: Each weekday has its own color within the selected scheme

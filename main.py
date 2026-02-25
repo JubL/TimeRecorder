@@ -34,7 +34,7 @@ def main() -> None:
     # TODO: Is squashing the log a bad idea?
     # TODO: Maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
 
-    # TODO: Execution take surprisingly long. Find out where the time is lost. Use a profiler to find the bottlenecks.
+    # TODO: Execution takes surprisingly long. Find out where the time is lost. Use a profiler to find the bottlenecks.
     # TODO: Load the logbook only once!
 
     # TODO: Build an UI for the time recorder with Figma Make?
@@ -98,6 +98,7 @@ def main() -> None:
     if visualization_config["plot"]:
         visualizer = Visualizer(logbook.load_logbook(), visualization_config)
         visualizer.create_histogram()
+        visualizer.create_work_hours_per_weekday_histogram()
         visualizer.create_daily_work_hours_plot()
         visualizer.display_all_plots()
 

@@ -284,6 +284,52 @@ class Visualizer:
         ax.set_ylabel("Frequency")
         ax.set_title("Distribution of Daily Work Hours")
 
+    def create_work_hours_per_weekday_histogram(self) -> None:
+        """
+        Create and display a histogram of work hours per weekday.
+
+        Shows the distribution of total work hours across weekdays (Mon, Tue, etc.).
+        The bars are normalized so the total equals standard_work_hours * len(work_days),
+        making it easy to compare against the expected schedule.
+        """
+        weekday_names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+        work_df = self.df[self.df["work_time"] > 0].copy()
+        if work_df.empty:
+            logger.warning("No work days with positive hours to display in weekday histogram.")
+            return
+
+        # Sum work hours and count occurrences per weekday for work_days only
+        work_days_df = work_df[work_df["date"].dt.weekday.isin(self.work_days)]
+        hours_per_weekday = work_days_df.groupby(work_days_df["date"].dt.weekday)["work_time"].sum()
+        count_per_weekday = work_days_df.groupby(work_days_df["date"].dt.weekday).size()
+
+        if hours_per_weekday.empty:
+            logger.warning("No work hours on configured work days to display in weekday histogram.")
+            return
+
+        # Average hours per occurrence of each weekday (divide Monday hours by number of Mondays,
+        # so we get avg hours worked per Monday, etc.)
+        avg_hours_per_weekday = hours_per_weekday / count_per_weekday
+        avg_hours_per_weekday = avg_hours_per_weekday.reindex(self.work_days, fill_value=0.0).fillna(0.0)
+
+        # Build labels and values in work_days order
+        labels = [weekday_names[wd] for wd in self.work_days]
+        values = [avg_hours_per_weekday[wd] for wd in self.work_days]
+
+        _, ax = plt.subplots(figsize=(8, 5))
+        ax.bar(
+            labels,
+            values,
+            color=[self.work_colors[i % len(self.work_colors)] for i in range(len(labels))],
+            edgecolor="white",
+        )
+        ax.axhline(y=self.standard_work_hours, color="black", linestyle="--", linewidth=0.8, label="Standard hours/day")
+        ax.set_xlabel("Weekday")
+        ax.set_ylabel("Work Hours")
+        ax.set_title("Work Hours per Weekday")
+        ax.legend()
+
     @staticmethod
     def display_all_plots() -> None:
         """
