@@ -26,6 +26,7 @@ def test_get_supported_formats_contains_expected_extensions() -> None:
         ".txt",  # CSV formats
         ".xls",
         ".xlsx",  # Excel formats
+        ".html",  # HTML format
         ".json",  # JSON format
         ".parquet",
         ".pq",  # Parquet formats
@@ -106,6 +107,7 @@ def test_get_supported_formats_performance() -> None:
         (".txt", "CSVHandler"),
         (".xls", "ExcelHandler"),
         (".xlsx", "ExcelHandler"),
+        (".html", "HTMLHandler"),
         (".json", "JSONHandler"),
         (".parquet", "ParquetHandler"),
         (".pq", "ParquetHandler"),
@@ -167,7 +169,6 @@ def test_get_format_handler_case_insensitive(file_extension: str) -> None:
         ".bmp",
         ".tiff",
         ".svg",
-        ".html",
         ".css",
         ".js",
         ".py",
@@ -460,7 +461,7 @@ def test_format_registry_imports() -> None:
 # Tests for handler interface
 @pytest.mark.parametrize(
     "file_extension",
-    [".csv", ".json", ".yaml", ".xlsx", ".xml", ".parquet"],
+    [".csv", ".json", ".yaml", ".xlsx", ".xml", ".parquet", ".html"],
 )
 @pytest.mark.fast
 def test_handler_interface_methods(file_extension: str) -> None:

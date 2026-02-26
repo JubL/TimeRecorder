@@ -341,6 +341,7 @@ logging:
   log_path: "timereport_logbook.csv"   # CSV format
   log_path: "timereport_logbook.json"  # JSON format
   log_path: "timereport_logbook.xlsx"  # Excel format
+  log_path: "timereport_logbook.html"  # HTML format
   log_path: "timereport_logbook.pq"    # Parquet format
   log_path: "timereport_logbook.xml"   # XML format
   log_path: "timereport_logbook.yaml"  # YAML format
@@ -350,6 +351,7 @@ logging:
 
 - **CSV** (`.csv`, `.txt`, `.dat`) - Comma-separated values with UTF-8 encoding
 - **JSON** (`.json`) - JavaScript Object Notation for easy data exchange
+- **HTML** (`.html`) - HyperText Markup Language for viewable reports in browsers
 - **YAML** (`.yaml`, `.yml`) - Human-readable configuration format with column preservation
 - **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
 - **XML** (`.xml`) - Extensible Markup Language for enterprise integration

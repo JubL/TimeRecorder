@@ -10,6 +10,7 @@ from pathlib import Path
 from .base import BaseFormatHandler
 from .csv_handler import CSVHandler
 from .excel_handler import ExcelHandler
+from .html_handler import HTMLHandler
 from .json_handler import JSONHandler
 from .parquet_handler import ParquetHandler
 from .xml_handler import XMLHandler
@@ -22,6 +23,7 @@ FORMAT_REGISTRY: dict[str, type[BaseFormatHandler]] = {
     ".txt": CSVHandler,
     ".xls": ExcelHandler,
     ".xlsx": ExcelHandler,
+    ".html": HTMLHandler,
     ".json": JSONHandler,
     ".parquet": ParquetHandler,
     ".pq": ParquetHandler,

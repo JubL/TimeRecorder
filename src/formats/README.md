@@ -24,6 +24,9 @@ handler = get_format_handler(Path("logbook.json"))
 # Automatically selects YAMLHandler for .yaml files
 handler = get_format_handler(Path("logbook.yaml"))
 
+# Automatically selects HTMLHandler for .html files
+handler = get_format_handler(Path("logbook.html"))
+
 # Automatically selects ExcelHandler for .xlsx files
 handler = get_format_handler(Path("logbook.xlsx"))
 
@@ -42,6 +45,7 @@ FORMAT_REGISTRY = {
     ".txt": CSVHandler,
     ".xls": ExcelHandler,
     ".xlsx": ExcelHandler,
+    ".html": HTMLHandler,
     ".json": JSONHandler,
     ".parquet": ParquetHandler,
     ".pq": ParquetHandler,
@@ -68,6 +72,7 @@ Currently supported formats:
 
 - **CSV** (`.csv`, `.txt`, `.dat`) - Semicolon-separated values with UTF-8 encoding
 - **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
+- **HTML** (`.html`) - HyperText Markup Language for viewable reports in browsers
 - **JSON** (`.json`) - JavaScript Object Notation
 - **XML** (`.xml`) - Extensible Markup Language
 - **YAML** (`.yaml`, `.yml`) - YAML Ain't Markup Language

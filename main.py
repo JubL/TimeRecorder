@@ -29,8 +29,6 @@ def main() -> None:
 
     # TODO: Shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
-    # TODO: Implement report generation in PDF, XLSX, and HTML format.
-
     # TODO: Is squashing the log a bad idea?
     # TODO: Maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
 
