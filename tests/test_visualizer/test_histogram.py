@@ -36,7 +36,7 @@ def test_create_histogram_with_positive_work_hours(
     visualization_config["histogram_bin_width"] = 30  # 30 minutes
 
     visualizer = viz.Visualizer(df, visualization_config)
-    visualizer.create_histogram()
+    visualizer.create_work_hours_histogram()
 
     mock_subplots.assert_called_once_with(figsize=(8, 5))
     mock_ax.hist.assert_called_once()
@@ -74,7 +74,7 @@ def test_create_histogram_empty_work_hours_returns_early(
     visualizer = viz.Visualizer(df, visualization_config)
 
     with caplog.at_level(logging.WARNING, logger="src.visualizer"):
-        visualizer.create_histogram()
+        visualizer.create_work_hours_histogram()
 
     assert "No work days with positive hours to display in histogram" in caplog.text
 
@@ -99,7 +99,7 @@ def test_create_histogram_empty_work_hours_no_subplots(
     visualization_config["num_months"] = 12
 
     visualizer = viz.Visualizer(df, visualization_config)
-    visualizer.create_histogram()
+    visualizer.create_work_hours_histogram()
 
     mock_subplots.assert_not_called()
 
@@ -129,7 +129,7 @@ def test_create_histogram_uses_histogram_bin_width(
     visualization_config["histogram_bin_width"] = 15  # 15 minutes
 
     visualizer = viz.Visualizer(df, visualization_config)
-    visualizer.create_histogram()
+    visualizer.create_work_hours_histogram()
 
     bins = mock_ax.hist.call_args[1]["bins"]
     expected_bin_width = 15 / 60  # 0.25 hours

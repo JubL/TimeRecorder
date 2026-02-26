@@ -262,7 +262,7 @@ class Visualizer:
         ax.set_ylabel("Work Hours")
         ax.set_title("Daily Work Hours")
 
-    def create_histogram(self) -> None:
+    def create_work_hours_histogram(self) -> None:
         """
         Create and display a histogram of daily work hours.
 
