@@ -16,6 +16,7 @@ def test_get_analyzer_config_complete(sample_config: dict) -> None:
         "outlier_threshold": 1.5,
         "standard_work_hours": 8,
         "work_days": [0, 1, 2, 3, 4],
+        "rolling_average_window_size": 10,
     }
 
     assert result == expected
@@ -29,6 +30,9 @@ def test_get_analyzer_config_missing_analyzer_section() -> None:
             "standard_work_hours": 8,
             "work_days": [0, 1, 2, 3, 4],
         },
+        "visualization": {
+            "rolling_average_window_size": 10,
+        },
     }
 
     result = cu.get_analyzer_config(config)
@@ -39,6 +43,7 @@ def test_get_analyzer_config_missing_analyzer_section() -> None:
         "outlier_threshold": None,
         "standard_work_hours": 8,
         "work_days": [0, 1, 2, 3, 4],
+        "rolling_average_window_size": 10,
     }
 
     assert result == expected
@@ -51,6 +56,9 @@ def test_get_analyzer_config_missing_work_schedule_section() -> None:
         "analyzer": {
             "analyze_work_patterns": True,
         },
+        "visualization": {
+            "rolling_average_window_size": 10,
+        },
     }
 
     result = cu.get_analyzer_config(config)
@@ -61,6 +69,7 @@ def test_get_analyzer_config_missing_work_schedule_section() -> None:
         "outlier_threshold": None,
         "standard_work_hours": None,
         "work_days": None,
+        "rolling_average_window_size": 10,
     }
 
     assert result == expected
@@ -79,6 +88,7 @@ def test_get_analyzer_config_empty_config() -> None:
         "outlier_threshold": None,
         "standard_work_hours": None,
         "work_days": None,
+        "rolling_average_window_size": None,
     }
 
     assert result == expected
@@ -95,6 +105,9 @@ def test_get_analyzer_config_partial_config() -> None:
             "standard_work_hours": 7.5,
             "work_days": [1, 2, 3, 4, 5],
         },
+        "visualization": {
+            "rolling_average_window_size": 10,
+        },
     }
 
     result = cu.get_analyzer_config(config)
@@ -105,6 +118,7 @@ def test_get_analyzer_config_partial_config() -> None:
         "outlier_threshold": None,
         "standard_work_hours": 7.5,
         "work_days": [1, 2, 3, 4, 5],
+        "rolling_average_window_size": 10,
     }
 
     assert result == expected
@@ -121,6 +135,9 @@ def test_get_analyzer_config_none_values() -> None:
             "standard_work_hours": None,
             "work_days": None,
         },
+        "visualization": {
+            "rolling_average_window_size": 10,
+        },
     }
 
     result = cu.get_analyzer_config(config)
@@ -131,6 +148,7 @@ def test_get_analyzer_config_none_values() -> None:
         "outlier_threshold": None,
         "standard_work_hours": None,
         "work_days": None,
+        "rolling_average_window_size": 10,
     }
 
     assert result == expected
@@ -149,6 +167,9 @@ def test_get_analyzer_config_return_structure() -> None:
             "work_days": [0, 1, 2, 3, 4],
             "extra_key": "extra_value",
         },
+        "visualization": {
+            "rolling_average_window_size": 10,
+        },
         "other_section": {
             "some_key": "some_value",
         },
@@ -158,7 +179,14 @@ def test_get_analyzer_config_return_structure() -> None:
 
     # Check that result is a dictionary with exactly the expected keys
     assert isinstance(result, dict)
-    assert set(result.keys()) == {"analyze_work_patterns", "outlier_method", "outlier_threshold", "standard_work_hours", "work_days"}
+    assert set(result.keys()) == {
+        "analyze_work_patterns",
+        "outlier_method",
+        "outlier_threshold",
+        "standard_work_hours",
+        "work_days",
+        "rolling_average_window_size",
+    }
     assert result["analyze_work_patterns"] is True
     assert result["outlier_method"] is None
     assert result["outlier_threshold"] is None

@@ -136,7 +136,7 @@ visualization:
   plot: false            # Show work hours visualization
   color_scheme: "ocean"  # Color scheme: ocean, forest, sunset, lavender, coral
   num_months: 13         # Number of months to display in visualization
-  rolling_average_window_size: 10  # Number of days for rolling average calculation
+  rolling_average_window_size: 10  # Number of days for rolling average calculation and analyzer statistics
   x_tick_interval: 4     # Number of weeks between x-axis ticks
   histogram_bin_width: 10  # Width of bins for the work hours histogram in minutes
 ```
@@ -265,9 +265,9 @@ visualization:
   plot: true                   # Enable visualization by default
   color_scheme: "ocean"        # Choose your preferred color scheme
   num_months: 13               # Number of months to display
-  rolling_average_window_size: 10  # Days to include in rolling average (default: 10)
-  x_tick_interval: 4           # Number of weeks between x-axis ticks (default: 4)
-  histogram_bin_width: 10      # Bin width for work hours histogram in minutes (default: 10)
+  rolling_average_window_size: 10  # Days to include in rolling average and analyzer statistics
+  x_tick_interval: 4           # Number of weeks between x-axis ticks
+  histogram_bin_width: 10      # Bin width for work hours histogram in minutes
 ```
 
 ### Rolling Average Configuration
@@ -279,7 +279,7 @@ The rolling average feature helps you identify trends in your work patterns by c
 - **Goal Tracking**: Monitor progress toward work-life balance goals
 - **Anomaly Detection**: Spot unusual work patterns that might need attention
 
-**Configuration Options:**
+**Configuration Options (used by both visualization and analyzer):**
 - **Small Window (5-7 days)**: Shows short-term trends and weekly patterns
 - **Medium Window (10-14 days)**: Balances responsiveness with stability (recommended default)
 - **Large Window (20-30 days)**: Shows long-term trends and smooths out daily variations

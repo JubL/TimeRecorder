@@ -84,6 +84,7 @@ class Analyzer:
         self.work_days = data["work_days"]
         self.outlier_method = data["outlier_method"]
         self.outlier_threshold = data["outlier_threshold"]
+        self.rolling_average_window_size = data["rolling_average_window_size"]
 
         self.sec_in_min = const.SEC_IN_MIN
         self.sec_in_hour = const.SEC_IN_HOUR
@@ -132,7 +133,7 @@ class Analyzer:
             logger.warning(f"{const.RED}No valid overtime data found for analysis{const.RESET}")
             return None, None
 
-        return valid_overtime.mean(), valid_overtime.std()
+        return valid_overtime.tail(self.rolling_average_window_size).mean(), valid_overtime.tail(self.rolling_average_window_size).std()
 
     def analyze_work_patterns(self) -> None:
         """
@@ -393,8 +394,8 @@ class Analyzer:
 
         # Handle case where mean_and_std returns None values
         if mean is not None and std is not None:
-            mean_str = f"Mean overtime per work day: {int(mean)}h {mean % 1 * 60:.0f}m"
-            std_str = f"Standard Deviation of overtime: {int(std)}h {std % 1 * 60:.0f}m"
+            mean_str = f"Mean overtime per work day: {int(mean)}h {mean % 1 * 60:.0f}m (last {self.rolling_average_window_size} days)"
+            std_str = f"Standard Deviation of overtime: {int(std)}h {std % 1 * 60:.0f}m (last {self.rolling_average_window_size} days)"
         else:
             mean_str = "Mean overtime per work day: No valid data available"
             std_str = "Standard Deviation of overtime: No valid data available"
@@ -404,7 +405,7 @@ class Analyzer:
             standard_hours_str += f" {int(weekly_standard_hours % 1 * 60)}m"
         sign = "+" if total_overtime_balance >= 0 else ""
         overtime_balance_str = f"Total overtime balance: {sign}{total_overtime_balance:.2f}h"
-        outliers_str = f"Outliers: {outliers}"
+        outliers_str = f"\nOutliers\n========\n{outliers}"
 
         title = "\nAnalytics\n========="
 
@@ -416,7 +417,6 @@ class Analyzer:
             overtime_balance_str,
             mean_str,
             std_str,
-            "",
             outliers_str,
         ]
         logger.info("\n".join(items))

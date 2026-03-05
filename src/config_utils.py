@@ -208,12 +208,14 @@ def get_analyzer_config(config: dict) -> dict:
     """
     analyzer_config = config.get("analyzer", {})
     work_schedule = config.get("work_schedule", {})
+    visualization = config.get("visualization", {})
     return {
         "analyze_work_patterns": analyzer_config.get("analyze_work_patterns"),
         "standard_work_hours": work_schedule.get("standard_work_hours"),
         "work_days": work_schedule.get("work_days"),
         "outlier_method": analyzer_config.get("outlier_method"),
         "outlier_threshold": analyzer_config.get("outlier_threshold"),
+        "rolling_average_window_size": visualization.get("rolling_average_window_size"),
     }
 
 
