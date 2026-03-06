@@ -279,16 +279,18 @@ class Visualizer:
         bins = np.arange(work_hours.min(), work_hours.max() + bin_width, bin_width)
 
         _, ax = plt.subplots(figsize=(8, 5))
+
         ax.hist(work_hours, bins=bins.tolist(), color=self.work_colors[0], edgecolor="white")
+
         ax.set_xlabel("Work Hours")
         ax.set_ylabel("Frequency")
         ax.set_title("Distribution of Daily Work Hours")
 
     def create_work_hours_per_weekday_histogram(self) -> None:
         """
-        Create and display a histogram of work hours per weekday.
+        Create and display a histogram of average work hours per weekday.
 
-        Shows the distribution of total work hours across weekdays (Mon, Tue, etc.).
+        Shows the distribution of average work hours across weekdays (Mon, Tue, etc.).
         The bars are normalized so the total equals standard_work_hours * len(work_days),
         making it easy to compare against the expected schedule.
         """
@@ -324,10 +326,13 @@ class Visualizer:
             color=[self.work_colors[i % len(self.work_colors)] for i in range(len(labels))],
             edgecolor="white",
         )
+
         ax.axhline(y=self.standard_work_hours, color="black", linestyle="--", linewidth=0.8, label="Standard hours/day")
+
+        ax.set_ylim(top=max(values) * 1.012, bottom=self.standard_work_hours * 0.988)
         ax.set_xlabel("Weekday")
-        ax.set_ylabel("Work Hours")
-        ax.set_title("Work Hours per Weekday")
+        ax.set_ylabel("Average Work Hours")
+        ax.set_title("Average Work Hours per Weekday")
         ax.legend()
 
     @staticmethod

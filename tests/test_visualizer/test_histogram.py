@@ -171,7 +171,7 @@ def test_create_work_hours_per_weekday_histogram(
     # 5 days * 8h = 40h total, normalized to 8*5=40, so each day should be 8.0
     assert np.allclose(values, [8.0, 8.0, 8.0, 8.0, 8.0])
     mock_ax.set_xlabel.assert_called_once_with("Weekday")
-    mock_ax.set_ylabel.assert_called_once_with("Work Hours")
+    mock_ax.set_ylabel.assert_called_once_with("Average Work Hours")
     assert "Work Hours per Weekday" in mock_ax.set_title.call_args[0][0]
 
 
