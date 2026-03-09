@@ -22,6 +22,9 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import BoundaryNorm
+from matplotlib.ticker import FuncFormatter, MaxNLocator
 
 import src.logging_utils as lu
 from src.constants import MIN_IN_HOUR
@@ -334,6 +337,83 @@ class Visualizer:
         ax.set_ylabel("Average Work Hours")
         ax.set_title("Average Work Hours per Weekday")
         ax.legend()
+
+    def create_start_end_time_histogram(self) -> None:
+        """
+        Create and display a 2D histogram of daily start vs. end times.
+
+        The method reads `start_time` and `end_time` from `self.df`, filters out
+        invalid entries, converts them to fractional hours since midnight, and plots a
+        2D histogram with human-readable HH:MM tick labels on both axes and an
+        integer-valued frequency colorbar.
+        """
+        start_times = self.df["start_time"]
+        end_times = self.df["end_time"]
+
+        if start_times is None or end_times is None:
+            logger.warning("Start times and end times must be provided for 2D histogram.")
+            return
+
+        start_series = pd.Series(start_times)
+        end_series = pd.Series(end_times)
+
+        # Keep only rows where both start and end times are valid
+        valid_mask = start_series.apply(self.is_valid_time) & end_series.apply(self.is_valid_time)
+        if not valid_mask.any():
+            logger.warning("No valid start/end time pairs to display in 2D histogram.")
+            return
+
+        start_series = start_series[valid_mask]
+        end_series = end_series[valid_mask]
+
+        def _to_hours(time_string: str) -> float:
+            """Convert a time string to fractional hours since midnight."""
+            try:
+                dt = datetime.strptime(time_string, self.time_format + " %Z")  # noqa: DTZ007
+            except ValueError:
+                time_part = time_string.split(maxsplit=1)[0]
+                dt = datetime.strptime(time_part, self.time_format)  # noqa: DTZ007
+            return dt.hour + dt.minute / 60.0 + dt.second / 3600.0
+
+        start_hours = start_series.apply(_to_hours).to_numpy()
+        end_hours = end_series.apply(_to_hours).to_numpy()
+
+        # Sanity check: Limit to reasonable bounds (0-24 hours)
+        valid_bounds = (start_hours >= 0) & (start_hours <= 24) & (end_hours >= 0) & (end_hours <= 24)  # noqa: PLR2004
+        if not np.any(valid_bounds):
+            logger.warning("No start/end time pairs within 0-24 hours for 2D histogram.")
+            return
+
+        start_hours = start_hours[valid_bounds]
+        end_hours = end_hours[valid_bounds]
+
+        # Define bins for hours of the day
+        bins = [np.linspace(start_hours.min(), start_hours.max(), 2**6), np.linspace(end_hours.min(), end_hours.max(), 2**6)]
+
+        _, ax = plt.subplots(figsize=(8, 5))
+        _, _, _, image = ax.hist2d(start_hours, end_hours, bins=bins, cmap="plasma")
+
+        bounds = np.arange(-0.5, 4.5 + 1, 1)
+        norm = BoundaryNorm(bounds, image.cmap.N)
+        cbar = plt.colorbar(ScalarMappable(norm=norm, cmap=image.cmap), ax=ax, label="Frequency")
+        cbar.locator = MaxNLocator(integer=True)
+        cbar.update_ticks()
+
+        def _hour_formatter(x: float, pos: int) -> str:  # noqa: ARG001
+            """Format fractional hours as HH:MM."""
+            if np.isnan(x):
+                return ""
+            hours = int(x) % 24
+            minutes = round((x - hours) * 60) % 60
+            return f"{hours:02d}:{minutes:02d}"
+
+        formatter = FuncFormatter(_hour_formatter)
+        ax.xaxis.set_major_formatter(formatter)
+        ax.yaxis.set_major_formatter(formatter)
+
+        ax.set_xlabel("Start Time of Day")
+        ax.set_ylabel("End Time of Day")
+        ax.set_title("Start vs. End Time 2D Histogram")
 
     @staticmethod
     def display_all_plots() -> None:
