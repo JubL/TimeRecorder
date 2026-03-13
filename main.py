@@ -18,11 +18,6 @@ from src.visualizer import Visualizer
 
 def main() -> None:
     """Run the main function of the time recorder."""
-    # TODO: Visualize work hours per day, week, month, year in one plot with four graphs.
-    # TODO: Give the user a notice if there is too little data to show the graphs.
-    # TODO: Show histogramm of work start time and work end time.
-    # TODO: Show histogramm of lunch break duration and overtime.
-
     # TODO: Implement outlier detection, consistency checks?
 
     # TODO: Shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
