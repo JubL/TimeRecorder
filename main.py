@@ -25,8 +25,6 @@ def main() -> None:
 
     # TODO: Implement outlier detection, consistency checks?
 
-    # TODO: Shall tail() be controlled by the --log flag? Maybe put it in a analyse category together with features yet to come?
-
     # TODO: Shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
     # TODO: Is squashing the log a bad idea?
