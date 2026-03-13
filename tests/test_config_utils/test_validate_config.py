@@ -37,9 +37,6 @@ def test_validate_config_success() -> None:
             "country": "DE",
             "subdivision": "HE",
         },
-        "display": {
-            "show_tail": 4,
-        },
         "visualization": {
             "plot": True,
             "color_scheme": "ocean",
@@ -51,6 +48,7 @@ def test_validate_config_success() -> None:
             "analyze_work_patterns": True,
             "outlier_method": "iqr",
             "outlier_threshold": 1.5,
+            "show_tail": 4,
         },
     }
 

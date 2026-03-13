@@ -116,27 +116,6 @@ def get_logbook_config(config: dict) -> dict:
     }
 
 
-def get_display_config(config: dict) -> dict:
-    """
-    Extract display configuration from the main config.
-
-    Parameters
-    ----------
-    config : dict
-        The main configuration dictionary.
-
-    Returns
-    -------
-    dict
-        Dictionary containing display parameters.
-    """
-    display_config = config.get("display", {})
-
-    return {
-        "show_tail": display_config.get("show_tail"),
-    }
-
-
 def get_processing_config(config: dict) -> dict:
     """
     Extract data processing configuration from the main config.
@@ -211,11 +190,12 @@ def get_analyzer_config(config: dict) -> dict:
     visualization = config.get("visualization", {})
     return {
         "analyze_work_patterns": analyzer_config.get("analyze_work_patterns"),
-        "standard_work_hours": work_schedule.get("standard_work_hours"),
-        "work_days": work_schedule.get("work_days"),
         "outlier_method": analyzer_config.get("outlier_method"),
         "outlier_threshold": analyzer_config.get("outlier_threshold"),
+        "show_tail": analyzer_config.get("show_tail"),
         "rolling_average_window_size": visualization.get("rolling_average_window_size"),
+        "standard_work_hours": work_schedule.get("standard_work_hours"),
+        "work_days": work_schedule.get("work_days"),
     }
 
 
@@ -240,9 +220,8 @@ def validate_config(config: dict) -> bool:
         "logging": ["log_path", "log_level"],
         "work_schedule": ["standard_work_hours", "work_days", "timezone"],
         "holidays": ["country", "subdivision"],
-        "display": ["show_tail"],
         "visualization": ["plot", "color_scheme", "num_months", "rolling_average_window_size", "x_tick_interval"],
-        "analyzer": ["analyze_work_patterns", "outlier_method", "outlier_threshold"],
+        "analyzer": ["analyze_work_patterns", "outlier_method", "outlier_threshold", "show_tail"],
     }
 
     # Validate all sections exist
@@ -314,9 +293,6 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "auto_squash": True,
             "add_missing_days": True,
         },
-        "display": {
-            "show_tail": 4,
-        },
         "visualization": {
             "color_scheme": "ocean",
             "num_months": 13,
@@ -329,6 +305,7 @@ def create_default_config(config_path: pathlib.Path) -> None:
             "analyze_work_patterns": True,
             "outlier_method": "iqr",
             "outlier_threshold": 1.5,
+            "show_tail": 5,
         },
     }
 
@@ -377,8 +354,6 @@ def update_config(config: dict, args: argparse.Namespace) -> dict[str, dict]:
         ("lunch", "time_tracking.lunch_break_duration"),
         # Logging settings
         ("logbook", "logging.log_path"),
-        # Display settings
-        ("tail", "display.show_tail"),
         # Visualization settings
         ("plot", "visualization.plot"),
         ("num_months", "visualization.num_months"),
@@ -387,6 +362,7 @@ def update_config(config: dict, args: argparse.Namespace) -> dict[str, dict]:
         ("x_tick_interval", "visualization.x_tick_interval"),
         # Analyzer settings
         ("analyze", "analyzer.analyze_work_patterns"),
+        ("tail", "analyzer.show_tail"),
     ]
 
     def _set_nested_value(config_dict: dict, path: str, value: str | int | bool) -> None:  # noqa: FBT001

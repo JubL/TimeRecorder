@@ -71,10 +71,6 @@ def test_update_config_multiple_args() -> None:
             "logging_enabled": False,
             "auto_squash": True,
         },
-        "display": {
-            "show_tail": 5,
-            "calculate_weekly_hours": True,
-        },
     }
 
     args = argparse.Namespace(
@@ -82,7 +78,6 @@ def test_update_config_multiple_args() -> None:
         start="08:00",
         lunch=45,
         boot=False,
-        tail=10,
     )
 
     result = cu.update_config(config, args)
@@ -92,11 +87,9 @@ def test_update_config_multiple_args() -> None:
     assert result["time_tracking"]["start_time"] == "08:00"
     assert result["time_tracking"]["lunch_break_duration"] == 45
     assert result["data_processing"]["use_boot_time"] is False
-    assert result["display"]["show_tail"] == 10
     # Check that unspecified values remain unchanged
     assert result["time_tracking"]["end_time"] == "17:00"
     assert result["data_processing"]["logging_enabled"] is False
-    assert result["display"]["calculate_weekly_hours"] is True
 
 
 @pytest.mark.fast
@@ -156,7 +149,7 @@ def test_update_config_different_data_types() -> None:
     assert isinstance(result["time_tracking"]["date"], str)
     assert isinstance(result["time_tracking"]["lunch_break_duration"], int)
     assert isinstance(result["data_processing"]["use_boot_time"], bool)
-    assert isinstance(result["display"]["show_tail"], int)
+    assert isinstance(result["analyzer"]["show_tail"], int)
     assert isinstance(result["visualization"]["num_months"], int)
     assert isinstance(result["visualization"]["plot"], bool)
 
@@ -231,7 +224,7 @@ def test_update_config_all_argument_mappings() -> None:
         "logging": {
             "log_path": "default.csv",
         },
-        "display": {
+        "analyzer": {
             "show_tail": 5,
         },
         "visualization": {
@@ -282,7 +275,7 @@ def test_update_config_all_argument_mappings() -> None:
     assert result["logging"]["log_path"] == "custom.csv"
 
     # Check display settings
-    assert result["display"]["show_tail"] == 10
+    assert result["analyzer"]["show_tail"] == 10
 
     # Check visualization settings
     assert result["visualization"]["plot"] is False

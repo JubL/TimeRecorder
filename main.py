@@ -62,7 +62,6 @@ def main() -> None:
     time_recorder_config = cu.get_time_recorder_config(config)
     logbook_config = cu.get_logbook_config(config)
     processing_config = cu.get_processing_config(config)
-    display_config = cu.get_display_config(config)
     visualization_config = cu.get_visualization_config(config)
     analyzer_config = cu.get_analyzer_config(config)
     logger.debug("Configuration loaded successfully")
@@ -87,11 +86,10 @@ def main() -> None:
         if processing_config["auto_squash"]:
             logbook.squash_df()
 
-        logbook.tail(display_config["show_tail"])
-
     if analyzer_config["analyze_work_patterns"]:
         analyzer = Analyzer(data=analyzer_config, logbook_df=logbook.load_logbook())
         analyzer.generate_summary_report()
+        analyzer.tail(analyzer_config["show_tail"])
 
     if visualization_config["plot"]:
         visualizer = Visualizer(logbook.load_logbook(), visualization_config)
