@@ -73,7 +73,7 @@ class HTMLHandler(BaseFormatHandler):
             If there's an OS-level error during writing.
         """
         try:
-            table_html = df.to_html(index=False, float_format="%.2f", justify="left")
+            table_html = df.to_html(index=False, float_format=lambda x: f"{x:,.2f}", justify="left")
             html_content = (
                 '<!DOCTYPE html>\n<html lang="en">\n<head>\n'
                 '<meta charset="utf-8">\n'

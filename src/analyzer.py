@@ -449,7 +449,7 @@ class Analyzer:
             logger.error(msg)
             return
 
-        def _format_hours(value: object) -> str:
+        def _format_hours(value: float | str) -> str:
             """Format numeric or numeric-string hours as 'Xh Ym'."""
             if value in ("", None):
                 return ""
