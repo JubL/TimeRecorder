@@ -343,15 +343,6 @@ All formats maintain the same data structure and are fully interoperable. You ca
 - **XML**: Enterprise integration and structured data
 - **Parquet**: Efficient storage for large datasets
 
-### Weekly Hours Calculation
-
-Calculate and display weekly work hour summaries:
-
-```yaml
-display:
-  calculate_weekly_hours: true  # Calculate weekly hours from log
-```
-
 ### Flexible Time Specification
 
 You can specify work times in multiple ways:

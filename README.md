@@ -118,7 +118,6 @@ holidays:
 data_processing:
   auto_squash: true             # Automatically squash duplicate entries
   add_missing_days: true        # Add missing days to logbook
-  calculate_weekly_hours: true  # Calculate weekly hours from log
 
 # Output settings
 output:
