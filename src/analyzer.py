@@ -451,7 +451,7 @@ class Analyzer:
 
         def _format_hours(value: float | str) -> str:
             """Format numeric or numeric-string hours as 'Xh Ym'."""
-            if value in ("", None):
+            if value in {"", None}:
                 return ""
 
             try:
