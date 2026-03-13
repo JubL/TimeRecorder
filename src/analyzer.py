@@ -449,9 +449,23 @@ class Analyzer:
             logger.error(msg)
             return
 
-        # change the content of work_time from 9.50 to 9h 30m, and be robust against ""
-        df["work_time"] = df["work_time"].apply(lambda x: f"{int(x)}h {int(x % 1 * 60)}m" if x else "")
-        df["overtime"] = df["overtime"].apply(lambda x: f"{int(x)}h {int(x % 1 * 60)}m" if x else "")
+        def _format_hours(value: object) -> str:
+            """Format numeric or numeric-string hours as 'Xh Ym'."""
+            if value in ("", None):
+                return ""
+
+            try:
+                hours_float = float(value)
+            except (TypeError, ValueError):
+                return ""
+
+            hours = int(hours_float)
+            minutes = int((hours_float % 1) * 60)
+            return f"{hours}h {minutes}m"
+
+        # change the content of work_time from 9.50 to 9h 30m, robust against strings and empty values
+        df["work_time"] = df["work_time"].apply(_format_hours)
+        df["overtime"] = df["overtime"].apply(_format_hours)
 
         title = "\nRecent Entries\n===============\n"
         msg = title + df.to_string(index=False, header=False)
