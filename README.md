@@ -90,7 +90,6 @@ TimeRecorder uses a YAML configuration file (`config.yaml`) for all settings. He
 ```yaml
 # Time tracking settings
 time_tracking:
-  use_boot_time: true               # Use system boot time as start time
   date: "25.07.2025"                # Date in DD.MM.YYYY format
   start_time: "07:00"               # Starting time in HH:MM format
   end_time: "17:25"                 # Ending time in HH:MM format
@@ -99,7 +98,6 @@ time_tracking:
 
 # Logging settings
 logging:
-  enabled: false                      # Set to True to log the results
   log_path: "timereport_logbook.csv"  # Path to the log file (supports multiple formats)
   log_level: "INFO"                   # Logging level: DEBUG, INFO, WARNING, ERROR
 
@@ -116,28 +114,26 @@ holidays:
 
 # Data processing settings
 data_processing:
-  auto_squash: true             # Automatically squash duplicate entries
-  add_missing_days: true        # Add missing days to logbook
-
-# Output settings
-output:
-  colored_output: true   # Use colored terminal output
-  show_statistics: true  # Show overtime/undertime statistics
-  export_format: "csv"   # Export format: csv, json, excel
-  show_tail: 5           # Show the last n lines of the logbook
-
-# Analyzer settings
-analyzer:
-  analyze_work_patterns: false  # Enable to show overtime balance and statistics
+  use_boot_time: true          # Use system boot time as start time
+  logging_enabled: false       # Set to True to log the results
+  auto_squash: true            # Automatically squash duplicate entries
+  add_missing_days: true       # Add missing days to logbook
 
 # Visualization settings
 visualization:
-  plot: false            # Show work hours visualization
-  color_scheme: "ocean"  # Color scheme: ocean, forest, sunset, lavender, coral
-  num_months: 13         # Number of months to display in visualization
+  plot: true                   # Show work hours visualization
+  color_scheme: "ocean"        # Color scheme: ocean, forest, sunset, lavender, coral
+  num_months: 13               # Number of months to display in visualization
   rolling_average_window_size: 10  # Number of days for rolling average calculation and analyzer statistics
-  x_tick_interval: 4     # Number of weeks between x-axis ticks
-  histogram_bin_width: 10  # Width of bins for the work hours histogram in minutes
+  x_tick_interval: 3           # Number of weeks between x-axis ticks
+  histogram_bin_width: 10      # Width of bins for the work hours histogram in minutes
+
+# Analyzer settings
+analyzer:
+  analyze_work_patterns: true  # Enable analyzer summary report and statistics
+  outlier_method: "iqr"        # Outlier detection method: iqr, zscore, isolation_forest
+  outlier_threshold: 1.5       # Threshold parameter for the selected outlier method
+  show_tail: 5                 # Number of recent entries to show in analyzer tail output
 ```
 
 For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.md).
@@ -241,7 +237,7 @@ python main.py --plot --color-scheme coral
 
 ### Visualization Features
 
-- **Triple Plot Display**: Daily work hours chart and both histograms shown simultaneously in separate windows
+- **Four Plot Display**: Daily work hours chart, both histograms, and the start/end-time 2D histogram shown simultaneously in separate windows
 - **Work Hours Histogram**: Distribution of total work hours per day (days with work > 0 only), with configurable bin width
 - **Work Hours per Weekday Histogram**: Average hours per weekday. Uses per-weekday averages so the chart reflects typical effort per weekday type, not the raw distribution of total hours
 - **Separate Work and Overtime**: Work hours and overtime are displayed as separate bars with distinct colors
@@ -326,11 +322,11 @@ data_processing:
 View the last n entries from your logbook with formatted time display:
 
 ```yaml
-output:
-  show_tail: 5  # Show the last 5 entries (default)
+analyzer:
+  show_tail: 5  # Show the last 5 entries in the analyzer tail output
 ```
 
-The `tail()` method displays work time in a human-readable format (e.g., "7h 30m" instead of "7.5").
+The `Analyzer.tail()` method displays work time in a human-readable format (e.g., "7h 30m" instead of "7.5").
 
 ### File Format Support
 
@@ -394,30 +390,35 @@ TimeRecorder/
 ├── pyproject.toml          # Project configuration and dependencies
 ├── src/                    # Source code
 │   ├── __init__.py         # Package initialization
+│   ├── analyzer.py         # Overtime statistics, outlier detection, and summary reports
 │   ├── arg_parser.py       # Command line argument parsing
 │   ├── config_utils.py     # Configuration utilities
+│   ├── constants.py        # Constants
 │   ├── formats/            # File format handlers
 │   │   ├── __init__.py     # Format registry and handlers
 │   │   ├── base.py         # Base format handler interface
 │   │   ├── csv_handler.py  # CSV format handler
-│   │   ├── json_handler.py # JSON format handler
-│   │   ├── yaml_handler.py # YAML format handler
 │   │   ├── excel_handler.py # Excel format handler
+│   │   ├── html_handler.py # Excel format handler
+│   │   ├── json_handler.py # JSON format handler
+│   │   ├── parquet_handler.py # Excel format handler
+│   │   ├── registry.py # Excel format handler
 │   │   ├── xml_handler.py  # XML format handler
-│   │   └── parquet_handler.py # Parquet format handler
+│   │   └── yaml_handler.py # YAML format handler
 │   ├── logbook.py          # Logbook management
 │   ├── logging_utils.py    # Logging configuration
 │   ├── time_recorder.py    # Core time tracking functionality
 │   └── visualizer.py       # Data visualization functionality
 └── tests/                  # Comprehensive test suite
     ├── conftest.py         # Pytest configuration and shared fixtures
-    ├── test_formats/       # File format handler tests (200+ tests)
-    ├── test_config_utils/  # Configuration utility tests
+    ├── test_analyzer/      # Analyzer tests
+    ├── test_arg_parser/    # Argument parsing tests
+    ├── test_config_utils/  # Configuration utility
+    ├── test_formats/       # File format handler tests (650+ tests)
     ├── test_logbook/       # Logbook management tests
     ├── test_logging_utils/ # Logging utility tests
     ├── test_time_recorder/ # Core functionality tests
-    ├── test_visualizer/    # Visualization functionality tests
-    └── test_arg_parser/    # Argument parsing tests
+    └── test_visualizer/    # Visualization functionality tests
 ```
 
 ### Code Quality
