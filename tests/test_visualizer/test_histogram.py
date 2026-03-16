@@ -49,7 +49,7 @@ def test_create_histogram_with_positive_work_hours(
     assert call_args[1]["color"] == visualizer.work_colors[0]
     assert call_args[1]["edgecolor"] == "white"
     mock_ax.set_xlabel.assert_called_once_with("Work Hours")
-    mock_ax.set_ylabel.assert_called_once_with("Frequency")
+    mock_ax.set_ylabel.assert_called_once_with("Count of Days")
     mock_ax.set_title.assert_called_once_with("Distribution of Daily Work Hours")
 
 
