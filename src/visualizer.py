@@ -286,7 +286,7 @@ class Visualizer:
         ax.hist(work_hours, bins=bins.tolist(), color=self.work_colors[0], edgecolor="white")
 
         ax.set_xlabel("Work Hours")
-        ax.set_ylabel("Frequency")
+        ax.set_ylabel("Count of Days")
         ax.set_title("Distribution of Daily Work Hours")
 
     def create_work_hours_per_weekday_histogram(self) -> None:
@@ -330,7 +330,7 @@ class Visualizer:
             edgecolor="white",
         )
 
-        ax.axhline(y=self.standard_work_hours, color="black", linestyle="--", linewidth=0.8, label="Standard hours/day")
+        ax.axhline(y=self.standard_work_hours, color="black", linestyle="--", linewidth=0.8, label="Standard hours per day")
 
         ax.set_ylim(top=max(values) * 1.012, bottom=self.standard_work_hours * 0.988)
         ax.set_xlabel("Weekday")
@@ -345,7 +345,7 @@ class Visualizer:
         The method reads `start_time` and `end_time` from `self.df`, filters out
         invalid entries, converts them to fractional hours since midnight, and plots a
         2D histogram with human-readable HH:MM tick labels on both axes and an
-        integer-valued frequency colorbar.
+        integer-valued count-of-days colorbar.
         """
         start_times = self.df["start_time"]
         end_times = self.df["end_time"]
@@ -395,7 +395,7 @@ class Visualizer:
 
         bounds = np.arange(-0.5, 4.5 + 1, 1)
         norm = BoundaryNorm(bounds, image.cmap.N)
-        cbar = plt.colorbar(ScalarMappable(norm=norm, cmap=image.cmap), ax=ax, label="Frequency")
+        cbar = plt.colorbar(ScalarMappable(norm=norm, cmap=image.cmap), ax=ax, label="Count of Days")
         cbar.locator = MaxNLocator(integer=True)
         cbar.update_ticks()
 
