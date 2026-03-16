@@ -24,7 +24,7 @@ logging:
 # Work schedule settings
 work_schedule:
   standard_work_hours: 8  # Standard work hours per day
-  work_days: [0, 1, 2, 3, 4]  # Monday to Friday (0=Monday, 6=Sunday)
+  work_days: [0, 1, 2, 3, 4]  # Monday to Friday (0=Monday, 4=Friday, 6=Sunday)
   timezone: "Europe/Berlin"  # Timezone for time calculations
 
 # Holiday settings
