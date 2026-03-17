@@ -59,7 +59,7 @@ def main() -> None:
     analyzer_config = cu.get_analyzer_config(config)
     logger.debug("Configuration loaded successfully")
 
-    # Create TimeRecorder object from configuration
+    # Create objects from configuration
     tr_line = TimeRecorder(data=time_recorder_config)
     logbook = Logbook(data=logbook_config)
 

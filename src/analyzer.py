@@ -149,11 +149,6 @@ class Analyzer:
         -------
         dict[str, Any]
             Dictionary containing analysis results
-
-        Example:
-            >>> results = analyzer.analyze_work_patterns()
-            >>> print(f"Weekly average: {results['weekly_avg']:.1f} hours")
-            Weekly average: 42.3 hours
         """
         # TODO: Implement comprehensive work pattern analysis
         raise NotImplementedError("Work pattern analysis not yet implemented")
