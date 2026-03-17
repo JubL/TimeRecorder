@@ -285,6 +285,9 @@ class Visualizer:
 
         ax.hist(work_hours, bins=bins.tolist(), color=self.work_colors[0], edgecolor="white")
 
+        # force integer ticks on Y-axis
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
         ax.set_xlabel("Work Hours")
         ax.set_ylabel("Count of Days")
         ax.set_title("Distribution of Daily Work Hours")
