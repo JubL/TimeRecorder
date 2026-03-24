@@ -31,9 +31,6 @@ def main() -> None:
 
     # TODO: Build an UI for the time recorder with Figma Make?
 
-    # TODO: end_of_workday (time_recorder.py, line 395) does not account for work already carried out on the same day.
-    # TODO: Add this to the documentation.
-
     # TODO: The command 'python Documents/TimeRecorder/main.py --end_now' fails with an error, due to the fact, that the
     # TODO: logbook cannot be found, as it is considered to be in the directory from witch the command is executed from.
     # TODO: The log path gets prepended with 'pathlib.Path.cwd()'. Maybe I should prepend it with the cwd of config.yaml.

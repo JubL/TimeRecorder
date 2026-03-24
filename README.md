@@ -290,6 +290,15 @@ TimeRecorder tracks your total overtime balance by summing all overtime values i
 
 **Tracking days off against overtime:** If you take a day off and enter a negative value in the overtime column for that day (e.g. -8 hours for a standard 8-hour day), this time is automatically deducted from your overtime balance. This lets you monitor your overtime and track days taken off against it. Days with no work (work_time = 0) are automatically recorded as undertime based on your configured standard work hours.
 
+### End-of-workday Estimate
+
+When the output shows `🏁 End of workday would be at ...` (in undertime cases), this timestamp is currently calculated from:
+- start time
+- configured standard work hours
+- lunch break duration
+
+It does **not** currently account for work that was already carried out earlier on the same day.
+
 ### System Boot Time Integration
 
 TimeRecorder can automatically detect your work start time from system boot time:
