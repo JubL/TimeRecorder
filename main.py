@@ -24,6 +24,7 @@ def main() -> None:
 
     # TODO: Is squashing the log a bad idea?
     # TODO: Maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
+    # TODO: OR do squash the logbook, but keep the original lines, prepended with e.g. two dashes?
 
     # TODO: Execution takes surprisingly long. Find out where the time is lost. Use a profiler to find the bottlenecks.
     # TODO: Load the logbook only once!
@@ -34,7 +35,8 @@ def main() -> None:
     # TODO: Add this to the documentation.
 
     # TODO: The command 'python Documents/TimeRecorder/main.py --end_now' fails with an error, due to the fact, that the
-    # TODO: logbook cannot be found, as it is considered to be in the directory from witch the command is executed from
+    # TODO: logbook cannot be found, as it is considered to be in the directory from witch the command is executed from.
+    # TODO: The log path gets prepended with 'pathlib.Path.cwd()'. Maybe I should prepend it with the cwd of conig.yaml.
 
     args = ap.run_arg_parser()
 
