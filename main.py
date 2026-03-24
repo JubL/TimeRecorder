@@ -36,7 +36,7 @@ def main() -> None:
 
     # TODO: The command 'python Documents/TimeRecorder/main.py --end_now' fails with an error, due to the fact, that the
     # TODO: logbook cannot be found, as it is considered to be in the directory from witch the command is executed from.
-    # TODO: The log path gets prepended with 'pathlib.Path.cwd()'. Maybe I should prepend it with the cwd of conig.yaml.
+    # TODO: The log path gets prepended with 'pathlib.Path.cwd()'. Maybe I should prepend it with the cwd of config.yaml.
 
     args = ap.run_arg_parser()
 
