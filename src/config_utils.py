@@ -312,8 +312,9 @@ def create_default_config(config_path: pathlib.Path) -> None:
     try:
         with config_path.open("w", encoding="utf-8") as file:
             yaml.safe_dump(default_config, file, default_flow_style=False, sort_keys=False)
-        msg = f"Default configuration file created: {config_path}"
-        logger.debug(msg)
+        saved_path = config_path.resolve()
+        msg = f"No configuration file found. Created default config at: {saved_path}"
+        logger.info(msg)
     except yaml.YAMLError:
         logger.exception("Error creating default configuration file")
         raise
