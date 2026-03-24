@@ -48,6 +48,8 @@ A powerful and flexible Python tool for tracking and managing work hours with au
    ```
 
 The application will automatically create a `config.yaml` file with default settings on the first run.
+By default, TimeRecorder looks for `config.yaml` in your current working directory (the folder where you run the command), and if it is missing, it creates it there.
+Relative paths in the configuration (for example `logging.log_path: "timereport_logbook.csv"`) are also resolved from your current working directory.
 
 ### Basic Usage
 
