@@ -31,6 +31,8 @@ def main() -> None:
 
     # TODO: Build an UI for the time recorder with Figma Make?
 
+    # TODO: Have a bar chart that displays the overtime per day as a function of time.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist

@@ -145,8 +145,8 @@ class Visualizer:
         invalid_start = ~self.df["start_time"].apply(self.is_valid_time)
         work_time_num = work_time_num.where(~invalid_start, -self.standard_work_hours)
         self.df["work_time"] = work_time_num.fillna(0.0)
-        self.df["overtime"] = pd.to_numeric(self.df["overtime"], errors="coerce").fillna(0.0)
 
+        self.df["overtime"] = pd.to_numeric(self.df["overtime"], errors="coerce").fillna(0.0)
         self.df["overtime"] = self.df["overtime"].where(self.df["overtime"] >= 0.0, 0.0)
 
     def is_valid_time(self, time_string: str) -> bool:
