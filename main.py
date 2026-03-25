@@ -33,6 +33,13 @@ def main() -> None:
 
     # TODO: Have a bar chart that displays the overtime per day as a function of time.
 
+    # TODO: Providing the flags --no-boot, --date, and --start altogether is overly complicated if one only wants
+    # TODO: to set either the date or the start. It would be better to only provide what is needed.
+    # TODO: This is because update_boot_time() is executed much later in the program's flow than update_config().
+    # TODO: If the boot time were read out and set in the config before update_config() was executed, the order of
+    # TODO: execution and thus the necessary CLI flags would make much more sense. However, the update_boot_time()
+    # TODO: method would need to be moved from the TimeRecorder class.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist
