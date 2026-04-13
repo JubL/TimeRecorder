@@ -114,6 +114,9 @@ pylint = { max-locals = 18 }
 pydocstyle = { convention = "numpy" } # Docstring style
 pycodestyle = { max-line-length = 140 } # Maximum line length
 
+[tool.ruff.lint.mccabe]
+max-complexity = 11
+
 [tool.ruff.format]
 line-ending = "lf"  # unix style line ending
 docstring-code-format = true

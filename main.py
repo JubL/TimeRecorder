@@ -71,7 +71,12 @@ def main() -> None:
 
     # Create objects from configuration
     tr_line = TimeRecorder(data=time_recorder_config)
-    logbook = Logbook(data=logbook_config)
+    logbook = None
+    if processing_config["use_boot_time"] or analyzer_config["analyze_work_patterns"] or visualization_config["plot"]:
+        logbook = Logbook(data=logbook_config)
+    if logbook is None:
+        msg = "No logbook will be created because no processing or visualization is configured."
+        logger.debug(msg)
 
     # Process based on configuration
     if processing_config["use_boot_time"]:
