@@ -479,18 +479,18 @@ class Logbook:
             """Aggregate work_time: sum if any valid values, else 0."""
             return x.sum() if x.notna().any() else 0
 
+        # Load original data to compare before and after squashing
         original_df = self.load_logbook()
+
+        # Remove duplicate lines and get warnings about what was removed
         df_no_duplicates = self.remove_duplicate_lines(original_df)
         df = df_no_duplicates.copy()
-
-        if df.empty:
-            self.save_logbook(df)
-            return
 
         df["date"] = pd.to_datetime(df["date"], format=self.date_format)
         columns_order = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         output_rows: list[dict] = []
 
+        # Group by date and weekday, aggregate work_time and lunch_break_duration
         for (_, _), group in df.groupby(["date", "weekday"], sort=False):
             if len(group) <= 1:
                 row = group.iloc[0].copy()
