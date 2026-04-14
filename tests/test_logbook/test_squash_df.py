@@ -298,3 +298,71 @@ def test_squash_df_missing_work_time(logbook: lb.Logbook) -> None:
     # Verify the result was saved correctly
     result_df = logbook.load_logbook()
     assert len(result_df) > 0  # Should have processed the data without errors
+
+
+@pytest.mark.fast
+def test_squash_df_with_commented_originals_keeps_and_marks_source_rows(logbook: lb.Logbook) -> None:
+    """Original rows in aggregated groups are preserved and prefixed with '#--'."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon", "Tue"],
+            "date": ["24.04.2025", "24.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "13:00:00", "08:00:00"],
+            "end_time": ["12:00:00", "17:00:00", "16:00:00"],
+            "lunch_break_duration": [30, 30, 60],
+            "work_time": [4.0, 4.0, 8.0],
+            "case": ["undertime", "undertime", "overtime"],
+            "overtime": [-4.0, -4.0, 0.0],
+        },
+    )
+    logbook.save_logbook(df)
+
+    logbook.squash_df_with_commented_originals()
+    result = logbook.load_logbook()
+    raw_lines = logbook.get_path().read_text(encoding="utf-8").splitlines()
+
+    # Commented originals are kept in file, but ignored by CSV loader.
+    assert any(line.startswith("#--Mon;24.04.2025;08:00:00;12:00:00;30;4.00") for line in raw_lines)
+    assert any(line.startswith("#--Mon;24.04.2025;13:00:00;17:00:00;30;4.00") for line in raw_lines)
+
+    # Loaded data now includes commented rows too.
+    assert len(result) == 4
+    assert list(result[result["date"] == "24.04.2025"]["weekday"]) == ["#--Mon", "#--Mon", "Mon"]
+    assert "Tue" in result["weekday"].to_numpy()
+
+
+@pytest.mark.fast
+def test_squash_df_with_commented_originals_places_aggregate_after_group(logbook: lb.Logbook, relative_precision: float) -> None:
+    """The aggregate row is inserted right after each grouped block."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon", "Tue"],
+            "date": ["24.04.2025", "24.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "13:00:00", "09:00:00"],
+            "end_time": ["12:00:00", "17:00:00", "17:00:00"],
+            "lunch_break_duration": [45, 15, 60],
+            "work_time": [3.5, 4.5, 8.0],
+            "case": ["undertime", "undertime", "overtime"],
+            "overtime": [-4.5, -3.5, 0.0],
+        },
+    )
+    logbook.save_logbook(df)
+
+    logbook.squash_df_with_commented_originals()
+    result = logbook.load_logbook()
+    raw_lines = logbook.get_path().read_text(encoding="utf-8").splitlines()
+
+    # Mon block in file should be [#--Mon, #--Mon, Mon(aggregated)].
+    mon_source_1 = next(i for i, line in enumerate(raw_lines) if line.startswith("#--Mon;24.04.2025;08:00:00;12:00:00;45;3.50"))
+    mon_source_2 = next(i for i, line in enumerate(raw_lines) if line.startswith("#--Mon;24.04.2025;13:00:00;17:00:00;15;4.50"))
+    mon_agg = next(i for i, line in enumerate(raw_lines) if line.startswith("Mon;24.04.2025;08:00:00;17:00:00;60;8.00"))
+    assert mon_source_1 < mon_source_2 < mon_agg
+
+    # Loaded data includes comments and preserves Mon block order.
+    mon_rows = result[result["date"] == "24.04.2025"].reset_index(drop=True)
+    assert list(mon_rows["weekday"]) == ["#--Mon", "#--Mon", "Mon"]
+    mon_loaded = mon_rows.iloc[2]
+    assert mon_loaded["work_time"] == pytest.approx(8.0, rel=relative_precision)
+    assert mon_loaded["lunch_break_duration"] == 60
+    assert mon_loaded["start_time"] == "08:00:00"
+    assert mon_loaded["end_time"] == "17:00:00"

@@ -309,7 +309,8 @@ class Logbook:
         return df.drop_duplicates(keep="first")
 
     def squash_df(self) -> None:
-        """Squash the DataFrame by grouping entries by date and summing work hours.
+        """
+        Squash the DataFrame by grouping entries by date and summing work hours.
 
         This method reads a CSV file, groups the entries by date, and sums the work hours for each date.
         The result is saved back to the same CSV file.
@@ -415,6 +416,110 @@ class Logbook:
         if squashing_occurred:
             msg = f"{const.GREEN}Logbook squashed. {original_count - squashed_count} entries removed.{const.RESET}"
             logger.info(msg)
+
+    def squash_df_with_commented_originals(self) -> None:
+        """Aggregate duplicate date/weekday rows while preserving originals.
+
+        For each date/weekday group with more than one entry, this method:
+        1) keeps the original rows, marked by prefixing `weekday` with ``#--``,
+        2) inserts one aggregated row directly after that original group.
+
+        Groups with a single row remain unchanged.
+        """
+
+        def calculate_overtime_from_work_time(work_time_val: float) -> tuple[str, float]:
+            """
+            Calculate overtime case and amount from work time in hours.
+
+            Parameters
+            ----------
+            work_time_val : float
+                Work time in hours
+
+            Returns
+            -------
+            tuple[str, float]
+                A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
+            """
+            full_day_ = timedelta(hours=self.standard_work_hours)
+            case = "overtime" if timedelta(hours=work_time_val) >= full_day_ else "undertime"
+            overtime = timedelta(hours=work_time_val) - full_day_
+            return case, round(overtime.total_seconds() / self.sec_in_hour, 2)
+
+        def process_work_time_row(row: pd.Series) -> tuple[str, float | str]:
+            """
+            Process work time from a DataFrame row and return case and overtime.
+
+            Parameters
+            ----------
+            row : pd.Series
+                The row to process.
+
+            Returns
+            -------
+            tuple[str, float | str]
+                A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
+
+            Notes
+            -----
+            - Returns empty strings if work_time is missing or empty.
+            """
+            if not row["work_time"] or pd.isna(row["work_time"]):
+                return "", ""
+
+            work_time_val = float(row["work_time"]) if isinstance(row["work_time"], str) else row["work_time"]
+            case, overtime = calculate_overtime_from_work_time(work_time_val)
+            return case, overtime
+
+        def agg_lunch_break(x: pd.Series) -> int | str:
+            """Aggregate lunch_break_duration: sum if any valid values, else empty string."""
+            return x.sum() if x.notna().any() else ""
+
+        def agg_work_time(x: pd.Series) -> float | int:
+            """Aggregate work_time: sum if any valid values, else 0."""
+            return x.sum() if x.notna().any() else 0
+
+        original_df = self.load_logbook()
+        df_no_duplicates = self.remove_duplicate_lines(original_df)
+        df = df_no_duplicates.copy()
+
+        if df.empty:
+            self.save_logbook(df)
+            return
+
+        df["date"] = pd.to_datetime(df["date"], format=self.date_format)
+        columns_order = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
+        output_rows: list[dict] = []
+
+        for (_, _), group in df.groupby(["date", "weekday"], sort=False):
+            if len(group) <= 1:
+                row = group.iloc[0].copy()
+                row["date"] = row["date"].strftime(self.date_format)
+                output_rows.append(row[columns_order].to_dict())
+                continue
+
+            for _, original_row in group.iterrows():
+                marked = original_row.copy()
+                if isinstance(marked["weekday"], str) and not marked["weekday"].startswith("#--"):
+                    marked["weekday"] = f"#--{marked['weekday']}"
+                marked["date"] = marked["date"].strftime(self.date_format)
+                output_rows.append(marked[columns_order].to_dict())
+
+            aggregated = pd.Series(
+                {
+                    "date": group["date"].iloc[0],
+                    "weekday": group["weekday"].iloc[0],
+                    "start_time": group["start_time"].iloc[0],
+                    "end_time": group["end_time"].iloc[-1],
+                    "lunch_break_duration": agg_lunch_break(group["lunch_break_duration"]),
+                    "work_time": agg_work_time(group["work_time"]),
+                },
+            )
+            aggregated["case"], aggregated["overtime"] = process_work_time_row(aggregated)
+            aggregated["date"] = aggregated["date"].strftime(self.date_format)
+            output_rows.append(aggregated[columns_order].to_dict())
+
+        self.save_logbook(pd.DataFrame(output_rows, columns=columns_order))
 
     def find_and_add_missing_days(self) -> None:
         """Find and add missing holidays and weekend days to the log file.
