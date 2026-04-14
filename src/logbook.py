@@ -331,8 +331,8 @@ class Logbook:
                 A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
             """
             full_day_ = timedelta(hours=self.standard_work_hours)
-            case = "overtime" if timedelta(hours=work_time_val) >= full_day_ else "undertime"
 
+            case = "overtime" if timedelta(hours=work_time_val) >= full_day_ else "undertime"
             overtime = timedelta(hours=work_time_val) - full_day_
 
             return case, round(overtime.total_seconds() / self.sec_in_hour, 2)
@@ -361,6 +361,7 @@ class Logbook:
             # Convert work_time to float if it's a string
             work_time_val = float(row["work_time"]) if isinstance(row["work_time"], str) else row["work_time"]
             case, overtime = calculate_overtime_from_work_time(work_time_val)
+
             return case, overtime
 
         def agg_lunch_break(x: pd.Series) -> int | str:
