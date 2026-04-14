@@ -44,7 +44,7 @@ class CSVHandler(BaseFormatHandler):
             If the CSV format is invalid.
         """
         try:
-            return pd.read_csv(file_path, sep=";", keep_default_na=False, comment="#", encoding="utf-8")
+            return pd.read_csv(file_path, sep=";", keep_default_na=False, encoding="utf-8")
         except pd.errors.EmptyDataError as e:
             raise pd.errors.EmptyDataError(f"CSV file is empty: {file_path}") from e
         except pd.errors.ParserError as e:
