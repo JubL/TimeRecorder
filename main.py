@@ -72,7 +72,7 @@ def main() -> None:
     # Create objects from configuration
     tr_line = TimeRecorder(data=time_recorder_config)
     logbook = None
-    if processing_config["use_boot_time"] or analyzer_config["analyze_work_patterns"] or visualization_config["plot"]:
+    if processing_config["log_enabled"] or analyzer_config["analyze_work_patterns"] or visualization_config["plot"]:
         logbook = Logbook(data=logbook_config)
     if logbook is None:
         msg = "No logbook will be created because no processing or visualization is configured."
@@ -92,7 +92,7 @@ def main() -> None:
             logbook.find_and_add_missing_days()
 
         if processing_config["auto_squash"]:
-            logbook.squash_df()
+            logbook.squash_df_with_commented_originals()
 
     if analyzer_config["analyze_work_patterns"]:
         analyzer = Analyzer(data=analyzer_config, logbook_df=logbook.load_logbook())
