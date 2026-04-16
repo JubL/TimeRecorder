@@ -25,6 +25,7 @@ def main() -> None:
     # TODO: Is squashing the log a bad idea?
     # TODO: Maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
     # TODO: OR do squash the logbook, but keep the original lines, prepended with e.g. two dashes?
+    # TODO: In this case, we need to load the logbook with the commented lines, but process only the valid ones (e.g. in the analyzer).
 
     # TODO: Execution takes surprisingly long. Find out where the time is lost. Use a profiler to find the bottlenecks.
     # TODO: Load the logbook only once!
