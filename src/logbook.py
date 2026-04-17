@@ -492,12 +492,21 @@ class Logbook:
 
         # Group by date and weekday, aggregate work_time and lunch_break_duration
         for (_, _), group in df.groupby(["date", "weekday"], sort=False):
+            # ignore lines that already have been squashed, convert the date,  and continue
+            if group.iloc[0].weekday.startswith("#--"):
+                for _, original_row in group.iterrows():
+                    original_row["date"] = original_row["date"].strftime(self.date_format)
+                    output_rows.append(original_row[columns_order].to_dict())
+                continue
+
+            # if it's just one line, convert the date, put to dict and continue
             if len(group) <= 1:
                 row = group.iloc[0].copy()
                 row["date"] = row["date"].strftime(self.date_format)
                 output_rows.append(row[columns_order].to_dict())
                 continue
 
+            # else prepend with "#--", convert the date, put to dict and aggregate
             for _, original_row in group.iterrows():
                 marked = original_row.copy()
                 if isinstance(marked["weekday"], str) and not marked["weekday"].startswith("#--"):
