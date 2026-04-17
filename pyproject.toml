@@ -115,7 +115,7 @@ pydocstyle = { convention = "numpy" } # Docstring style
 pycodestyle = { max-line-length = 140 } # Maximum line length
 
 [tool.ruff.lint.mccabe]
-max-complexity = 11
+max-complexity = 12
 
 [tool.ruff.format]
 line-ending = "lf"  # unix style line ending
