@@ -44,7 +44,6 @@ Error Handling:
 
 import pathlib
 from datetime import datetime, timedelta
-from warnings import deprecated
 
 import holidays
 import pandas as pd
@@ -309,7 +308,6 @@ class Logbook:
         # Remove duplicates, keeping the first occurrence
         return df.drop_duplicates(keep="first")
 
-    @deprecated("Use `squash_df_keep_originals` instead.")
     def squash_df(self) -> None:
         """
         Squash the DataFrame by grouping entries by date and summing work hours.
