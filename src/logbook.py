@@ -417,7 +417,7 @@ class Logbook:
             msg = f"{const.GREEN}Logbook squashed. {original_count - squashed_count} entries removed.{const.RESET}"
             logger.info(msg)
 
-    def squash_df_with_commented_originals(self) -> None:
+    def squash_df_keep_originals(self) -> None:
         """Aggregate duplicate date/weekday rows while preserving originals.
 
         For each date/weekday group with more than one entry, this method:

@@ -317,7 +317,7 @@ def test_squash_df_with_commented_originals_keeps_and_marks_source_rows(logbook:
     )
     logbook.save_logbook(df)
 
-    logbook.squash_df_with_commented_originals()
+    logbook.squash_df_keep_originals()
     result = logbook.load_logbook()
     raw_lines = logbook.get_path().read_text(encoding="utf-8").splitlines()
 
@@ -348,7 +348,7 @@ def test_squash_df_with_commented_originals_places_aggregate_after_group(logbook
     )
     logbook.save_logbook(df)
 
-    logbook.squash_df_with_commented_originals()
+    logbook.squash_df_keep_originals()
     result = logbook.load_logbook()
     raw_lines = logbook.get_path().read_text(encoding="utf-8").splitlines()
 

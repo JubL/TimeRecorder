@@ -93,7 +93,7 @@ def main() -> None:
             logbook.find_and_add_missing_days()
 
         if processing_config["auto_squash"]:
-            logbook.squash_df_with_commented_originals()
+            logbook.squash_df_keep_originals()
 
     if analyzer_config["analyze_work_patterns"]:
         analyzer = Analyzer(data=analyzer_config, logbook_df=logbook.load_logbook())
