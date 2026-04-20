@@ -76,7 +76,7 @@ def main() -> None:
     if processing_config["log_enabled"] or analyzer_config["analyze_work_patterns"] or visualization_config["plot"]:
         logbook = Logbook(data=logbook_config)
     if logbook is None:
-        msg = "No logbook will be created because no processing or visualization is configured."
+        msg = "Since no processing or visualisation has been configured, no logbook will be created."
         logger.debug(msg)
 
     # Process based on configuration
