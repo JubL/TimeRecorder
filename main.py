@@ -32,8 +32,6 @@ def main() -> None:
 
     # TODO: Build an UI for the time recorder with Figma Make?
 
-    # TODO: Have a bar chart that displays the overtime per day as a function of time.
-
     # TODO: Providing the flags --no-boot, --date, and --start altogether is overly complicated if one only wants
     # TODO: to set either the date or the start. It would be better to only provide what is needed.
     # TODO: This is because update_boot_time() is executed much later in the program's flow than update_config().
