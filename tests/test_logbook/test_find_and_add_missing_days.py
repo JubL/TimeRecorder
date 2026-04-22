@@ -24,6 +24,7 @@ def test_find_and_add_missing_days_with_missing_days(logbook: lb.Logbook) -> Non
     )
 
     logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
 
     logbook.find_and_add_missing_days()
 
@@ -61,6 +62,7 @@ def test_find_and_add_missing_days_with_no_missing_days(logbook: lb.Logbook) -> 
     )
 
     logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
 
     logbook.find_and_add_missing_days()
 
@@ -100,6 +102,7 @@ def test_find_and_add_missing_days_with_single_entry(logbook: lb.Logbook) -> Non
     )
 
     logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
 
     logbook.find_and_add_missing_days()
 

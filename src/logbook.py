@@ -111,6 +111,12 @@ class Logbook:
 
         self.holidays_de_he = holidays.country_holidays(data["holidays"], subdiv=data["subdivision"], language="en")
 
+        self.df = self.load_logbook()
+
+    def get_logbook(self) -> pd.DataFrame:
+        """Return the logbook dataframe."""
+        return self.df
+
     def load_logbook(self) -> pd.DataFrame:
         """Load the logbook file into a pandas DataFrame.
 
@@ -251,9 +257,8 @@ class Logbook:
         The data is appended as a new row to the existing logbook.
         The DataFrame is automatically saved after the operation.
         """
-        df = self.load_logbook()
-        df.loc[len(df)] = data
-        self.save_logbook(df)
+        self.df.loc[len(self.df)] = data
+        self.save_logbook(self.df)
 
     @staticmethod
     def remove_duplicate_lines(df: pd.DataFrame) -> pd.DataFrame:
@@ -479,11 +484,8 @@ class Logbook:
             """Aggregate work_time: sum if any valid values, else 0."""
             return x.sum() if x.notna().any() else 0
 
-        # Load original data to compare before and after squashing
-        original_df = self.load_logbook()
-
         # Remove duplicate lines and get warnings about what was removed
-        df_no_duplicates = self.remove_duplicate_lines(original_df)
+        df_no_duplicates = self.remove_duplicate_lines(self.df)
         df = df_no_duplicates.copy()
 
         df["date"] = pd.to_datetime(df["date"], format=self.date_format)
@@ -521,7 +523,7 @@ class Logbook:
                     "start_time": group["start_time"].iloc[0],
                     "end_time": group["end_time"].iloc[-1],
                     "lunch_break_duration": agg_lunch_break(group["lunch_break_duration"]),
-                    "work_time": agg_work_time(group["work_time"]),
+                    "work_time": agg_work_time(pd.to_numeric(group["work_time"], errors="coerce")),
                 },
             )
             aggregated["case"], aggregated["overtime"] = process_work_time_row(aggregated)
@@ -567,24 +569,22 @@ class Logbook:
         - If the log file is empty, it logs a warning and returns an empty list.
         - If there are missing days, it logs a warning for each gap found.
         """
-        df = self.load_logbook()
-
-        if df.empty:
+        if self.df.empty:
             msg = f"{const.RED}Log file is empty. Cannot add weekend days.{const.RESET}"
             logger.warning(msg)
             return []
 
-        df["date"] = pd.to_datetime(df["date"], format=self.date_format)
+        self.df["date"] = pd.to_datetime(self.df["date"], format=self.date_format)
 
         # Check the log for any gaps between consecutive entries
         # a gap is missing if two consecutive entries are not consecutive days
         gaps = []
-        for i in range(len(df) - 1):
-            if (df["date"].iloc[i + 1] - df["date"].iloc[i]).days > 1:
-                msg = f"{const.RED}There are gaps in the logbook between {df['date'].iloc[i].strftime(self.date_format)} "
-                msg += f"and {df['date'].iloc[i + 1].strftime(self.date_format)}{const.RESET}"
+        for i in range(len(self.df) - 1):
+            if (self.df["date"].iloc[i + 1] - self.df["date"].iloc[i]).days > 1:
+                msg = f"{const.RED}There are gaps in the logbook between {self.df['date'].iloc[i].strftime(self.date_format)} "
+                msg += f"and {self.df['date'].iloc[i + 1].strftime(self.date_format)}{const.RESET}"
                 logger.warning(msg)
-                gaps.append((df["date"].iloc[i], df["date"].iloc[i + 1]))
+                gaps.append((self.df["date"].iloc[i], self.df["date"].iloc[i + 1]))
 
         return gaps
 
@@ -611,9 +611,8 @@ class Logbook:
         - The logbook DataFrame is updated in place.
         - The logbook DataFrame is sorted by date.
         """
-        df = self.load_logbook()
         # Convert 'date' column to string format for comparison
-        df["date"] = pd.to_datetime(df["date"], format=self.date_format).dt.strftime(self.date_format)
+        self.df["date"] = pd.to_datetime(self.df["date"], format=self.date_format).dt.strftime(self.date_format)
 
         friday = 4  # Constant for Friday
 
@@ -623,7 +622,7 @@ class Logbook:
             added_weekdays = []
             for date in all_dates:
                 date_str = date.strftime(self.date_format)
-                if any(df["date"] == date_str):
+                if any(self.df["date"] == date_str):
                     continue
 
                 reason = ""
@@ -635,7 +634,7 @@ class Logbook:
                     logger.info(msg)
 
                 added_weekdays.append(date.strftime("%a"))
-                df.loc[len(df)] = {
+                self.df.loc[len(self.df)] = {
                     "weekday": date.strftime("%a"),
                     "date": date_str,
                     "start_time": reason,
@@ -651,8 +650,8 @@ class Logbook:
                 logger.info(msg)
 
         # Sort and save the updated DataFrame back to the log file
-        df = df.sort_values(by="date", key=lambda x: pd.to_datetime(x, format=self.date_format))
-        self.save_logbook(df)
+        self.df = self.df.sort_values(by="date", key=lambda x: pd.to_datetime(x, format=self.date_format))
+        self.save_logbook(self.df)
 
     def get_path(self) -> pathlib.Path:
         """

@@ -27,6 +27,7 @@ def test_add_missing_days_empty_missing_days(logbook: lb.Logbook) -> None:
     df.to_csv(logbook.get_path(), sep=";", index=False)
 
     # Call with empty missing_days list
+    logbook.df = logbook.load_logbook()
     logbook.add_missing_days_to_logbook([])
 
     # Verify the logbook is unchanged
@@ -52,6 +53,7 @@ def test_add_missing_days_saturday(logbook: lb.Logbook, relative_precision: floa
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Missing days: Fri to Mon (should add Saturday and Sunday)
     missing_days = [(datetime(2024, 1, 5), datetime(2024, 1, 8))]
@@ -94,6 +96,7 @@ def test_add_missing_days_sunday(logbook: lb.Logbook, relative_precision: float)
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Missing days: Sat to Mon (should add Sunday)
     missing_days = [(datetime(2024, 1, 6), datetime(2024, 1, 8))]
@@ -136,6 +139,7 @@ def test_add_missing_days_holiday(logbook: lb.Logbook, relative_precision: float
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Missing days: Sun to Tue (should add New Year's Day)
     missing_days = [(datetime(2023, 12, 31), datetime(2024, 1, 2))]
@@ -181,6 +185,7 @@ def test_add_missing_days_multiple_days(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Gap from Fri to Wed (should add Sat, Sun, Mon, Tue)
     gap_boundaries = [(datetime(2024, 1, 5), datetime(2024, 1, 10))]
@@ -224,6 +229,7 @@ def test_add_missing_days_already_exists(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Missing days: Fri to Mon (Saturday already exists)
     missing_days = [(datetime(2024, 1, 5), datetime(2024, 1, 8))]
@@ -257,6 +263,7 @@ def test_add_missing_days_multiple_ranges(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Multiple missing day ranges (Tue and Thu are weekdays, not weekends nor holidays)
     gap_boundaries = [
@@ -288,6 +295,7 @@ def test_add_missing_days_sorts_result(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Gap from Mon to Wed (should add Tuesday)
     gap_boundaries = [(datetime(2024, 1, 1), datetime(2024, 1, 3))]
@@ -320,15 +328,12 @@ def test_add_missing_days_with_mock_load_logbook(logbook: lb.Logbook) -> None:
 
     missing_days = [(datetime(2024, 1, 1), datetime(2024, 1, 3))]
 
+    logbook.df = mock_df
     with (
-        patch.object(logbook, "load_logbook", return_value=mock_df) as mock_load,
         patch.object(logbook, "save_logbook") as mock_save,
         patch("src.logbook.logger") as mock_logger,
     ):
         logbook.add_missing_days_to_logbook(missing_days)
-
-        # Verify load_logbook was called
-        mock_load.assert_called_once()
 
         # Verify save_logbook was called
         mock_save.assert_called_once()
@@ -354,6 +359,7 @@ def test_add_missing_days_edge_case_single_day_gap(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Missing days: Mon to Wed (Tue is weekday, not weekend or holiday)
     missing_days = [(datetime(2024, 1, 1), datetime(2024, 1, 3))]
@@ -382,6 +388,7 @@ def test_add_missing_days_no_weekend_nor_holiday(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     # Missing days: Mon to Thu (Tue, Wed are weekdays, not weekends nor holidays)
     missing_days = [(datetime(2024, 1, 1), datetime(2024, 1, 4))]

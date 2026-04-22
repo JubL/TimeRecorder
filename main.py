@@ -27,9 +27,6 @@ def main() -> None:
     # TODO: OR do squash the logbook, but keep the original lines, prepended with e.g. two dashes?
     # TODO: In this case, we need to load the logbook with the commented lines, but process only the valid ones (e.g. in the analyzer).
 
-    # TODO: Execution takes surprisingly long. Find out where the time is lost. Use a profiler to find the bottlenecks.
-    # TODO: Load the logbook only once!
-
     # TODO: Build an UI for the time recorder with Figma Make?
 
     # TODO: Providing the flags --no-boot, --date, and --start altogether is overly complicated if one only wants
@@ -92,12 +89,12 @@ def main() -> None:
             logbook.squash_df_keep_originals()
 
     if analyzer_config["analyze_work_patterns"]:
-        analyzer = Analyzer(data=analyzer_config, logbook_df=logbook.load_logbook())
+        analyzer = Analyzer(data=analyzer_config, logbook_df=logbook.get_logbook())
         analyzer.generate_summary_report()
         analyzer.tail(analyzer_config["show_tail"])
 
     if visualization_config["plot"]:
-        visualizer = Visualizer(logbook.load_logbook(), visualization_config)
+        visualizer = Visualizer(logbook.get_logbook(), visualization_config)
         visualizer.create_start_end_time_histogram()
         visualizer.create_work_hours_histogram()
         visualizer.create_work_hours_per_weekday_histogram()

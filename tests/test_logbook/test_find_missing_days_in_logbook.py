@@ -40,6 +40,7 @@ def test_find_missing_days_single_entry(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
     with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()
         assert result == []
@@ -63,6 +64,7 @@ def test_find_missing_days_consecutive_days(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
     with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()
         assert result == []
@@ -86,6 +88,7 @@ def test_find_missing_days_single_gap(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()
@@ -118,6 +121,7 @@ def test_find_missing_days_multiple_gaps(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()
@@ -156,6 +160,7 @@ def test_find_missing_days_large_gap(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()
@@ -187,6 +192,7 @@ def test_find_missing_days_unsorted_dates(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()
@@ -222,6 +228,7 @@ def test_find_missing_days_edge_case_same_day(logbook: lb.Logbook) -> None:
         },
     )
     df.to_csv(logbook.get_path(), sep=";", index=False)
+    logbook.df = logbook.load_logbook()
 
     with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()
@@ -246,7 +253,8 @@ def test_find_missing_days_with_mock_load_logbook(logbook: lb.Logbook) -> None:
             "overtime": ["0.0", "0.5"],
         },
     )
-    with patch.object(logbook, "load_logbook", return_value=mock_df), patch("src.logbook.logger") as mock_logger:
+    logbook.df = mock_df
+    with patch("src.logbook.logger") as mock_logger:
         result = logbook.find_missing_days_in_logbook()
         assert len(result) == 1
         start_date, end_date = result[0]

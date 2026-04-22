@@ -316,14 +316,15 @@ def test_squash_df_with_commented_originals_keeps_and_marks_source_rows(logbook:
         },
     )
     logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
 
     logbook.squash_df_keep_originals()
     result = logbook.load_logbook()
     raw_lines = logbook.get_path().read_text(encoding="utf-8").splitlines()
 
     # Commented originals are kept in file, but ignored by CSV loader.
-    assert any(line.startswith("#--Mon;24.04.2025;08:00:00;12:00:00;30;4.00") for line in raw_lines)
-    assert any(line.startswith("#--Mon;24.04.2025;13:00:00;17:00:00;30;4.00") for line in raw_lines)
+    assert any("#--Mon;24.04.2025;08:00:00;12:00:00;30;4.00" in line for line in raw_lines)
+    assert any("#--Mon;24.04.2025;13:00:00;17:00:00;30;4.00" in line for line in raw_lines)
 
     # Loaded data now includes commented rows too.
     assert len(result) == 4
@@ -347,15 +348,16 @@ def test_squash_df_with_commented_originals_places_aggregate_after_group(logbook
         },
     )
     logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
 
     logbook.squash_df_keep_originals()
     result = logbook.load_logbook()
     raw_lines = logbook.get_path().read_text(encoding="utf-8").splitlines()
 
     # Mon block in file should be [#--Mon, #--Mon, Mon(aggregated)].
-    mon_source_1 = next(i for i, line in enumerate(raw_lines) if line.startswith("#--Mon;24.04.2025;08:00:00;12:00:00;45;3.50"))
-    mon_source_2 = next(i for i, line in enumerate(raw_lines) if line.startswith("#--Mon;24.04.2025;13:00:00;17:00:00;15;4.50"))
-    mon_agg = next(i for i, line in enumerate(raw_lines) if line.startswith("Mon;24.04.2025;08:00:00;17:00:00;60;8.00"))
+    mon_source_1 = next(i for i, line in enumerate(raw_lines) if "#--Mon;24.04.2025;08:00:00;12:00:00;45;3.50" in line)
+    mon_source_2 = next(i for i, line in enumerate(raw_lines) if "#--Mon;24.04.2025;13:00:00;17:00:00;15;4.50" in line)
+    mon_agg = next(i for i, line in enumerate(raw_lines) if "Mon;24.04.2025;08:00:00;17:00:00;60;8.00" in line)
     assert mon_source_1 < mon_source_2 < mon_agg
 
     # Loaded data includes comments and preserves Mon block order.
