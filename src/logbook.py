@@ -492,7 +492,7 @@ class Logbook:
 
         # Group by date and weekday, aggregate work_time and lunch_break_duration
         for (_, _), group in df.groupby(["date", "weekday"], sort=False):
-            # ignore lines that already have been squashed, convert the date,  and continue
+            # ignore lines that already have been squashed, convert the date, and continue
             if group.iloc[0].weekday.startswith("#--"):
                 for _, original_row in group.iterrows():
                     original_row["date"] = original_row["date"].strftime(self.date_format)
