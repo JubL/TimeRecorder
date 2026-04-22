@@ -86,10 +86,8 @@ def main() -> None:
     if processing_config["log_enabled"]:
         tr_dict = tr_line.time_report_line_to_dict()
         logbook.record_into_df(tr_dict)
-
         if processing_config["add_missing_days"]:
             logbook.find_and_add_missing_days()
-
         if processing_config["auto_squash"]:
             logbook.squash_df_keep_originals()
 
