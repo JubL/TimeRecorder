@@ -72,6 +72,10 @@ class Analyzer:
         if logbook_df.empty:
             raise ValueError("logbook_df cannot be empty")
 
+        # Filter out rows where 'weekday' matches the comment pattern
+        comment_pattern = r"#--"
+        logbook_df = logbook_df[~logbook_df["weekday"].str.match(comment_pattern, na=False)].copy()
+
         if "overtime" not in logbook_df.columns:
             logger.warning("DataFrame missing 'overtime' column. Some analysis methods may not work.")
 
