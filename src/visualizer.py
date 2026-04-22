@@ -103,6 +103,9 @@ class Visualizer:
         data : dict
             Configuration dictionary with visualization settings
         """
+        if df.empty:
+            raise ValueError("logbook_df cannot be empty")
+
         # Filter out rows where 'weekday' matches the comment pattern
         comment_pattern = r"#--"
         self.df = df[~df["weekday"].str.match(comment_pattern, na=False)].copy()

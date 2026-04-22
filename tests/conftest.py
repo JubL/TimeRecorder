@@ -171,6 +171,7 @@ def analyzer_df_with_overtime() -> pd.DataFrame:
     """Logbook DataFrame with varied overtime for outlier detection tests."""
     return pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri", "Mon"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024", "08.01.2024"],
             "work_time": [8.0, 8.0, 8.0, 8.0, 8.0, 8.0],
             "overtime": [0.5, 0.0, -0.5, 1.0, 0.25, 5.0],  # 5.0 is outlier

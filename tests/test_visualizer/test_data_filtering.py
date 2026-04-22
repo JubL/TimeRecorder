@@ -14,6 +14,7 @@ def test_constructor_data_filtering_exact_months(sample_config: dict) -> None:
     dates = pd.date_range(start="2024-01-01", end="2024-03-31", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -37,6 +38,7 @@ def test_constructor_data_filtering_more_than_num_months(sample_config: dict) ->
     dates = pd.date_range(start="2024-01-01", end="2024-06-30", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -65,6 +67,7 @@ def test_constructor_data_filtering_less_than_num_months(sample_config: dict) ->
     dates = pd.date_range(start="2024-01-01", end="2024-01-31", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -87,6 +90,7 @@ def test_constructor_data_filtering_zero_months(sample_config: dict) -> None:
     dates = pd.date_range(start="2024-01-01", end="2024-12-31", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -110,6 +114,7 @@ def test_constructor_data_filtering_negative_months(sample_config: dict) -> None
     dates = pd.date_range(start="2024-01-01", end="2024-12-31", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -132,6 +137,7 @@ def test_constructor_data_filtering_single_day(sample_config: dict) -> None:
     """Test data filtering with single day of data."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -167,8 +173,24 @@ def test_constructor_data_filtering_irregular_dates(sample_config: dict) -> None
         "15.03.2024",
     ]
 
+    weekdays = [
+        "Mon",
+        "Fri",
+        "Wed",
+        "Mon",
+        "Thu",
+        "Mon",
+        "Saturday",
+        "Thu",
+        "Fri",
+        "Tue",
+        "Sunday",
+        "Fri",
+    ]
+
     df = pd.DataFrame(
         {
+            "weekday": weekdays,
             "date": dates,
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -193,6 +215,7 @@ def test_constructor_data_filtering_leap_year(sample_config: dict) -> None:
     dates = pd.date_range(start="2024-02-01", end="2024-02-29", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -216,6 +239,7 @@ def test_constructor_data_filtering_year_boundary(sample_config: dict) -> None:
     dates = pd.date_range(start="2023-12-01", end="2024-02-29", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -243,6 +267,7 @@ def test_constructor_data_filtering_very_large_num_months(sample_config: dict) -
     dates = pd.date_range(start="2024-01-01", end="2024-12-31", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -266,6 +291,7 @@ def test_constructor_data_filtering_float_num_months(sample_config: dict) -> Non
     dates = pd.date_range(start="2024-01-01", end="2024-03-31", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),

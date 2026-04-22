@@ -27,6 +27,7 @@ def test_mean_and_std_with_varied_overtime(
     """Test mean_and_std with varied overtime values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "work_time": [8.0, 8.0, 8.0],
             "overtime": [1.0, 2.0, 3.0],
@@ -47,6 +48,7 @@ def test_mean_and_std_with_all_nan_returns_none(
     """Test mean_and_std returns (None, None) when all overtime is NaN."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "work_time": [8.0, 8.0],
             "overtime": [float("nan"), float("nan")],
@@ -70,6 +72,7 @@ def test_mean_and_std_with_mixed_valid_and_nan(
     """Test mean_and_std excludes NaN and computes from valid values only."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "work_time": [8.0, 8.0, 8.0],
             "overtime": [1.0, float("nan"), 3.0],

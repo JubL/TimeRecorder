@@ -29,6 +29,7 @@ def test_generate_summary_report_with_valid_data(
     """Test generate_summary_report content with valid overtime data."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "work_time": [8.0, 8.0, 8.0],
             "overtime": [1.0, 0.0, -0.5],
@@ -51,6 +52,7 @@ def test_generate_summary_report_with_no_valid_overtime(
     """Test generate_summary_report when all overtime is NaN."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "work_time": [8.0, 8.0],
             "overtime": [float("nan"), float("nan")],
@@ -74,6 +76,7 @@ def test_generate_summary_report_with_fractional_standard_hours(
     analyzer_data["work_days"] = [0, 1, 2, 3, 4]
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "work_time": [8.0, 8.0, 8.0],
             "overtime": [0.5, 0.0, -0.5],

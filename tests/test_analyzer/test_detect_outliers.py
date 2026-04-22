@@ -44,6 +44,7 @@ def test_detect_outliers_iqr_custom_threshold(
     """Test detect_outliers_iqr with custom threshold."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
             "work_time": [8.0] * 4,
             "overtime": [0.0, 0.0, 0.0, 10.0],

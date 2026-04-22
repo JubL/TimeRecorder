@@ -32,6 +32,7 @@ def test_create_start_end_time_histogram_basic(
     # 3 valid days with simple times
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["07:30:00", "08:00:00", "09:15:00"],
             "end_time": ["16:00:00", "16:30:00", "17:45:00"],
@@ -66,6 +67,7 @@ def test_create_start_end_time_histogram_no_valid_pairs_logs_warning(
     """When no valid start/end time pairs exist, log a warning and return early."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["invalid", "also invalid"],
             "end_time": ["invalid", "also invalid"],

@@ -12,6 +12,7 @@ def test_make_logbook_robust_basic_conversion(sample_config: dict) -> None:
     """Test basic data type conversion and cleaning."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": ["8.0", "7.5"],
@@ -43,6 +44,7 @@ def test_make_logbook_robust_handle_missing_values(sample_config: dict) -> None:
     """Test handling of missing values in work_time and overtime."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": ["8.0", "", "7.5", ""],
@@ -65,6 +67,7 @@ def test_make_logbook_robust_handle_invalid_numeric(sample_config: dict) -> None
     """Test handling of invalid numeric values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": ["8.0", "invalid"],
@@ -87,6 +90,7 @@ def test_make_logbook_robust_negative_overtime_handling(sample_config: dict) -> 
     """Test that negative overtime values are set to 0.0."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": ["8.0", "7.0", "9.0"],
@@ -119,6 +123,7 @@ def test_make_logbook_robust_date_format_parsing(sample_config: dict) -> None:
         full_format = f"{date_format} %H:%M:%S"
         df = pd.DataFrame(
             {
+                "weekday": ["Mon"],
                 "date": [date_str],
                 "start_time": ["08:00:00"],
                 "work_time": ["8.0"],
@@ -142,6 +147,7 @@ def test_make_logbook_robust_mixed_data_types(sample_config: dict) -> None:
     """Test handling of mixed data types in numeric columns."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, "7.5", 9],
@@ -168,27 +174,11 @@ def test_make_logbook_robust_mixed_data_types(sample_config: dict) -> None:
 
 
 @pytest.mark.fast
-def test_make_logbook_robust_empty_dataframe(sample_config: dict) -> None:
-    """Test make_logbook_robust with empty DataFrame."""
-    df = pd.DataFrame(columns=["date", "work_time", "overtime"])
-
-    visualization_config = cu.get_visualization_config(sample_config)
-    visualization_config["num_months"] = 12
-
-    visualizer = viz.Visualizer(df, visualization_config)
-
-    # Should handle empty DataFrame gracefully
-    assert visualizer.df.empty
-    assert "date" in visualizer.df.columns
-    assert "work_time" in visualizer.df.columns
-    assert "overtime" in visualizer.df.columns
-
-
-@pytest.mark.fast
 def test_make_logbook_robust_zero_overtime_preserved(sample_config: dict) -> None:
     """Test that zero overtime values are preserved."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": ["8.0", "8.0"],

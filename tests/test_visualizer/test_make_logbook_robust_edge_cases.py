@@ -12,6 +12,7 @@ def test_make_logbook_robust_invalid_time_handling(sample_config: dict) -> None:
     """Test make_logbook_robust with invalid time strings."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "invalid_time", "25:00:00"],  # Invalid times
             "work_time": [8.0, 7.5, 8.5],
@@ -34,6 +35,7 @@ def test_make_logbook_robust_mixed_valid_invalid_times(sample_config: dict) -> N
     """Test make_logbook_robust with mix of valid and invalid times."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
             "start_time": ["08:00:00", "invalid", "14:30:15", ""],  # Mixed validity
             "work_time": [8.0, 7.5, 8.5, 7.0],
@@ -60,6 +62,7 @@ def test_make_logbook_robust_none_start_time(sample_config: dict) -> None:
     """Test make_logbook_robust with None start_time values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": [None, "08:00:00"],
             "work_time": [8.0, 7.5],
@@ -82,6 +85,7 @@ def test_make_logbook_robust_nan_start_time(sample_config: dict) -> None:
     """Test make_logbook_robust with NaN/NA start_time values (treated as invalid)."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": [pd.NA, "08:00:00"],
             "work_time": [8.0, 7.5],
@@ -104,6 +108,7 @@ def test_make_logbook_robust_extreme_numeric_values(sample_config: dict) -> None
     """Test make_logbook_robust with extreme numeric values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [1e10, -1e10, 0.0],  # Very large, very negative, zero
@@ -129,6 +134,7 @@ def test_make_logbook_robust_string_numeric_conversion(sample_config: dict) -> N
     """Test make_logbook_robust with various string numeric formats."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": ["8", "8.5", "8,5", "8.5e0"],  # Different string formats
@@ -157,6 +163,7 @@ def test_make_logbook_robust_boolean_values(sample_config: dict) -> None:
     """Test make_logbook_robust with boolean values in numeric columns."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [True, False],  # Boolean values
@@ -186,6 +193,7 @@ def test_make_logbook_robust_complex_invalid_strings(sample_config: dict) -> Non
     """Test make_logbook_robust with complex invalid string values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": ["8.5.5", "8-5", "8+5", "8*5"],  # Complex invalid strings
@@ -218,6 +226,7 @@ def test_make_logbook_robust_unicode_values(sample_config: dict) -> None:
     """Test make_logbook_robust with unicode numeric values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": ["8", "8.5"],  # Unicode numbers

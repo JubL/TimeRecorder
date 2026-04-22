@@ -12,6 +12,7 @@ def test_is_valid_time_with_timezone(sample_config: dict) -> None:
     """Test is_valid_time with timezone information."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -35,6 +36,7 @@ def test_is_valid_time_without_timezone(sample_config: dict) -> None:
     """Test is_valid_time without timezone information."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -58,6 +60,7 @@ def test_is_valid_time_invalid_formats(sample_config: dict) -> None:
     """Test is_valid_time with invalid time formats."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -84,6 +87,7 @@ def test_is_valid_time_none_and_na_values(sample_config: dict) -> None:
     """Test is_valid_time with None and NaN values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -131,6 +135,7 @@ def test_is_valid_time_different_time_formats(sample_config: dict) -> None:
         full_format = f"%d.%m.%Y {time_format}"
         df = pd.DataFrame(
             {
+                "weekday": ["Mon"],
                 "date": ["01.01.2024"],
                 "start_time": [time_str],
                 "work_time": [8.0],
@@ -151,6 +156,7 @@ def test_is_valid_time_timezone_parsing_edge_cases(sample_config: dict) -> None:
     """Test is_valid_time with timezone parsing edge cases."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -178,6 +184,7 @@ def test_is_valid_time_malformed_timezone(sample_config: dict) -> None:
     """Test is_valid_time with malformed timezone information."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -201,6 +208,7 @@ def test_is_valid_time_boundary_values(sample_config: dict) -> None:
     """Test is_valid_time with boundary time values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -227,6 +235,7 @@ def test_is_valid_time_whitespace_handling(sample_config: dict) -> None:
     """Test is_valid_time with various whitespace scenarios."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],

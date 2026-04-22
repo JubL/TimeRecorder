@@ -13,6 +13,7 @@ def test_constructor_basic_initialization(sample_config: dict) -> None:
     # Create sample DataFrame
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5],
@@ -41,6 +42,7 @@ def test_constructor_all_color_schemes(sample_config: dict) -> None:
     """Test Visualizer initialization with all available color schemes."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -66,6 +68,7 @@ def test_constructor_data_filtering(sample_config: dict) -> None:
     dates = pd.date_range(start="2024-01-01", end="2024-12-31", freq="D")
     df = pd.DataFrame(
         {
+            "weekday": [d.weekday for d in dates],
             "date": [d.strftime("%d.%m.%Y") for d in dates],
             "start_time": ["08:00:00"] * len(dates),
             "work_time": [8.0] * len(dates),
@@ -88,6 +91,7 @@ def test_constructor_format_parsing(sample_config: dict) -> None:
     """Test constructor correctly parses different format strings."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["2024-01-01"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -110,6 +114,7 @@ def test_constructor_work_days_custom(sample_config: dict) -> None:
     """Test constructor with custom work days."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -129,24 +134,11 @@ def test_constructor_work_days_custom(sample_config: dict) -> None:
 
 
 @pytest.mark.fast
-def test_constructor_empty_dataframe(sample_config: dict) -> None:
-    """Test constructor with empty DataFrame."""
-    df = pd.DataFrame(columns=["date", "work_time", "overtime"])
-
-    visualization_config = cu.get_visualization_config(sample_config)
-    visualization_config["num_months"] = 12
-
-    visualizer = viz.Visualizer(df, visualization_config)
-
-    assert visualizer.df.empty
-    assert len(visualizer.work_colors) == 6
-
-
-@pytest.mark.fast
 def test_constructor_standard_work_hours_float(sample_config: dict) -> None:
     """Test constructor with float standard work hours."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],

@@ -28,6 +28,7 @@ def test_get_weekly_hours_with_overtime(
     """Test get_weekly_hours_from_log with overtime values."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "work_time": [8.0, 8.0, 8.0],
             "overtime": [1.0, 2.0, 0.0],
@@ -48,6 +49,7 @@ def test_get_weekly_hours_no_work_days(
     """Test get_weekly_hours_from_log returns 0 when no work days."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "work_time": [0.0, 0.0],
             "overtime": [0.0, 0.0],
@@ -70,6 +72,7 @@ def test_get_weekly_hours_non_numeric_work_time_returns_zero(
     """Test get_weekly_hours_from_log returns 0 on conversion error."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "work_time": ["invalid", "also_invalid"],
             "overtime": [0.0, 0.0],
@@ -91,6 +94,7 @@ def test_get_weekly_hours_custom_work_days(
     analyzer_data["work_days"] = [0, 1, 2]  # 3 days per week
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "work_time": [8.0, 8.0],
             "overtime": [0.0, 0.0],
@@ -112,6 +116,7 @@ def test_get_weekly_hours_partial_work_days(
     """Test get_weekly_hours_from_log with some zero work_time days."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "work_time": [8.0, 0.0, 8.0],
             "overtime": [0.5, 0.0, 0.5],

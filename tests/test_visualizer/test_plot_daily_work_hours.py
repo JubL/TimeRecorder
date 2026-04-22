@@ -13,6 +13,7 @@ def test_plot_daily_work_hours_basic_functionality(sample_config: dict) -> None:
     # Create sample data for one week
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5, 8.5, 8.0, 7.0],
@@ -43,6 +44,7 @@ def test_plot_daily_work_hours_work_time_adjustment(sample_config: dict) -> None
     """Test that work_time is correctly adjusted when total exceeds standard hours."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [9.0, 10.0],  # Both exceed standard 8 hours
@@ -71,6 +73,7 @@ def test_plot_daily_work_hours_no_adjustment_needed(sample_config: dict) -> None
     """Test that work_time is not adjusted when total doesn't exceed standard hours."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [7.0, 8.0],  # Both within or at standard hours
@@ -99,6 +102,7 @@ def test_plot_daily_work_hours_mixed_scenarios(sample_config: dict) -> None:
     """Test work_time adjustment with mixed scenarios."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": [7.0, 8.0, 9.0, 10.0],
@@ -122,21 +126,6 @@ def test_plot_daily_work_hours_mixed_scenarios(sample_config: dict) -> None:
     assert visualizer.df["work_time"].iloc[1] == 8.0
     assert visualizer.df["work_time"].iloc[2] == 8.0  # 9.0 - 1.0
     assert visualizer.df["work_time"].iloc[3] == 8.0  # 10.0 - 2.0
-
-
-@pytest.mark.fast
-def test_plot_daily_work_hours_empty_dataframe(sample_config: dict) -> None:
-    """Test plotting with empty DataFrame."""
-    df = pd.DataFrame(columns=["date", "work_time", "overtime"])
-
-    visualization_config = cu.get_visualization_config(sample_config)
-    visualization_config["num_months"] = 12
-
-    visualizer = viz.Visualizer(df, visualization_config)
-
-    # Should handle empty DataFrame gracefully
-    visualizer.create_daily_work_hours_plot()
-    assert visualizer.df.empty
 
 
 @pytest.mark.fast

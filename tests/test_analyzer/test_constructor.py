@@ -45,7 +45,11 @@ def test_constructor_not_dataframe_raises(analyzer_data: dict) -> None:
 def test_constructor_missing_overtime_column_raises(analyzer_data: dict) -> None:
     """Test that missing overtime column raises KeyError (constructor requires it)."""
     df = pd.DataFrame(
-        {"date": ["01.01.2024"], "work_time": [8.0]},
+        {
+            "weekday": ["Mon"],
+            "date": ["01.01.2024"],
+            "work_time": [8.0],
+        },
     )
 
     with pytest.raises(KeyError, match="overtime"):

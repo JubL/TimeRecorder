@@ -13,6 +13,7 @@ def test_get_rolling_average_normal_operation(sample_config: dict, relative_prec
     """Test get_rolling_average with normal operation and multiple data points."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "wed", "Thu", "Fri"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5, 9.0, 8.5, 7.0],
@@ -39,6 +40,7 @@ def test_get_rolling_average_different_window_sizes(sample_config: dict, relativ
     """Test get_rolling_average with different window sizes."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024"],
             "start_time": ["08:00:00"] * 5,
             "work_time": [8.0, 7.0, 9.0, 8.0, 7.0],
@@ -72,6 +74,7 @@ def test_get_rolling_average_single_data_point(sample_config: dict) -> None:
     """Test get_rolling_average with a single data point."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -94,6 +97,7 @@ def test_get_rolling_average_filters_positive_work_time(sample_config: dict, rel
     """Test that get_rolling_average only includes rows with work_time > 0."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
             "start_time": ["08:00:00"] * 4,
             "work_time": [8.0, 0.0, -8.0, 7.5],  # Mix of positive, zero, and negative
@@ -119,6 +123,7 @@ def test_get_rolling_average_zero_window(sample_config: dict) -> None:
     """Test get_rolling_average returns 0.0 when window is 0 (lines 185-186)."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5, 9.0],
@@ -141,6 +146,7 @@ def test_get_rolling_average_none_window(sample_config: dict) -> None:
     """Test get_rolling_average returns 0.0 when window is None (falsy)."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5],
@@ -162,6 +168,7 @@ def test_get_rolling_average_false_window(sample_config: dict) -> None:
     """Test get_rolling_average returns 0.0 when window is False (falsy)."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5],
@@ -179,31 +186,11 @@ def test_get_rolling_average_false_window(sample_config: dict) -> None:
 
 
 @pytest.mark.fast
-def test_get_rolling_average_empty_dataframe(sample_config: dict) -> None:
-    """Test get_rolling_average with empty DataFrame."""
-    df = pd.DataFrame(
-        {
-            "date": [],
-            "start_time": [],
-            "work_time": [],
-            "overtime": [],
-        },
-    )
-
-    visualization_config = cu.get_visualization_config(sample_config)
-    visualization_config["num_months"] = 12
-    visualizer = viz.Visualizer(df, visualization_config)
-    result = visualizer.get_rolling_average(window=5)
-
-    assert isinstance(result, pd.Series)
-    assert len(result) == 0
-
-
-@pytest.mark.fast
 def test_get_rolling_average_all_zero_work_time(sample_config: dict) -> None:
     """Test get_rolling_average when all work_time values are 0 or negative."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00"] * 3,
             "work_time": [0.0, -8.0, 0.0],  # All zero or negative
@@ -226,6 +213,7 @@ def test_get_rolling_average_default_window(sample_config: dict) -> None:
     """Test get_rolling_average with default window parameter."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024"],
             "start_time": ["08:00:00"] * 5,
             "work_time": [8.0, 7.5, 9.0, 8.5, 7.0],

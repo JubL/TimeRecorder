@@ -31,6 +31,7 @@ def test_visualizer_integration_complete_workflow(sample_config: dict) -> None:
 
             work_data.append(
                 {
+                    "weekday": date.weekday,
                     "date": date.strftime("%d.%m.%Y"),
                     "start_time": "08:00:00",
                     "work_time": base_hours,
@@ -69,6 +70,7 @@ def test_visualizer_integration_multiple_months(sample_config: dict) -> None:
 
     work_data = [
         {
+            "weekday": date.weekday,
             "date": date.strftime("%d.%m.%Y"),
             "start_time": "08:00:00",
             "work_time": 8.0,
@@ -96,6 +98,7 @@ def test_visualizer_integration_all_color_schemes(sample_config: dict) -> None:
     """Test visualizer with all available color schemes."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 8.5, 7.5],
@@ -135,6 +138,7 @@ def test_visualizer_integration_different_formats(sample_config: dict) -> None:
         full_format = f"{date_format} %H:%M:%S"
         df = pd.DataFrame(
             {
+                "weekday": ["Mon"],
                 "date": [date_str],
                 "start_time": ["08:00:00"],
                 "work_time": [8.0],
@@ -162,6 +166,7 @@ def test_visualizer_integration_edge_cases(sample_config: dict) -> None:
     # Test with very large overtime
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["07:00:00", "07:00:00"],
             "work_time": [12.0, 16.0],
@@ -186,6 +191,7 @@ def test_visualizer_integration_custom_work_days(sample_config: dict) -> None:
     # Create data for a week
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri", "Saturday", "Sunday"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024", "06.01.2024", "07.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0],
@@ -212,6 +218,7 @@ def test_visualizer_integration_mixed_data_quality(sample_config: dict) -> None:
     """Test visualizer with mixed data quality (missing values, invalid data)."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00", "08:00:00"],
             "work_time": ["8.0", "", "invalid", "7.5"],
@@ -242,6 +249,7 @@ def test_visualizer_integration_standard_work_hours_variations(sample_config: di
     """Test visualizer with different standard work hours."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [7.5, 8.5],

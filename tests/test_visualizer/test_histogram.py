@@ -24,6 +24,7 @@ def test_create_histogram_with_positive_work_hours(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5, 9.0],
@@ -61,6 +62,7 @@ def test_create_histogram_empty_work_hours_returns_early(
     """Test create_histogram logs warning and returns when no positive work hours."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [0.0, 0.0],
@@ -88,6 +90,7 @@ def test_create_histogram_empty_work_hours_no_subplots(
     """Test create_histogram does not create subplots when work_hours is empty."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [0.0, 0.0],
@@ -117,6 +120,7 @@ def test_create_histogram_uses_histogram_bin_width(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -150,6 +154,7 @@ def test_create_work_hours_per_weekday_histogram(
     # 01.01.2024=Mon, 02.01.2024=Tue, 03.01.2024=Wed, 04.01.2024=Thu, 05.01.2024=Fri
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "05.01.2024"],
             "start_time": ["08:00:00"] * 5,
             "work_time": [8.0, 8.0, 8.0, 8.0, 8.0],
@@ -190,6 +195,7 @@ def test_create_work_hours_per_weekday_histogram_uneven_distribution(
     # Mon: avg (12+4)/2=8, Tue: 8, Wed: 8, Thu: 8, Fri: 0.
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed", "Thu", "Mon"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024", "04.01.2024", "08.01.2024"],
             "start_time": ["08:00:00"] * 5,
             "work_time": [12.0, 8.0, 8.0, 8.0, 4.0],
@@ -214,6 +220,7 @@ def test_create_work_hours_per_weekday_histogram_empty_returns_early(
     """Test create_work_hours_per_weekday_histogram logs warning when no positive work hours."""
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [0.0, 0.0],

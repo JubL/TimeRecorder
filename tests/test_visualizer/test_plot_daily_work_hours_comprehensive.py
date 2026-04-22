@@ -25,6 +25,7 @@ def test_plot_daily_work_hours_matplotlib_calls(mock_subplots: Mock, sample_conf
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5],
@@ -61,6 +62,7 @@ def test_plot_daily_work_hours_axis_configuration(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5],
@@ -100,6 +102,7 @@ def test_plot_daily_work_hours_bar_calls(mock_subplots: Mock, sample_config: dic
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5, 8.5],
@@ -137,6 +140,7 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue", "Wed"],
             "date": ["01.01.2024", "02.01.2024", "03.01.2024"],
             "start_time": ["08:00:00", "08:00:00", "08:00:00"],
             "work_time": [7.0, 8.0, 10.0],  # 7.0 <= 8.0, 8.0 <= 8.0, 10.0 > 8.0
@@ -164,33 +168,6 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(
 
 @pytest.mark.fast
 @patch("matplotlib.pyplot.subplots")
-def test_plot_daily_work_hours_empty_dataframe(
-    mock_subplots: Mock,
-    sample_config: dict,
-) -> None:
-    """Test plot_daily_work_hours with empty DataFrame."""
-    # Setup mock
-    mock_fig = Mock()
-    mock_ax = Mock()
-    mock_subplots.return_value = (mock_fig, mock_ax)
-
-    # Mock tick labels to be iterable
-    mock_ax.xaxis.get_ticklabels.return_value = []
-
-    df = pd.DataFrame(columns=["date", "work_time", "overtime"])
-
-    visualization_config = cu.get_visualization_config(sample_config)
-    visualization_config["num_months"] = 12
-
-    visualizer = viz.Visualizer(df, visualization_config)
-    visualizer.create_daily_work_hours_plot()
-
-    # Should still make matplotlib calls even with empty data
-    mock_subplots.assert_called_once()
-
-
-@pytest.mark.fast
-@patch("matplotlib.pyplot.subplots")
 def test_plot_daily_work_hours_single_work_day(
     mock_subplots: Mock,
     sample_config: dict,
@@ -207,6 +184,7 @@ def test_plot_daily_work_hours_single_work_day(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon"],
             "date": ["01.01.2024"],  # Monday
             "start_time": ["08:00:00"],
             "work_time": [8.0],
@@ -244,6 +222,7 @@ def test_plot_daily_work_hours_no_work_days(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5],
@@ -282,6 +261,7 @@ def test_plot_daily_work_hours_all_negative_work_time(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["invalid", "invalid"],  # Invalid times
             "work_time": [8.0, 7.5],  # Will be set to -8.0 due to invalid times
@@ -318,6 +298,7 @@ def test_plot_daily_work_hours_zero_work_time(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [0.0, 0.0],  # Zero work time
@@ -355,6 +336,7 @@ def test_plot_daily_work_hours_color_scheme_usage(
 
     df = pd.DataFrame(
         {
+            "weekday": ["Mon", "Tue"],
             "date": ["01.01.2024", "02.01.2024"],
             "start_time": ["08:00:00", "08:00:00"],
             "work_time": [8.0, 7.5],
