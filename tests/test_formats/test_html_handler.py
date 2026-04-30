@@ -1,6 +1,7 @@
 """Tests for the HTMLHandler class in src.formats.html_handler."""
 
 import pathlib
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
@@ -90,6 +91,16 @@ def test_load_empty_file(tmp_path: pathlib.Path) -> None:
         HTMLHandler.load(file_path)
 
 
+@pytest.mark.fast
+def test_load_raises_when_read_html_returns_no_tables(tmp_path: pathlib.Path) -> None:
+    """Test explicit no-table branch when read_html returns empty list."""
+    file_path = tmp_path / "no_tables.html"
+    file_path.write_text("<html><body></body></html>", encoding="utf-8")
+
+    with patch("src.formats.html_handler.pd.read_html", return_value=[]), pytest.raises(ValueError, match="Invalid HTML format"):
+        HTMLHandler.load(file_path)
+
+
 # Tests for save method
 @pytest.mark.fast
 def test_save_creates_file(tmp_path: pathlib.Path, sample_html_data: pd.DataFrame) -> None:
@@ -117,6 +128,30 @@ def test_save_empty_dataframe(tmp_path: pathlib.Path) -> None:
     loaded = HTMLHandler.load(file_path)
     assert len(loaded) == 0
     assert list(loaded.columns) == ["weekday", "date", "work_time"]
+
+
+@pytest.mark.fast
+def test_save_permission_error_wrapped(tmp_path: pathlib.Path, sample_html_data: pd.DataFrame) -> None:
+    """Test that PermissionError is wrapped with helpful context."""
+    file_path = tmp_path / "permission_denied.html"
+
+    with (
+        patch.object(pathlib.Path, "write_text", side_effect=PermissionError("denied")),
+        pytest.raises(PermissionError, match="Permission denied when saving HTML to"),
+    ):
+        HTMLHandler.save(sample_html_data, file_path)
+
+
+@pytest.mark.fast
+def test_save_os_error_wrapped(tmp_path: pathlib.Path, sample_html_data: pd.DataFrame) -> None:
+    """Test that generic OS errors are wrapped with file context."""
+    file_path = tmp_path / "os_error.html"
+
+    with (
+        patch.object(pathlib.Path, "write_text", side_effect=OSError("disk full")),
+        pytest.raises(OSError, match="OS error while saving HTML to"),
+    ):
+        HTMLHandler.save(sample_html_data, file_path)
 
 
 # Round-trip tests

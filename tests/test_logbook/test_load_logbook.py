@@ -220,3 +220,36 @@ def test_load_logbook_valid_case_values(logbook: lb.Logbook) -> None:
     result = logbook.load_logbook()
     assert len(result) == 2
     assert list(result["case"]) == ["overtime", "undertime"]
+
+
+@pytest.mark.fast
+def test_get_logbook_returns_internal_dataframe(logbook: lb.Logbook) -> None:
+    """get_logbook returns the current in-memory DataFrame."""
+    internal_df = logbook.get_logbook()
+    assert internal_df is logbook.df
+
+
+@pytest.mark.fast
+def test_save_logbook_keeps_non_numeric_values_in_time_columns(logbook: lb.Logbook) -> None:
+    """save_logbook keeps non-numeric values when decimal formatting fails."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon"],
+            "date": ["01.01.2024"],
+            "start_time": ["09:00:00"],
+            "end_time": ["17:00:00"],
+            "lunch_break_duration": [60],
+            "work_time": ["not-a-number"],
+            "case": ["overtime"],
+            "overtime": ["bad-value"],
+        },
+    )
+
+    with patch("src.logbook.formats.get_format_handler") as mock_get_handler:
+        mock_handler = mock_get_handler.return_value
+
+        logbook.save_logbook(df)
+
+        saved_df = mock_handler.save.call_args[0][0]
+        assert saved_df.loc[0, "work_time"] == "not-a-number"
+        assert saved_df.loc[0, "overtime"] == "bad-value"

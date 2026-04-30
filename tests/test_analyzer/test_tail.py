@@ -306,3 +306,53 @@ def test_tail_with_invalid_n_parameter(analyzer_data: dict, sample_logbook_df: p
         # Test with zero n
         analyzer_instance.tail(n=0)
         mock_logger.info.assert_not_called()
+
+
+@pytest.mark.fast
+def test_tail_formats_empty_string_as_blank(analyzer_data: dict) -> None:
+    """tail() keeps empty string values blank in formatted output."""
+    df_with_empty_strings = pd.DataFrame(
+        {
+            "weekday": ["Mon"],
+            "date": ["01.01.2024"],
+            "start_time": ["08:00:00"],
+            "end_time": ["17:00:00"],
+            "lunch_break_duration": ["1.0"],
+            "work_time": [""],
+            "case": ["undertime"],
+            "overtime": [""],
+        },
+    )
+    analyzer_instance = Analyzer(analyzer_data, df_with_empty_strings)
+
+    with patch("src.analyzer.logger") as mock_logger:
+        analyzer_instance.tail(n=1)
+        mock_logger.info.assert_called_once()
+        logged_output = mock_logger.info.call_args[0][0]
+        assert "Recent Entries" in logged_output
+        assert "01.01.2024" in logged_output
+
+
+@pytest.mark.fast
+def test_tail_formats_invalid_string_as_blank(analyzer_data: dict) -> None:
+    """tail() falls back to blank for non-numeric values."""
+    df_with_invalid_strings = pd.DataFrame(
+        {
+            "weekday": ["Mon"],
+            "date": ["01.01.2024"],
+            "start_time": ["08:00:00"],
+            "end_time": ["17:00:00"],
+            "lunch_break_duration": ["1.0"],
+            "work_time": ["not-a-number"],
+            "case": ["undertime"],
+            "overtime": ["oops"],
+        },
+    )
+    analyzer_instance = Analyzer(analyzer_data, df_with_invalid_strings)
+
+    with patch("src.analyzer.logger") as mock_logger:
+        analyzer_instance.tail(n=1)
+        mock_logger.info.assert_called_once()
+        logged_output = mock_logger.info.call_args[0][0]
+        assert "Recent Entries" in logged_output
+        assert "01.01.2024" in logged_output

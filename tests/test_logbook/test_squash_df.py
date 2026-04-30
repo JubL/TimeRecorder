@@ -368,3 +368,57 @@ def test_squash_df_with_commented_originals_places_aggregate_after_group(logbook
     assert mon_loaded["lunch_break_duration"] == 60
     assert mon_loaded["start_time"] == "08:00:00"
     assert mon_loaded["end_time"] == "17:00:00"
+
+
+@pytest.mark.fast
+def test_squash_df_keep_originals_empty_work_time_creates_blank_case_and_overtime(logbook: lb.Logbook) -> None:
+    """Aggregated row keeps case/overtime blank when work_time is empty."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon"],
+            "date": ["24.04.2025", "24.04.2025"],
+            "start_time": ["08:00:00", "09:00:00"],
+            "end_time": ["10:00:00", "11:00:00"],
+            "lunch_break_duration": [30, 15],
+            "work_time": ["", ""],
+            "case": ["", ""],
+            "overtime": ["", ""],
+        },
+    )
+    logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
+
+    logbook.squash_df_keep_originals()
+    result = logbook.load_logbook()
+
+    aggregated = result[(result["date"] == "24.04.2025") & (result["weekday"] == "Mon")].iloc[0]
+    assert not aggregated["case"]
+    assert not aggregated["overtime"]
+
+
+@pytest.mark.fast
+def test_squash_df_keep_originals_preserves_already_commented_rows(logbook: lb.Logbook) -> None:
+    """Rows already marked with '#--' are copied as-is and skipped from aggregation."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["#--Mon", "#--Mon", "Tue"],
+            "date": ["24.04.2025", "24.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "09:00:00", "08:00:00"],
+            "end_time": ["10:00:00", "11:00:00", "16:00:00"],
+            "lunch_break_duration": [30, 15, 60],
+            "work_time": [2.0, 2.0, 8.0],
+            "case": ["undertime", "undertime", "overtime"],
+            "overtime": [-6.0, -6.0, 0.0],
+        },
+    )
+    logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
+
+    logbook.squash_df_keep_originals()
+    result = logbook.load_logbook()
+
+    commented_rows = result[result["weekday"] == "#--Mon"]
+    assert len(commented_rows) == 2
+    assert list(commented_rows["start_time"]) == ["08:00:00", "09:00:00"]
+    # No aggregated "Mon" row should be added for already-commented groups.
+    assert result[(result["date"] == "24.04.2025") & (result["weekday"] == "Mon")].empty
