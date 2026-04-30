@@ -38,7 +38,7 @@ def main() -> None:
 
     args = ap.run_arg_parser()
 
-    # Create default config if it doesn't exist
+    # Create default config if it doesn't exist, then load it
     config_path = pathlib.Path(args.config or "config.yaml")
     if not config_path.exists():
         cu.create_default_config(config_path)
