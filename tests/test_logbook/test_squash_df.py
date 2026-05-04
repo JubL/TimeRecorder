@@ -422,3 +422,33 @@ def test_squash_df_keep_originals_preserves_already_commented_rows(logbook: lb.L
     assert list(commented_rows["start_time"]) == ["08:00:00", "09:00:00"]
     # No aggregated "Mon" row should be added for already-commented groups.
     assert result[(result["date"] == "24.04.2025") & (result["weekday"] == "Mon")].empty
+
+
+@pytest.mark.fast
+def test_squash_df_keep_originals_removes_stale_intermediate_aggregate(logbook: lb.Logbook, relative_precision: float) -> None:
+    """When adding a new line to an already squashed day, old aggregate is removed."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["#--Mon", "#--Mon", "Mon", "Mon", "Tue"],
+            "date": ["24.04.2025", "24.04.2025", "24.04.2025", "24.04.2025", "25.04.2025"],
+            "start_time": ["08:00:00", "13:00:00", "08:00:00", "18:00:00", "08:00:00"],
+            "end_time": ["12:00:00", "17:00:00", "17:00:00", "19:00:00", "16:00:00"],
+            "lunch_break_duration": [30, 30, 60, 0, 60],
+            "work_time": [4.0, 4.0, 8.0, 1.0, 8.0],
+            "case": ["undertime", "undertime", "overtime", "undertime", "overtime"],
+            "overtime": [-4.0, -4.0, 0.0, -7.0, 0.0],
+        },
+    )
+    logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
+
+    logbook.squash_df_keep_originals()
+    result = logbook.load_logbook()
+
+    mon_rows = result[result["date"] == "24.04.2025"].reset_index(drop=True)
+    assert len(mon_rows) == 4
+    assert list(mon_rows["weekday"]) == ["#--Mon", "#--Mon", "#--Mon", "Mon"]
+    assert list(mon_rows["start_time"]) == ["08:00:00", "13:00:00", "18:00:00", "08:00:00"]
+    assert list(mon_rows["end_time"]) == ["12:00:00", "17:00:00", "19:00:00", "19:00:00"]
+    assert list(mon_rows["work_time"][:3]) == [4.0, 4.0, 1.0]
+    assert mon_rows.iloc[3]["work_time"] == pytest.approx(9.0, rel=relative_precision)

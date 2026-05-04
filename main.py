@@ -22,11 +22,6 @@ def main() -> None:
 
     # TODO: Shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
-    # TODO: Is squashing the log a bad idea?
-    # TODO: Maybe don't squash the logbook, but only the pandas dataframe for the presentation and visualization of the data?
-    # TODO: OR do squash the logbook, but keep the original lines, prepended with e.g. two dashes?
-    # TODO: In this case, we need to load the logbook with the commented lines, but process only the valid ones (e.g. in the analyzer).
-
     # TODO: Build an UI for the time recorder with Figma Make?
 
     # TODO: Providing the flags --no-boot, --date, and --start altogether is overly complicated if one only wants

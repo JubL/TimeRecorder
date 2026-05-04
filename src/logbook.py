@@ -317,6 +317,8 @@ class Logbook:
         """
         Squash the DataFrame by grouping entries by date and summing work hours.
 
+        DEPRECATED: Use squash_df_keep_originals() instead.
+
         This method reads a CSV file, groups the entries by date, and sums the work hours for each date.
         The result is saved back to the same CSV file.
 
@@ -431,106 +433,152 @@ class Logbook:
 
         Groups with a single row remain unchanged.
         """
-
-        def calculate_overtime_from_work_time(work_time_val: float) -> tuple[str, float]:
-            """
-            Calculate overtime case and amount from work time in hours.
-
-            Parameters
-            ----------
-            work_time_val : float
-                Work time in hours
-
-            Returns
-            -------
-            tuple[str, float]
-                A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
-            """
-            full_day_ = timedelta(hours=self.standard_work_hours)
-            case = "overtime" if timedelta(hours=work_time_val) >= full_day_ else "undertime"
-            overtime = timedelta(hours=work_time_val) - full_day_
-            return case, round(overtime.total_seconds() / self.sec_in_hour, 2)
-
-        def process_work_time_row(row: pd.Series) -> tuple[str, float | str]:
-            """
-            Process work time from a DataFrame row and return case and overtime.
-
-            Parameters
-            ----------
-            row : pd.Series
-                The row to process.
-
-            Returns
-            -------
-            tuple[str, float | str]
-                A tuple containing case ('overtime' or 'undertime') and overtime amount in hours
-
-            Notes
-            -----
-            - Returns empty strings if work_time is missing or empty.
-            """
-            if not row["work_time"] or pd.isna(row["work_time"]):
-                return "", ""
-
-            work_time_val = float(row["work_time"]) if isinstance(row["work_time"], str) else row["work_time"]
-            case, overtime = calculate_overtime_from_work_time(work_time_val)
-            return case, overtime
-
-        def agg_lunch_break(x: pd.Series) -> int | str:
-            """Aggregate lunch_break_duration: sum if any valid values, else empty string."""
-            return x.sum() if x.notna().any() else ""
-
-        def agg_work_time(x: pd.Series) -> float | int:
-            """Aggregate work_time: sum if any valid values, else 0."""
-            return x.sum() if x.notna().any() else 0
+        columns_order = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
 
         # Remove duplicate lines and get warnings about what was removed
         df_no_duplicates = self.remove_duplicate_lines(self.df)
         df = df_no_duplicates.copy()
 
         df["date"] = pd.to_datetime(df["date"], format=self.date_format)
-        columns_order = ["weekday", "date", "start_time", "end_time", "lunch_break_duration", "work_time", "case", "overtime"]
         output_rows: list[dict] = []
+        df["base_weekday"] = df["weekday"].map(self._get_base_weekday)
 
-        # Group by date and weekday, aggregate work_time and lunch_break_duration
-        for (_, _), group in df.groupby(["date", "weekday"], sort=False):
-            # ignore lines that already have been squashed, convert the date, and continue
-            if group.iloc[0].weekday.startswith("#--"):
-                for _, original_row in group.iterrows():
-                    original_row["date"] = original_row["date"].strftime(self.date_format)
-                    output_rows.append(original_row[columns_order].to_dict())
+        # Group by date and logical weekday (without '#--') to detect stale aggregates
+        for (_, _), grouped_rows in df.groupby(["date", "base_weekday"], sort=False):
+            group = grouped_rows.copy()
+            commented = group[group["weekday"].astype(str).str.startswith("#--")]
+            plain = group[~group["weekday"].astype(str).str.startswith("#--")]
+            base_weekday = grouped_rows["base_weekday"].iloc[0]
+
+            # If commented rows exist together with plain rows, plain may contain an intermediate aggregate.
+            if not commented.empty and not plain.empty:
+                group = self._remove_stale_intermediate_aggregate(group, commented, plain, base_weekday)
+                commented = group[group["weekday"].astype(str).str.startswith("#--")]
+                plain = group[~group["weekday"].astype(str).str.startswith("#--")]
+
+            # Already squashed group with no new rows: keep as-is.
+            if plain.empty and not commented.empty:
+                for _, row in group.iterrows():
+                    self._append_row_with_formatted_date(output_rows, row, columns_order)
                 continue
 
-            # if it's just one line, convert the date, put to dict and continue
-            if len(group) <= 1:
-                row = group.iloc[0].copy()
-                row["date"] = row["date"].strftime(self.date_format)
-                output_rows.append(row[columns_order].to_dict())
+            # Single untouched row: keep unchanged.
+            if commented.empty and len(plain) <= 1:
+                self._append_row_with_formatted_date(output_rows, plain.iloc[0], columns_order)
                 continue
 
-            # else prepend with "#--", convert the date, put to dict and aggregate
-            for _, original_row in group.iterrows():
-                marked = original_row.copy()
-                if isinstance(marked["weekday"], str) and not marked["weekday"].startswith("#--"):
-                    marked["weekday"] = f"#--{marked['weekday']}"
-                marked["date"] = marked["date"].strftime(self.date_format)
-                output_rows.append(marked[columns_order].to_dict())
-
-            aggregated = pd.Series(
-                {
-                    "date": group["date"].iloc[0],
-                    "weekday": group["weekday"].iloc[0],
-                    "start_time": group["start_time"].iloc[0],
-                    "end_time": group["end_time"].iloc[-1],
-                    "lunch_break_duration": agg_lunch_break(group["lunch_break_duration"]),
-                    "work_time": agg_work_time(pd.to_numeric(group["work_time"], errors="coerce")),
-                },
-            )
-            aggregated["case"], aggregated["overtime"] = process_work_time_row(aggregated)
-            aggregated["date"] = aggregated["date"].strftime(self.date_format)
-            output_rows.append(aggregated[columns_order].to_dict())
+            # Mixed/new duplicates: mark source rows and append exactly one fresh aggregate.
+            self._append_group_as_originals_and_aggregate(output_rows, group, base_weekday, columns_order)
 
         self.save_logbook(pd.DataFrame(output_rows, columns=columns_order))
+
+    def _calculate_overtime_from_work_time(self, work_time_val: float) -> tuple[str, float]:
+        """Calculate overtime case and amount from work time in hours."""
+        full_day = timedelta(hours=self.standard_work_hours)
+        case = "overtime" if timedelta(hours=work_time_val) >= full_day else "undertime"
+        overtime = timedelta(hours=work_time_val) - full_day
+        return case, round(overtime.total_seconds() / self.sec_in_hour, 2)
+
+    def _process_work_time_row(self, row: pd.Series) -> tuple[str, float | str]:
+        """Return case and overtime for a row, or blank values for missing work_time."""
+        if not row["work_time"] or pd.isna(row["work_time"]):
+            return "", ""
+        work_time_val = float(row["work_time"]) if isinstance(row["work_time"], str) else row["work_time"]
+        return self._calculate_overtime_from_work_time(work_time_val)
+
+    @staticmethod
+    def _agg_lunch_break(values: pd.Series) -> int | str:
+        """Aggregate lunch break values."""
+        return values.sum() if values.notna().any() else ""
+
+    @staticmethod
+    def _agg_work_time(values: pd.Series) -> float | int:
+        """Aggregate work_time values."""
+        return values.sum() if values.notna().any() else 0
+
+    @staticmethod
+    def _get_base_weekday(weekday: str) -> str:
+        """Return weekday without '#--' prefix."""
+        if isinstance(weekday, str) and weekday.startswith("#--"):
+            return weekday[3:]
+        return weekday
+
+    def _build_aggregated_row(self, group: pd.DataFrame, weekday: str) -> pd.Series:
+        """Build one aggregated row from source rows."""
+        aggregated = pd.Series(
+            {
+                "date": group["date"].iloc[0],
+                "weekday": weekday,
+                "start_time": group["start_time"].iloc[0],
+                "end_time": group["end_time"].iloc[-1],
+                "lunch_break_duration": self._agg_lunch_break(group["lunch_break_duration"]),
+                "work_time": self._agg_work_time(pd.to_numeric(group["work_time"], errors="coerce")),
+            },
+        )
+        aggregated["case"], aggregated["overtime"] = self._process_work_time_row(aggregated)
+        return aggregated
+
+    @staticmethod
+    def _matches_aggregate_candidate(row: pd.Series, aggregate_row: pd.Series, weekday: str) -> bool:
+        """Return True when a plain row equals the stale aggregate."""
+        float_tolerance = 1e-9
+        if row["weekday"] != weekday:
+            return False
+        if row["start_time"] != aggregate_row["start_time"] or row["end_time"] != aggregate_row["end_time"]:
+            return False
+
+        row_lunch = pd.to_numeric(pd.Series([row["lunch_break_duration"]]), errors="coerce").iloc[0]
+        agg_lunch = pd.to_numeric(pd.Series([aggregate_row["lunch_break_duration"]]), errors="coerce").iloc[0]
+        lunch_equal = (pd.isna(row_lunch) and pd.isna(agg_lunch)) or (abs(float(row_lunch) - float(agg_lunch)) < float_tolerance)
+        if not lunch_equal:
+            return False
+
+        row_work = pd.to_numeric(pd.Series([row["work_time"]]), errors="coerce").iloc[0]
+        agg_work = pd.to_numeric(pd.Series([aggregate_row["work_time"]]), errors="coerce").iloc[0]
+        return (pd.isna(row_work) and pd.isna(agg_work)) or (abs(float(row_work) - float(agg_work)) < float_tolerance)
+
+    def _append_row_with_formatted_date(self, output_rows: list[dict], row: pd.Series, columns_order: list[str]) -> None:
+        """Append one row to output, converting date to configured format."""
+        row_out = row.copy()
+        row_out["date"] = row_out["date"].strftime(self.date_format)
+        output_rows.append(row_out[columns_order].to_dict())
+
+    def _append_group_as_originals_and_aggregate(
+        self,
+        output_rows: list[dict],
+        group: pd.DataFrame,
+        base_weekday: str,
+        columns_order: list[str],
+    ) -> None:
+        """Append marked source rows and one fresh aggregate row."""
+        for _, original_row in group.iterrows():
+            marked = original_row.copy()
+            if isinstance(marked["weekday"], str) and not marked["weekday"].startswith("#--"):
+                marked["weekday"] = f"#--{marked['weekday']}"
+            self._append_row_with_formatted_date(output_rows, marked, columns_order)
+
+        source_rows = group.copy()
+        source_rows["weekday"] = source_rows["base_weekday"]
+        aggregated = self._build_aggregated_row(source_rows, base_weekday)
+        self._append_row_with_formatted_date(output_rows, aggregated, columns_order)
+
+    def _remove_stale_intermediate_aggregate(
+        self,
+        group: pd.DataFrame,
+        commented: pd.DataFrame,
+        plain: pd.DataFrame,
+        base_weekday: str,
+    ) -> pd.DataFrame:
+        """Drop one stale aggregate row from plain rows when present."""
+        agg_from_commented = self._build_aggregated_row(commented, base_weekday)
+        stale_index = None
+        for idx, row in plain.iterrows():
+            if self._matches_aggregate_candidate(row, agg_from_commented, base_weekday):
+                stale_index = idx
+                break
+        if stale_index is None:
+            return group
+        return group.drop(index=[stale_index])
 
     def find_and_add_missing_days(self) -> None:
         """Find and add missing holidays and weekend days to the log file.
