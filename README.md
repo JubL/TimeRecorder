@@ -71,14 +71,14 @@ python main.py --date "25.07.2025" --start "08:30" --end "17:30" --lunch 45
 # You don't need to explicitly use --no-boot in this case
 
 # Show visualization with custom color scheme
-python main.py --plot --color-scheme ocean
-python main.py --plot --color-scheme forest
-python main.py --plot --color-scheme sunset
-python main.py --plot --color-scheme lavender
-python main.py --plot --color-scheme coral
+python main.py --plot --color_scheme ocean
+python main.py --plot --color_scheme forest
+python main.py --plot --color_scheme sunset
+python main.py --plot --color_scheme lavender
+python main.py --plot --color_scheme coral
 
 # Show visualization for last 6 months
-python main.py --plot --num-months 6
+python main.py --plot --num_months 6
 
 # Run the analyzer to view overtime balance and statistics
 python main.py --analyze --plot
@@ -224,17 +224,17 @@ The visualizer supports five beautiful color schemes:
 python main.py --plot
 
 # Use a specific color scheme
-python main.py --plot --color-scheme forest
+python main.py --plot --color_scheme forest
 
 # Show last 6 months of data
-python main.py --plot --num-months 6
+python main.py --plot --num_months 6
 
 # Combine with other options
-python main.py --plot --color-scheme sunset --num-months 3
+python main.py --plot --color_scheme sunset --num_months 3
 
 # Try different color schemes
-python main.py --plot --color-scheme lavender
-python main.py --plot --color-scheme coral
+python main.py --plot --color_scheme lavender
+python main.py --plot --color_scheme coral
 ```
 
 ### Visualization Features
@@ -304,7 +304,7 @@ It does **not** currently account for work that was already carried out earlier 
 TimeRecorder can automatically detect your work start time from system boot time:
 
 ```yaml
-time_tracking:
+data_processing:
   use_boot_time: true  # Automatically use system boot time as start time
 ```
 
@@ -327,6 +327,23 @@ Automatically squash duplicate entries and aggregate data:
 data_processing:
   auto_squash: true  # Remove duplicates and aggregate by date
 ```
+
+When multiple rows exist for the same day, TimeRecorder keeps the original rows as commented source rows (`#--<weekday>`) and appends one aggregated row:
+
+```text
+Before squashing
+Mon;05.05.2026;07:30:00 CEST;12:00:00 CEST;30;4.00;undertime;-4.00
+Mon;05.05.2026;12:45:00 CEST;17:15:00 CEST;30;4.00;undertime;-4.00
+Mon;05.05.2026;19:45:00 CEST;20:00:00 CEST;0;0.25;undertime;-7.75
+
+After squashing
+#--Mon;05.05.2026;07:30:00 CEST;12:00:00 CEST;30;4.00;undertime;-4.00
+#--Mon;05.05.2026;12:45:00 CEST;17:15:00 CEST;30;4.00;undertime;-4.00
+#--Mon;05.05.2026;19:45:00 CEST;20:00:00 CEST;0;0.25;undertime;-7.75
+Mon;05.05.2026;07:30:00 CEST;20:00:00 CEST;60;8.25;overtime;0.25
+```
+
+In the aggregated row, `start_time` is the first start of the day, `end_time` is the last end of the day, and `lunch_break_duration`/`work_time` are summed.
 
 ### Recent Entries Display
 
@@ -410,10 +427,10 @@ TimeRecorder/
 │   │   ├── base.py         # Base format handler interface
 │   │   ├── csv_handler.py  # CSV format handler
 │   │   ├── excel_handler.py # Excel format handler
-│   │   ├── html_handler.py # Excel format handler
+│   │   ├── html_handler.py # HTML format handler
 │   │   ├── json_handler.py # JSON format handler
-│   │   ├── parquet_handler.py # Excel format handler
-│   │   ├── registry.py # Excel format handler
+│   │   ├── parquet_handler.py # Parquet format handler
+│   │   ├── registry.py # Extension-to-handler registry
 │   │   ├── xml_handler.py  # XML format handler
 │   │   └── yaml_handler.py # YAML format handler
 │   ├── logbook.py          # Logbook management
@@ -477,7 +494,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built with ❤️ using Python 3.13+
+- Built with ❤️ using Python 3.10+
 - Uses [pandas](https://pandas.pydata.org/) for data manipulation
 - [matplotlib](https://matplotlib.org/) for data visualization
 - [colorama](https://github.com/tartley/colorama) for colored terminal output
