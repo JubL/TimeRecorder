@@ -24,6 +24,8 @@ def main() -> None:
 
     # TODO: Build an UI for the time recorder with Figma Make?
 
+    # TODO: Make the work_schedule.work_days from config.yaml a set instead of a list?
+
     # TODO: Providing the flags --no-boot, --date, and --start altogether is overly complicated if one only wants
     # TODO: to set either the date or the start. It would be better to only provide what is needed.
     # TODO: This is because update_boot_time() is executed much later in the program's flow than update_config().
@@ -47,7 +49,6 @@ def main() -> None:
     config = cu.update_config(config, args)
 
     # Set global log level first (change this to control all logging)
-    # Options: logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR
     lu.set_global_log_level(config["logging"]["log_level"])
     # Set up main logger
     logger = lu.setup_logger(__name__)
