@@ -19,6 +19,8 @@ from src.visualizer import Visualizer
 def main() -> None:
     """Run the main function of the time recorder."""
     # TODO: Implement outlier detection, consistency checks?
+    # TODO: test for correct format in logbook
+    # TODO: test for a consequitive sequence of days (no missing days)
 
     # TODO: Shall full_format (from the config.yaml) include a field for the timezone? (e.g. %Z) Test this (with a different timezone).
 
@@ -91,10 +93,6 @@ def main() -> None:
 
     if visualization_config["plot"]:
         visualizer = Visualizer(logbook.get_logbook(), visualization_config)
-        visualizer.create_start_end_time_histogram()
-        visualizer.create_work_hours_histogram()
-        visualizer.create_work_hours_per_weekday_histogram()
-        visualizer.create_daily_work_hours_plot()
         visualizer.display_all_plots()
 
 

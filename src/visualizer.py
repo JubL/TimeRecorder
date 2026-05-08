@@ -424,8 +424,7 @@ class Visualizer:
         ax.set_ylabel("End Time of Day")
         ax.set_title("Start vs. End Time 2D Histogram")
 
-    @staticmethod
-    def display_all_plots() -> None:
+    def display_all_plots(self) -> None:
         """
         Display all created plot figures.
 
@@ -436,4 +435,9 @@ class Visualizer:
         -------
         None
         """
+        self.create_start_end_time_histogram()
+        self.create_work_hours_histogram()
+        self.create_work_hours_per_weekday_histogram()
+        self.create_daily_work_hours_plot()
+
         plt.show()
