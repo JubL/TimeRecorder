@@ -63,10 +63,15 @@ def main() -> None:
     analyzer_config = cu.get_analyzer_config(config)
     logger.debug("Configuration loaded successfully")
 
-    # Create objects from configuration
+    # Create TimeRecorder from configuration
     tr_line = TimeRecorder(data=time_recorder_config)
-    logbook = None
-    if processing_config["log_enabled"] or analyzer_config["analyze_work_patterns"] or visualization_config["plot"]:
+
+    # Create Logbook from configuration
+    log_enabled = processing_config["log_enabled"]
+    analyze_work_patterns = analyzer_config["analyze_work_patterns"]
+    plot_enabled = visualization_config["plot"]
+    logbook: Logbook | None = None
+    if log_enabled or analyze_work_patterns or plot_enabled:
         logbook = Logbook(data=logbook_config)
     if logbook is None:
         msg = "Since no processing or visualisation has been configured, no logbook will be created."
@@ -78,7 +83,8 @@ def main() -> None:
 
     tr_line.print_state()
 
-    if processing_config["log_enabled"]:
+    if log_enabled:
+        assert logbook is not None
         tr_dict = tr_line.time_report_line_to_dict()
         logbook.record_into_df(tr_dict)
         if processing_config["add_missing_days"]:
@@ -86,12 +92,14 @@ def main() -> None:
         if processing_config["auto_squash"]:
             logbook.squash_df_keep_originals()
 
-    if analyzer_config["analyze_work_patterns"]:
+    if analyze_work_patterns:
+        assert logbook is not None
         analyzer = Analyzer(data=analyzer_config, logbook_df=logbook.get_logbook())
         analyzer.generate_summary_report()
         analyzer.tail(analyzer_config["show_tail"])
 
-    if visualization_config["plot"]:
+    if plot_enabled:
+        assert logbook is not None
         visualizer = Visualizer(logbook.get_logbook(), visualization_config)
         visualizer.display_all_plots()
 
