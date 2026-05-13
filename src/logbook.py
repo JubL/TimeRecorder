@@ -449,6 +449,7 @@ class Logbook:
             commented = group[group["weekday"].astype(str).str.startswith("#--")]
             plain = group[~group["weekday"].astype(str).str.startswith("#--")]
             base_weekday = grouped_rows["base_weekday"].iloc[0]
+            had_plain_before_cleanup = not plain.empty
 
             # If commented rows exist together with plain rows, plain may contain an intermediate aggregate.
             if not commented.empty and not plain.empty:
@@ -456,10 +457,17 @@ class Logbook:
                 commented = group[group["weekday"].astype(str).str.startswith("#--")]
                 plain = group[~group["weekday"].astype(str).str.startswith("#--")]
 
-            # Already squashed group with no new rows: keep as-is.
+            # Already squashed group with no new rows:
+            # - keep commented rows as-is
+            # - if cleanup removed the stale plain aggregate, rebuild one fresh aggregate.
             if plain.empty and not commented.empty:
                 for _, row in group.iterrows():
                     self._append_row_with_formatted_date(output_rows, row, columns_order)
+                if had_plain_before_cleanup:
+                    source_rows = commented.copy()
+                    source_rows["weekday"] = source_rows["base_weekday"]
+                    aggregated = self._build_aggregated_row(source_rows, base_weekday)
+                    self._append_row_with_formatted_date(output_rows, aggregated, columns_order)
                 continue
 
             # Single untouched row: keep unchanged.
