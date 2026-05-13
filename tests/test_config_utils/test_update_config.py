@@ -238,8 +238,8 @@ def test_update_config_all_argument_mappings() -> None:
         # Data processing settings
         boot=False,
         log=True,
-        no_squash=False,
-        no_missing=False,
+        squash=False,
+        add_missing=False,
         # Time tracking settings
         date="26.07.2025",
         start="08:00",

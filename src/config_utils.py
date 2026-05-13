@@ -345,8 +345,8 @@ def update_config(config: dict, args: argparse.Namespace) -> dict[str, dict]:
         # Data processing settings
         ("boot", "data_processing.use_boot_time"),
         ("log", "data_processing.logging_enabled"),
-        ("no_squash", "data_processing.auto_squash"),
-        ("no_missing", "data_processing.add_missing_days"),
+        ("squash", "data_processing.auto_squash"),
+        ("add_missing", "data_processing.add_missing_days"),
         # Time tracking settings
         ("date", "time_tracking.date"),
         ("start", "time_tracking.start_time"),
@@ -364,6 +364,8 @@ def update_config(config: dict, args: argparse.Namespace) -> dict[str, dict]:
         # Analyzer settings
         ("analyze", "analyzer.analyze_work_patterns"),
         ("tail", "analyzer.show_tail"),
+        ("outlier_method", "analyzer.outlier_method"),
+        ("outlier_threshold", "analyzer.outlier_threshold"),
     ]
 
     def _set_nested_value(config_dict: dict, path: str, value: str | int | bool) -> None:  # noqa: FBT001

@@ -4,166 +4,177 @@ This document explains how to use the YAML configuration system for the TimeReco
 
 ## Overview
 
-The TimeRecorder project supports YAML-based configuration, allowing you to customize various aspects of the application without modifying the source code. The configuration is stored in a `config.yaml` file that is automatically created with default values when the application runs for the first time.
+The TimeRecorder project supports YAML-based configuration, allowing you to customize various aspects of the application without modifying the source code. The configuration is stored in a `config.yaml` file that is automatically created with default values when the application runs for the first time (if that file is missing).
 
-## Configuration File Structure
+## Configuration file structure
 
-The `config.yaml` file is organized into several sections:
+The `config.yaml` file is organized into these sections (all are **required** for validation to succeed):
 
-### Data Processing Settings
+### Data processing settings
 
 ```yaml
 data_processing:
-  use_boot_time: true          # Use system boot time as start time
-  logging_enabled: false        # Set to True to log the results
-  auto_squash: true            # Automatically squash duplicate entries
-  add_missing_days: true       # Add missing days to logbook
+  use_boot_time: true     # Use system boot time as start time
+  logging_enabled: false  # Append the computed line to the logbook when true
+  auto_squash: true       # After logging: aggregate duplicate date/weekday rows (see below)
+  add_missing_days: true  # Fill gaps with weekends/holidays where applicable
 ```
 
-### Time Tracking Settings
+When `auto_squash` is true and a log line is written, the logbook runs aggregation that merges multiple rows for the same calendar day. Original rows are kept as commented lines (weekday prefixed with `#--`), and one summarized row is written after them.
+
+### Time tracking settings
 
 ```yaml
 time_tracking:
-  date: "01.08.2025"          # Date in DD.MM.YYYY format
-  start_time: "07:00"          # Starting time in HH:MM format
-  end_time: "17:25"            # Ending time in HH:MM format
-  lunch_break_duration: 60     # Duration of the lunch break in minutes
-  full_format: "%d.%m.%Y %H:%M:%S"  # Format string for parsing full datetime
+  date: "01.08.2025"                # Date in DD.MM.YYYY format
+  start_time: "07:00"               # Start time in HH:MM format
+  end_time: "17:25"                 # End time in HH:MM format
+  lunch_break_duration: 60          # Duration of the lunch break in minutes
+  full_format: "%d.%m.%Y %H:%M:%S"  # Format string used for parsing/combining date and time fields
 ```
 
-### Logging Settings
+Optional keys such as `end_now` may be merged in from the CLI when used; they are not required in the file.
+
+### Logging settings
 
 ```yaml
 logging:
   log_path: "timereport_logbook.csv"  # Path to the log file (supports multiple formats)
-  log_level: "INFO"            # Logging level: DEBUG, INFO, WARNING, ERROR
+  log_level: "INFO"                   # Logging level: DEBUG, INFO, WARNING, ERROR
 ```
 
 **Note**: The `log_path` supports multiple file formats. Simply change the file extension to use a different format:
 
-- `timereport_logbook.csv` - CSV format (default)
-- `timereport_logbook.json` - JSON format
-- `timereport_logbook.xlsx` - Excel format
-- `timereport_logbook.html` - HTML format
-- `timereport_logbook.parquet` - Parquet format
-- `timereport_logbook.xml` - XML format
-- `timereport_logbook.yaml` - YAML format
+| Extension | Format |
+|-----------|--------|
+| `.csv`, `.txt`, `.dat` | CSV (semicolon-separated; project default) |
+| `.json` | JSON |
+| `.xlsx`, `.xls` | Excel |
+| `.html` | HTML |
+| `.parquet`, `.pq` | Parquet |
+| `.xml` | XML |
+| `.yaml`, `.yml` | YAML |
 
-### Work Schedule Settings
+### Work schedule settings
 
 ```yaml
 work_schedule:
-  standard_work_hours: 8       # Standard work hours per day
+  standard_work_hours: 8      # Expected hours per work day (used for overtime/undertime)
   work_days: [0, 1, 2, 3, 4]  # Monday to Friday (0=Monday, 6=Sunday)
-  timezone: "Europe/Berlin"    # Timezone for time calculations
+  timezone: "Europe/Berlin"   # IANA timezone name for time calculations
 ```
 
-### Holiday Settings
+### Holiday settings
 
 ```yaml
 holidays:
-  country: "DE"                # Country code for holidays
-  subdivision: "HE"            # State/province subdivision
+  country: "DE"      # Country code for the `holidays` library
+  subdivision: "HE"  # Region/state (e.g. Hesse)
 ```
 
-### Display Settings
-
-```yaml
-display:
-  show_tail: 4                 # Show the last n lines of the logbook
-```
-
-### Visualization Settings
+### Visualization settings
 
 ```yaml
 visualization:
-  plot: false                  # Show work hours visualization
-  color_scheme: "ocean"        # Color scheme: ocean, forest, sunset, lavender, coral
-  num_months: 12               # Number of months to display in visualization
+  plot: false                      # Whether to open plots when plot mode runs
+  color_scheme: "ocean"            # ocean | forest | sunset | lavender | coral
+  num_months: 13                   # Months of history for daily-hours style plots
+  rolling_average_window_size: 10  # Days in rolling-average overlays
+  x_tick_interval: 4               # Spacing for x-axis ticks (weeks, depending on plot)
+  histogram_bin_width: 10          # Histogram bin width in minutes
 ```
 
-### Analyzer Settings
+### Analyzer settings
 
 ```yaml
 analyzer:
-  analyze_work_patterns: false  # Calculate mean and standard deviation of overtime
+  analyze_work_patterns: false  # Run statistical summary and tail when true
+  outlier_method: "iqr"         # iqr | zscore | isolation_forest
+  outlier_threshold: 1.5        # Method-specific threshold
+  show_tail: 5                  # Lines to show from the log tail in the report
 ```
 
 ## Usage
 
-### Automatic Configuration Creation
+### Automatic configuration creation
 
-When you run the TimeRecorder application for the first time, it will automatically create a `config.yaml` file with default values in the current directory.
+When you run TimeRecorder and `config.yaml` is missing, a default file is created next to the working directory (see `create_default_config` in `src/config_utils.py`). Defaults may differ slightly from a hand-tuned repo `config.yaml`; compare with your project’s checked-in file if you track one.
 
-### Manual Configuration
+### Manual configuration
 
-You can manually create or modify the `config.yaml` file to customize the application behavior:
+1. Place `config.yaml` where you run the app (or pass `--config`).
+2. Match the required sections and keys listed above so `validate_config` passes.
+3. Run the application.
 
-1. Create a `config.yaml` file in the same directory as your `main.py`
-2. Copy the structure above and modify the values as needed
-3. Run the application - it will use your custom configuration
+### Command line arguments
 
-### Command Line Arguments
+Overrides are merged after loading YAML (`update_config` in `src/config_utils.py`). Only arguments you pass replace values; omitted flags leave the file as-is.
 
-TimeRecorder supports various command line arguments to override configuration settings:
+#### Time specification
 
-#### Time Specification Arguments
 ```bash
-# Use system boot time (default behavior)
-python main.py --boot
+# Use system boot time
+python main.py --boot     # use_boot_time: true (default behavior)
+python main.py --no-boot  # use_boot_time: false
 
 # Specify custom date and start time
 python main.py --date "25.07.2025" --start "08:30"
 
 # Set end time
 python main.py --end "17:30"
-
-# Set end time to one minute from now
-python main.py --end_now
+python main.py --end_now  # end time = one minute from now (merged into config)
 
 # Set lunch break duration
 python main.py --lunch 45
 ```
 
-#### Processing Control Arguments
+#### Processing and logging
+
 ```bash
 # Enable logging to logbook
-python main.py --log
+python main.py --log             # logging_enabled: true
 
-# Control data processing (default: enabled)
-python main.py --squash          # Enable/disable squashing
-python main.py --add_missing     # Enable/disable adding missing days
-python main.py --weekly          # Enable/disable weekly calculations
+# Control data processing
+python main.py --squash          # auto_squash: true
+
+python main.py --add-missing     # add_missing_days: true
 
 # Show last n lines of logbook
-python main.py --tail 10
+python main.py --tail 10         # analyzer.show_tail
 ```
 
-#### Configuration Arguments
+#### Configuration paths
+
 ```bash
 # Use custom configuration file
 python main.py --config my_config.yaml
 
 # Use custom logbook file
-python main.py --logbook my_logbook.csv
+python main.py --logbook my_logbook.csv   # sets logging.log_path (relative name is resolved from cwd)
 ```
 
-#### Visualization Arguments
+#### Visualization
+
 ```bash
 # Show work hours visualization
 python main.py --show-plot
 
-# Use specific color scheme
-python main.py --show-plot --color-scheme forest
-
-# Show visualization for specific number of months
-python main.py --show-plot --num-months 6
-
-# Combine visualization with other options
-python main.py --show-plot --color-scheme sunset --num-months 3
+python main.py --color-scheme forest
+python main.py --num-months 6
+python main.py --rolling-average-window-size 14
 ```
 
-#### Information Arguments
+#### Analyzer
+
+```bash
+python main.py --analyze
+
+python main.py --outlier-method zscore
+python main.py --outlier-threshold 3.0
+```
+
+#### Information
+
 ```bash
 # Show version
 python main.py --version
@@ -172,37 +183,29 @@ python main.py --version
 python main.py --help
 ```
 
-### Argument Validation
+### Argument validation
 
-The application validates command line arguments and provides warnings for potentially conflicting combinations:
+The parser warns when combinations are confusing (for example `--boot` together with `--date` / `--start`, incomplete `--date`/`--start` pairs, or both `--end` and `--end_now`).
 
-- Using `--boot` together with `--date` or `--start` (though allowed, does not make sense)
-- Using both `--end` and `--end_now` together
-- Providing only one of `--date` or `--start` when not using `--boot`
+### Configuration validation
 
-### Configuration Validation
+Startup validation (`validate_config`) fails if:
 
-The application validates the configuration file on startup and will display an error if:
-- Required sections are missing (`time_tracking`, `logging`, `work_schedule`)
-- Required fields within sections are missing
-- The YAML file is malformed
+- Any required **section** is missing: `data_processing`, `time_tracking`, `logging`, `work_schedule`, `holidays`, `visualization`, `analyzer`.
+- Any required **field** in those sections is missing (including `visualization.rolling_average_window_size`, `visualization.x_tick_interval`, and all `analyzer` keys listed above).
+- The YAML cannot be parsed.
 
-## Example Configuration
-
-Here's a complete example of a custom configuration:
+## Example configuration
 
 ```yaml
-# TimeRecorder Configuration File
-# This file contains all configurable parameters for the TimeRecorder application
+# TimeRecorder configuration
 
-# Data processing settings
 data_processing:
   use_boot_time: false             # Don't use boot time
   logging_enabled: true            # Enable logging
   auto_squash: true                # Automatically squash duplicate entries
   add_missing_days: true           # Add missing days to logbook
 
-# Time tracking settings
 time_tracking:
   date: "30.12.2024"               # Custom date
   start_time: "08:30"              # Later start time
@@ -210,313 +213,95 @@ time_tracking:
   lunch_break_duration: 45         # Shorter lunch break
   full_format: "%d.%m.%Y %H:%M:%S"
 
-# Logging settings
 logging:
   log_path: "my_work_log.csv"      # Custom log file name
   log_level: "DEBUG"               # More verbose logging
 
-# Work schedule settings
 work_schedule:
   standard_work_hours: 3.75        # Part-time work schedule
   work_days: [0, 1, 2, 3]          # Monday to Thursday only
   timezone: "America/New_York"     # Different timezone
 
-# Holiday settings
 holidays:
   country: "US"                    # US holidays
   subdivision: "NY"                # New York state
 
-# Display settings
-display:
-  show_tail: 10                    # Show more recent entries
-
-# Visualization settings
 visualization:
   plot: true                       # Enable visualization by default
   color_scheme: "forest"           # Use forest color scheme
   num_months: 6                    # Show last 6 months
 
-# Analyzer settings
 analyzer:
   analyze_work_patterns: true      # Enable work pattern analysis
 ```
 
-## Configuration Functions
+## Configuration functions (`src/config_utils.py`)
 
-The configuration system provides several utility functions in `src/config_utils.py`:
+- `load_config(config_path)`: Load YAML.
+- `validate_config(config)`: Check required sections and fields.
+- `create_default_config(config_path)`: Write a default file if missing.
+- `update_config(config, args)`: Apply CLI overrides.
+- `get_time_recorder_config(config)`: Parameters for `TimeRecorder`.
+- `get_logbook_config(config)`: Parameters for `Logbook` (including absolute `log_path`).
+- `get_processing_config(config)`: `use_boot_time`, `log_enabled`, `auto_squash`, `add_missing_days`.
+- `get_visualization_config(config)`: Plot styling, rolling average, ticks, histogram, plus schedule/format passthrough.
+- `get_analyzer_config(config)`: Analysis flags, outlier settings, tail, rolling window from visualization.
 
-- `load_config(config_path: pathlib.Path) -> dict`: Load configuration from YAML file
-- `validate_config(config: dict) -> bool`: Validate configuration structure
-- `get_time_recorder_config(config: dict) -> dict`: Extract TimeRecorder parameters
-- `get_logbook_config(config: dict) -> dict`: Extract Logbook parameters
-- `get_display_config(config: dict) -> dict`: Extract display parameters
-- `get_processing_config(config: dict) -> dict`: Extract processing parameters
-- `get_visualization_config(config: dict) -> dict`: Extract visualization parameters
-- `get_analyzer_config(config: dict) -> dict`: Extract analyzer parameters
-- `create_default_config(config_path: pathlib.Path) -> None`: Create default configuration file
-- `update_config(config: dict, args: argparse.Namespace) -> dict`: Update configuration with command line arguments
+## Feature notes
 
-## Key Features
+### Boot time
 
-### System Boot Time Integration
+With `use_boot_time: true`, the recorder can take the system boot time as the start of the work interval (see `TimeRecorder`).
 
-TimeRecorder can automatically detect your work start time from system boot time:
+### Logbook path
 
-```yaml
-data_processing:
-  use_boot_time: true  # Automatically use system boot time as start time
-```
+Paths under `logging.log_path` are combined with the **current working directory** when building `Logbook` (`get_logbook_config`).
 
-### End Time Options
+### Missing days
 
-You can specify end time in multiple ways:
+`add_missing_days` uses gap detection and inserts placeholder rows for weekends and configured holidays.
 
-```bash
-# Use specific end time
-python main.py --end "17:30"
+### Multi-format logbooks
 
-# Use current time (one minute from now)
-python main.py --end_now
+Handlers are chosen by file extension (`src/formats/registry.py`). Excel may require `openpyxl`; XML may require `lxml`, depending on your environment.
 
-# Use end time from configuration file
-python main.py
-```
+### Work pattern analysis
 
-**Note**: The `--end_now` argument sets the end time to one minute from the current time. This feature is supported via command line and will be added to the configuration when used.
+When `analyzer.analyze_work_patterns` is true (or overridden with `--analyze`), the analyzer runs summaries including weekly hour estimates and optional outlier detection, controlled by `outlier_method` and `outlier_threshold`.
 
-### Missing Day Detection
+### Visualization
 
-Automatically add missing work days to your logbook:
-
-```yaml
-data_processing:
-  add_missing_days: true  # Add missing days with default values
-```
-
-### Data Aggregation
-
-Automatically squash duplicate entries and aggregate data:
-
-```yaml
-data_processing:
-  auto_squash: true  # Remove duplicates and aggregate by date
-```
-
-### Multi-Format File Support
-
-TimeRecorder supports multiple file formats for storing your time records. The system automatically detects the format based on the file extension and uses the appropriate handler.
-
-#### Supported Formats
-
-- **CSV** (`.csv`, `.txt`, `.dat`) - Comma-separated values with UTF-8 encoding
-- **JSON** (`.json`) - JavaScript Object Notation for easy data exchange
-- **YAML** (`.yaml`, `.yml`) - Human-readable configuration format
-- **Excel** (`.xlsx`, `.xls`) - Microsoft Excel spreadsheet format
-- **HTML** (`.html`) - HyperText Markup Language for viewable reports in browsers
-- **XML** (`.xml`) - Extensible Markup Language for enterprise integration
-- **Parquet** (`.parquet`, `.pq`) - Columnar storage format for large datasets
-
-#### Format Selection
-
-To use a different format, simply change the file extension in your configuration:
-
-```yaml
-logging:
-  log_path: "timereport_logbook.xlsx"  # Excel format
-  log_path: "timereport_logbook.json"  # JSON format
-```
-
-#### Format Interoperability
-
-All formats maintain the same data structure and are fully interoperable. You can:
-- Convert between formats by changing the file extension
-- Use different formats for different use cases
-- Share data across different systems and applications
-
-#### Format-Specific Features
-
-- **CSV**: Simple, widely supported format
-- **JSON**: Easy data exchange and API integration
-- **YAML**: Human-readable configuration format
-- **Excel**: Business-friendly with formatting capabilities
-- **HTML**: Viewable reports in web browsers
-- **XML**: Enterprise integration and structured data
-- **Parquet**: Efficient storage for large datasets
-
-### Flexible Time Specification
-
-You can specify work times in multiple ways:
-
-1. **Boot time mode**: `--boot` (uses system boot time as start)
-2. **Manual mode**: `--date "DD.MM.YYYY" --start "HH:MM"`
-3. **Configuration mode**: Use values from `config.yaml`
-
-### Work Pattern Analysis
-
-TimeRecorder includes an advanced analyzer that provides statistical insights into your work patterns:
-
-```yaml
-analyzer:
-  analyze_work_patterns: true  # Enable comprehensive work pattern analysis
-```
-
-The analyzer provides:
-- **Statistical Analysis**: Mean and standard deviation of overtime
-- **Weekly Hours Calculation**: Average weekly work hours from logbook data
-- **Outlier Detection**: Identifies unusual work patterns using multiple methods (IQR, Z-score, Isolation Forest)
-- **Data Quality Validation**: Checks for missing values, data type issues, and logical inconsistencies
-- **Comprehensive Reports**: Generates formatted summary reports with all analysis results
-
-### Data Visualization
-
-TimeRecorder includes a powerful visualization feature that creates beautiful bar charts showing your daily work hours and overtime. The visualization helps you identify patterns in your work schedule and track overtime trends.
-
-#### Available Color Schemes
-
-The visualizer supports five beautiful color schemes:
-
-- **Ocean**: Deep blue tones (#1E3A8A to #60A5FA)
-- **Forest**: Rich green tones (#14532D to #22C55E)
-- **Sunset**: Warm orange tones (#9A3412 to #F97316)
-- **Lavender**: Elegant purple tones (#581C87 to #A855F7)
-- **Coral**: Vibrant pink tones (#BE185D to #F472B6)
-
-#### Visualization Features
-
-- **Separate Work and Overtime**: Work hours and overtime are displayed as separate bars with distinct colors
-- **Color-Coded by Weekday**: Each weekday has its own color within the selected scheme
-- **Automatic Data Filtering**: Shows only the specified number of months
-- **Responsive Design**: Charts automatically adjust to your data
-
-
+Plots use `visualization.*` options; color schemes are fixed sets defined in the visualizer.
 
 ## Troubleshooting
 
-### Common Issues
+1. **Missing config**: A default is created only when the file is absent; otherwise edit or remove/rename to regenerate.
+2. **Invalid YAML**: Use a YAML linter or validator.
+3. **Validation errors**: Compare your file to the required keys in `validate_config` in `src/config_utils.py`.
+4. **Permissions**: Ensure write access for the logbook path.
+5. **Optional dependencies**: Some formats need extra packages (`openpyxl`, `lxml`, etc.).
 
-1. **Configuration file not found**: The application will create a default `config.yaml` file automatically
-2. **Invalid YAML syntax**: Check the YAML syntax using an online validator
-3. **Missing required fields**: The application will show which fields are missing
-4. **Permission errors**: Ensure you have write permissions in the directory
-5. **Format-specific errors**: Some formats require additional dependencies:
-   - Excel format requires `openpyxl` package
-   - XML format requires `lxml` package
-   - These are automatically installed with the main package
+### Logging levels
 
-### Validation Errors
+Set `logging.log_level` to `DEBUG`, `INFO`, `WARNING`, or `ERROR` (see `src/logging_utils.py`).
 
-The application validates the configuration and will show specific error messages for:
-- Missing required sections (`time_tracking`, `logging`, `work_schedule`)
-- Missing required fields within sections
-- Invalid data types or values
-
-### Logging
-
-The application uses structured logging with different levels:
-- `DEBUG`: Detailed information for debugging
-- `INFO`: General information about program execution
-- `WARNING`: Warning messages for potential issues
-- `ERROR`: Error messages for problems that need attention
-
-You can control the logging level in the configuration:
-
-```yaml
-logging:
-  log_level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
-```
-
-### Command Line Argument Conflicts
-
-The application provides warnings for potentially conflicting argument combinations:
+## Advanced examples
 
 ```bash
-# This will show a warning
-python main.py --boot --date "25.07.2025" --start "08:00"
-
-# This will show a warning
-python main.py --end "17:30" --end_now
-```
-
-## Advanced Usage Examples
-
-### Basic Time Recording
-```bash
-# Record today's work with boot time
+# Record with boot time and write to logbook
 python main.py --boot --log
 
-# Record specific work hours
+# Fixed interval
 python main.py --date "25.07.2025" --start "08:00" --end "17:00" --log
 
-# Record work ending now
-python main.py --date "25.07.2025" --start "08:00" --end_now --log
-```
+# Turn off squash/missing-day steps for this run
+python main.py --boot --log --no-squash --no-add_missing
 
-### Data Processing
-```bash
-# Disable automatic data processing
-python main.py --boot --log --no_squash --no_missing
-
-# Show more logbook entries
 python main.py --tail 20
 
-# Disable weekly calculations
-python main.py --boot --log --no_weekly
-```
+python main.py --plot --color-scheme sunset --num-months 3
 
-### Custom Configuration
-```bash
-# Use custom config file
-python main.py --config custom_config.yaml
-
-# Use custom logbook file
 python main.py --config custom_config.yaml --logbook custom_log.csv
-```
-
-### Multi-Format Examples
-```bash
-# Use Excel format for business reporting
-python main.py --config excel_config.yaml --logbook work_hours.xlsx
-
-# Use JSON format for API integration
-python main.py --config json_config.yaml --logbook time_data.json
-
-# Use XML format for enterprise systems
-python main.py --config xml_config.yaml --logbook time_data.xml
-```
-
-### Visualization Examples
-```bash
-# Show visualization with default settings
-python main.py --show-plot
-
-# Use a specific color scheme
-python main.py --show-plot --color-scheme forest
-
-# Show last 6 months of data
-python main.py --show-plot --num-months 6
-
-# Combine visualization with time recording
-python main.py --boot --log --show-plot --color-scheme sunset
-
-# Show visualization for specific time period
-python main.py --show-plot --color-scheme coral --num-months 3
-```
-
-### Analyzer Examples
-```bash
-# Enable work pattern analysis (controlled via config.yaml)
-# Set analyzer.analyze_work_patterns: true in your config.yaml
-
-# Run with analysis enabled
-python main.py --boot --log
-
-# The analyzer will automatically generate reports when enabled
-# Output includes:
-# - Mean overtime per work day
-# - Standard deviation of overtime
-# - Average weekly hours
-# - Mean daily overtime
-# - Outlier detection results
 ```
 
 Have fun logging!
