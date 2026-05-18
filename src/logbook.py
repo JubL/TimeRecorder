@@ -637,8 +637,10 @@ class Logbook:
         gaps = []
         for i in range(len(self.df) - 1):
             if (self.df["date"].iloc[i + 1] - self.df["date"].iloc[i]).days > 1:
-                msg = f"{const.RED}There are gaps in the logbook between {self.df['date'].iloc[i].strftime(self.date_format)} "
-                msg += f"and {self.df['date'].iloc[i + 1].strftime(self.date_format)}{const.RESET}"
+                msg = f"{const.RED}There are gaps in the logbook between {self.df['date'].iloc[i].strftime('%a')}, "
+                msg += f"{self.df['date'].iloc[i].strftime(self.date_format)} "
+                msg += f"and {self.df['date'].iloc[i + 1].strftime('%a')}, "
+                msg += f"{self.df['date'].iloc[i + 1].strftime(self.date_format)}.{const.RESET}"
                 logger.warning(msg)
                 gaps.append((self.df["date"].iloc[i], self.df["date"].iloc[i + 1]))
 
