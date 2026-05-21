@@ -173,8 +173,8 @@ def test_init_end_now_sets_end_time_to_current_plus_one_minute() -> None:
     line = tr.TimeRecorder(
         {
             "date": config_date,
-            "start_time": "08:00",
-            "end_time": "16:00",  # This will be overwritten by line 173
+            "start_time": "06:00",
+            "end_time": "14:00",  # This will be overwritten by line 173
             "end_now": True,  # This triggers line 173
             "lunch_break_duration": 0,
             "timezone": timezone,
