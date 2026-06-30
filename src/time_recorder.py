@@ -128,15 +128,15 @@ class TimeRecorder:
             tz : str
                 Timezone identifier.
 
-            Raises
-            ------
-            ValueError
-                If the datetime string cannot be parsed.
-
             Returns
             -------
             datetime
                 A timezone-aware datetime object parsed from the input strings.
+
+            Raises
+            ------
+            ValueError
+                If the datetime string cannot be parsed.
 
             Notes
             -----
