@@ -36,7 +36,7 @@ def test_plot_daily_work_hours_basic_functionality(sample_config: dict) -> None:
     # Check that work_time was adjusted for overtime cases
     # Day 2: 7.5 + 0.5 = 8.0 (no adjustment needed)
     # Day 3: 8.5 + 0.5 = 9.0 (should be adjusted to 8.5)
-    assert visualizer.df["work_time"].iloc[2] == 8.0  # 8.5 - 0.5 = 8.0
+    assert visualizer.df["work_time"].iloc[2] == pytest.approx(8.0)  # 8.5 - 0.5 = 8.0
 
 
 @pytest.mark.fast
@@ -58,14 +58,14 @@ def test_plot_daily_work_hours_work_time_adjustment(sample_config: dict) -> None
     visualizer = viz.Visualizer(df, visualization_config)
 
     # Before adjustment
-    assert visualizer.df["work_time"].iloc[0] == 9.0
-    assert visualizer.df["work_time"].iloc[1] == 10.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(9.0)
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(10.0)
 
     visualizer.create_daily_work_hours_plot()
 
     # After adjustment: work_time should be reduced by overtime
-    assert visualizer.df["work_time"].iloc[0] == 8.0  # 9.0 - 1.0
-    assert visualizer.df["work_time"].iloc[1] == 8.0  # 10.0 - 2.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(8.0)  # 9.0 - 1.0
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)  # 10.0 - 2.0
 
 
 @pytest.mark.fast
@@ -87,14 +87,14 @@ def test_plot_daily_work_hours_no_adjustment_needed(sample_config: dict) -> None
     visualizer = viz.Visualizer(df, visualization_config)
 
     # Before adjustment
-    assert visualizer.df["work_time"].iloc[0] == 7.0
-    assert visualizer.df["work_time"].iloc[1] == 8.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(7.0)
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)
 
     visualizer.create_daily_work_hours_plot()
 
     # After adjustment: work_time should remain unchanged
-    assert visualizer.df["work_time"].iloc[0] == 7.0
-    assert visualizer.df["work_time"].iloc[1] == 8.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(7.0)
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)
 
 
 @pytest.mark.fast
@@ -122,10 +122,10 @@ def test_plot_daily_work_hours_mixed_scenarios(sample_config: dict) -> None:
     # Day 2: 8.0 + 0.0 = 8.0 (no adjustment)
     # Day 3: 9.0 + 1.0 = 10.0 (adjust to 8.0)
     # Day 4: 10.0 + 2.0 = 12.0 (adjust to 8.0)
-    assert visualizer.df["work_time"].iloc[0] == 7.0
-    assert visualizer.df["work_time"].iloc[1] == 8.0
-    assert visualizer.df["work_time"].iloc[2] == 8.0  # 9.0 - 1.0
-    assert visualizer.df["work_time"].iloc[3] == 8.0  # 10.0 - 2.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(7.0)
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)
+    assert visualizer.df["work_time"].iloc[2] == pytest.approx(8.0)  # 9.0 - 1.0
+    assert visualizer.df["work_time"].iloc[3] == pytest.approx(8.0)  # 10.0 - 2.0
 
 
 @pytest.mark.fast
@@ -183,4 +183,4 @@ def test_plot_daily_work_hours_large_overtime(
     visualizer.create_daily_work_hours_plot()
 
     # Should adjust to 8.0 (12.0 - 4.0)
-    assert visualizer.df["work_time"].iloc[0] == 7.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(7.0)

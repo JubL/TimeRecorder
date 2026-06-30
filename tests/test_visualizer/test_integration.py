@@ -58,7 +58,7 @@ def test_visualizer_integration_complete_workflow(sample_config: dict) -> None:
     # Check that Monday's work_time was adjusted (8.5 + 0.5 = 9.0, should become 8.0)
     monday_data = visualizer.df[visualizer.df["date"].dt.weekday == 0]
     if not monday_data.empty:
-        assert monday_data["work_time"].iloc[0] == 8.0
+        assert monday_data["work_time"].iloc[0] == pytest.approx(8.0)
 
 
 @pytest.mark.fast
@@ -122,7 +122,7 @@ def test_visualizer_integration_all_color_schemes(sample_config: dict) -> None:
         visualizer.create_daily_work_hours_plot()
 
         # Verify work_time adjustment
-        assert visualizer.df["work_time"].iloc[1] == 8.0  # 8.5 - 0.5
+        assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)  # 8.5 - 0.5
 
 
 @pytest.mark.fast
@@ -181,8 +181,8 @@ def test_visualizer_integration_edge_cases(sample_config: dict) -> None:
     visualizer.create_daily_work_hours_plot()
 
     # Work time should be adjusted to standard hours
-    assert visualizer.df["work_time"].iloc[0] == 8.0  # 12.0 - 4.0
-    assert visualizer.df["work_time"].iloc[1] == 8.0  # 16.0 - 8.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(8.0)  # 12.0 - 4.0
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)  # 16.0 - 8.0
 
 
 @pytest.mark.fast
@@ -237,9 +237,9 @@ def test_visualizer_integration_mixed_data_quality(sample_config: dict) -> None:
     assert pd.api.types.is_numeric_dtype(visualizer.df["overtime"])
 
     # Missing/invalid values should be filled with 0.0
-    assert visualizer.df["work_time"].iloc[1] == 0.0  # Empty string
-    assert visualizer.df["work_time"].iloc[2] == 0.0  # Invalid string
-    assert visualizer.df["overtime"].iloc[2] == 0.0  # Empty string
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(0.0)  # Empty string
+    assert visualizer.df["work_time"].iloc[2] == pytest.approx(0.0)  # Invalid string
+    assert visualizer.df["overtime"].iloc[2] == pytest.approx(0.0)  # Empty string
 
     visualizer.create_daily_work_hours_plot()
 
@@ -268,5 +268,5 @@ def test_visualizer_integration_standard_work_hours_variations(sample_config: di
 
     # Day 1: 7.5 + 0.0 = 7.5 (no adjustment)
     # Day 2: 8.5 + 0.5 = 9.0 (adjust to 7.5)
-    assert visualizer.df["work_time"].iloc[0] == 7.5
-    assert visualizer.df["work_time"].iloc[1] == 8.0  # 8.5 - 0.5
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(7.5)
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)  # 8.5 - 0.5

@@ -154,16 +154,16 @@ def test_plot_daily_work_hours_work_time_adjustment_logic(
     visualizer = viz.Visualizer(df, visualization_config)
 
     # Before adjustment
-    assert visualizer.df["work_time"].iloc[0] == 7.0
-    assert visualizer.df["work_time"].iloc[1] == 8.0
-    assert visualizer.df["work_time"].iloc[2] == 10.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(7.0)
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)
+    assert visualizer.df["work_time"].iloc[2] == pytest.approx(10.0)
 
     visualizer.create_daily_work_hours_plot()
 
     # After adjustment
-    assert visualizer.df["work_time"].iloc[0] == 7.0  # 7.0 <= 8.0, no change
-    assert visualizer.df["work_time"].iloc[1] == 8.0  # 8.0 <= 8.0, no change
-    assert visualizer.df["work_time"].iloc[2] == 8.0  # 10.0 > 8.0, becomes 10.0 - 2.0 = 8.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(7.0)  # 7.0 <= 8.0, no change
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(8.0)  # 8.0 <= 8.0, no change
+    assert visualizer.df["work_time"].iloc[2] == pytest.approx(8.0)  # 10.0 > 8.0, becomes 10.0 - 2.0 = 8.0
 
 
 @pytest.mark.fast

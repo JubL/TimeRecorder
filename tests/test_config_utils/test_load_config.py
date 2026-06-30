@@ -101,7 +101,7 @@ def test_load_config_complex_nested_structure(tmp_path: pathlib.Path, sample_con
 
     assert config["time_tracking"]["nested"]["level1"]["level2"]["level3"] == "deep_value"
     assert config["logging"]["handlers"] == ["file", "console"]
-    assert config["work_schedule"]["standard_work_hours"] == 8.5
+    assert config["work_schedule"]["standard_work_hours"] == pytest.approx(8.5)
 
 
 @pytest.mark.fast
@@ -246,4 +246,4 @@ def test_load_config_with_numeric_types(tmp_path: pathlib.Path, sample_config: d
     assert isinstance(config["time_tracking"]["overtime_hours"], float)
     assert isinstance(config["time_tracking"]["work_days_count"], int)
     assert config["time_tracking"]["lunch_break_duration"] == 60
-    assert config["time_tracking"]["overtime_hours"] == 2.5
+    assert config["time_tracking"]["overtime_hours"] == pytest.approx(2.5)

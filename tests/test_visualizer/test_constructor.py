@@ -32,7 +32,7 @@ def test_constructor_basic_initialization(sample_config: dict) -> None:
     assert visualizer.time_format == "%H:%M:%S"
     assert visualizer.num_months == 12
     assert visualizer.rolling_average_window_size == 10
-    assert visualizer.standard_work_hours == 8.0
+    assert visualizer.standard_work_hours == pytest.approx(8.0)
     assert visualizer.work_days == [0, 1, 2, 3, 4]
     assert len(visualizer.work_colors) == 6
 
@@ -152,4 +152,4 @@ def test_constructor_standard_work_hours_float(sample_config: dict) -> None:
 
     visualizer = viz.Visualizer(df, visualization_config)
 
-    assert visualizer.standard_work_hours == 7.5
+    assert visualizer.standard_work_hours == pytest.approx(7.5)

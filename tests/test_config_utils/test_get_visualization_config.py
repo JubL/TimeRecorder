@@ -72,7 +72,7 @@ def test_get_visualization_config_partial_configuration(sample_config: dict) -> 
     assert result["color_scheme"] == "viridis"
     assert result["num_months"] is None
     assert result["plot"] is None
-    assert result["standard_work_hours"] == 7.5
+    assert result["standard_work_hours"] == pytest.approx(7.5)
     assert result["x_tick_interval"] is None
     assert result["work_days"] is None
     assert result["full_format"] == "%Y-%m-%d %H:%M"
@@ -103,7 +103,7 @@ def test_get_visualization_config_different_data_types(sample_config: dict) -> N
     assert result["color_scheme"] == "plasma"
     assert result["num_months"] == 0
     assert result["plot"] is False
-    assert result["standard_work_hours"] == 6.0
+    assert result["standard_work_hours"] == pytest.approx(6.0)
     assert result["work_days"] == [1, 2, 3]
     assert result["full_format"] == "%d/%m/%Y"
     assert result["x_tick_interval"] == 3

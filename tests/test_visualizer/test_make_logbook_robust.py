@@ -33,10 +33,10 @@ def test_make_logbook_robust_basic_conversion(sample_config: dict) -> None:
     assert pd.api.types.is_numeric_dtype(visualizer.df["overtime"])
 
     # Check values
-    assert visualizer.df["work_time"].iloc[0] == 8.0
-    assert visualizer.df["work_time"].iloc[1] == 7.5
-    assert visualizer.df["overtime"].iloc[0] == 0.0
-    assert visualizer.df["overtime"].iloc[1] == 0.5
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(8.0)
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(7.5)
+    assert visualizer.df["overtime"].iloc[0] == pytest.approx(0.0)
+    assert visualizer.df["overtime"].iloc[1] == pytest.approx(0.5)
 
 
 @pytest.mark.fast
@@ -58,8 +58,8 @@ def test_make_logbook_robust_handle_missing_values(sample_config: dict) -> None:
     visualizer = viz.Visualizer(df, visualization_config)
 
     # Missing values should be filled with 0.0
-    assert visualizer.df["work_time"].iloc[1] == 0.0
-    assert visualizer.df["overtime"].iloc[2] == 0.0
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(0.0)
+    assert visualizer.df["overtime"].iloc[2] == pytest.approx(0.0)
 
 
 @pytest.mark.fast
@@ -81,8 +81,8 @@ def test_make_logbook_robust_handle_invalid_numeric(sample_config: dict) -> None
     visualizer = viz.Visualizer(df, visualization_config)
 
     # Invalid values should be converted to NaN and then filled with 0.0
-    assert visualizer.df["work_time"].iloc[1] == 0.0
-    assert visualizer.df["overtime"].iloc[1] == 0.0
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(0.0)
+    assert visualizer.df["overtime"].iloc[1] == pytest.approx(0.0)
 
 
 @pytest.mark.fast
@@ -104,9 +104,9 @@ def test_make_logbook_robust_negative_overtime_handling(sample_config: dict) -> 
     visualizer = viz.Visualizer(df, visualization_config)
 
     # Negative overtime should be set to 0.0
-    assert visualizer.df["overtime"].iloc[0] == 0.0
-    assert visualizer.df["overtime"].iloc[1] == 0.0  # Was -1.0
-    assert visualizer.df["overtime"].iloc[2] == 1.0  # Positive value unchanged
+    assert visualizer.df["overtime"].iloc[0] == pytest.approx(0.0)
+    assert visualizer.df["overtime"].iloc[1] == pytest.approx(0.0)  # Was -1.0
+    assert visualizer.df["overtime"].iloc[2] == pytest.approx(1.0)  # Positive value unchanged
 
 
 @pytest.mark.fast
@@ -165,12 +165,12 @@ def test_make_logbook_robust_mixed_data_types(sample_config: dict) -> None:
     assert pd.api.types.is_numeric_dtype(visualizer.df["overtime"])
 
     # Check specific values
-    assert visualizer.df["work_time"].iloc[0] == 8.0
-    assert visualizer.df["work_time"].iloc[1] == 7.5
-    assert visualizer.df["work_time"].iloc[2] == 9.0
-    assert visualizer.df["overtime"].iloc[0] == 0.0
-    assert visualizer.df["overtime"].iloc[1] == 0.0  # -1.5 < 0, so should be 0.0 (negative overtime handling)
-    assert visualizer.df["overtime"].iloc[2] == 2.0
+    assert visualizer.df["work_time"].iloc[0] == pytest.approx(8.0)
+    assert visualizer.df["work_time"].iloc[1] == pytest.approx(7.5)
+    assert visualizer.df["work_time"].iloc[2] == pytest.approx(9.0)
+    assert visualizer.df["overtime"].iloc[0] == pytest.approx(0.0)
+    assert visualizer.df["overtime"].iloc[1] == pytest.approx(0.0)  # -1.5 < 0, so should be 0.0 (negative overtime handling)
+    assert visualizer.df["overtime"].iloc[2] == pytest.approx(2.0)
 
 
 @pytest.mark.fast
@@ -192,5 +192,5 @@ def test_make_logbook_robust_zero_overtime_preserved(sample_config: dict) -> Non
     visualizer = viz.Visualizer(df, visualization_config)
 
     # Zero values should be preserved
-    assert visualizer.df["overtime"].iloc[0] == 0.0
-    assert visualizer.df["overtime"].iloc[1] == 0.0
+    assert visualizer.df["overtime"].iloc[0] == pytest.approx(0.0)
+    assert visualizer.df["overtime"].iloc[1] == pytest.approx(0.0)

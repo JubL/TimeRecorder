@@ -19,7 +19,7 @@ def test_constructor_basic_initialization(
     assert ana.standard_work_hours == 8
     assert ana.work_days == [0, 1, 2, 3, 4]
     assert ana.outlier_method == "iqr"
-    assert ana.outlier_threshold == 1.5
+    assert ana.outlier_threshold == pytest.approx(1.5)
     assert ana.sec_in_min == 60
     assert ana.sec_in_hour == 3600
     assert ana.min_in_hour == 60

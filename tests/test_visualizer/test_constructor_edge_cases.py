@@ -205,7 +205,7 @@ def test_constructor_negative_standard_work_hours(sample_config: dict) -> None:
     visualization_config["standard_work_hours"] = -8.0  # Negative work hours
 
     visualizer = viz.Visualizer(df, visualization_config)
-    assert visualizer.standard_work_hours == -8.0
+    assert visualizer.standard_work_hours == pytest.approx(-8.0)
 
 
 @pytest.mark.fast
@@ -225,7 +225,7 @@ def test_constructor_zero_standard_work_hours(sample_config: dict) -> None:
     visualization_config["standard_work_hours"] = 0.0  # Zero work hours
 
     visualizer = viz.Visualizer(df, visualization_config)
-    assert visualizer.standard_work_hours == 0.0
+    assert visualizer.standard_work_hours == pytest.approx(0.0)
 
 
 @pytest.mark.fast
@@ -305,7 +305,7 @@ def test_constructor_float_standard_work_hours(sample_config: dict) -> None:
     visualization_config["standard_work_hours"] = 7.5  # Float work hours
 
     visualizer = viz.Visualizer(df, visualization_config)
-    assert visualizer.standard_work_hours == 7.5
+    assert visualizer.standard_work_hours == pytest.approx(7.5)
 
 
 @pytest.mark.fast
@@ -345,7 +345,7 @@ def test_constructor_very_large_standard_work_hours(sample_config: dict) -> None
     visualization_config["standard_work_hours"] = 1000.0  # Very large work hours
 
     visualizer = viz.Visualizer(df, visualization_config)
-    assert visualizer.standard_work_hours == 1000.0
+    assert visualizer.standard_work_hours == pytest.approx(1000.0)
 
 
 @pytest.mark.fast
