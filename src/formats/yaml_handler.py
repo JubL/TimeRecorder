@@ -45,21 +45,20 @@ class YAMLHandler(BaseFormatHandler):
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-
-            # Handle both list of records and records object format
-            if isinstance(data, dict) and "records" in data:
-                records = data["records"]
-            elif isinstance(data, list):
-                records = data
-            else:
-                raise ValueError(f"Invalid YAML structure in {file_path}")
-
-            return pd.DataFrame(records)
-
         except FileNotFoundError as e:
             raise FileNotFoundError(f"YAML file not found: {file_path}") from e
         except yaml.YAMLError as e:
             raise ValueError(f"Invalid YAML format in {file_path}: {e}") from e
+
+        # Handle both list of records and records object format
+        if isinstance(data, dict) and "records" in data:
+            records = data["records"]
+        elif isinstance(data, list):
+            records = data
+        else:
+            raise ValueError(f"Invalid YAML structure in {file_path}")
+
+        return pd.DataFrame(records)
 
     @staticmethod
     def save(df: pd.DataFrame, file_path: Path) -> None:

@@ -45,21 +45,20 @@ class JSONHandler(BaseFormatHandler):
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = json.load(f)
-
-            # Handle both list of records and records object format
-            if isinstance(data, dict) and "records" in data:
-                records = data["records"]
-            elif isinstance(data, list):
-                records = data
-            else:
-                raise ValueError(f"Invalid JSON structure in {file_path}")
-
-            return pd.DataFrame(records)
-
         except FileNotFoundError as e:
             raise FileNotFoundError(f"JSON file not found: {file_path}") from e
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid JSON format in {file_path}: {e}") from e
+
+        # Handle both list of records and records object format
+        if isinstance(data, dict) and "records" in data:
+            records = data["records"]
+        elif isinstance(data, list):
+            records = data
+        else:
+            raise ValueError(f"Invalid JSON structure in {file_path}")
+
+        return pd.DataFrame(records)
 
     @staticmethod
     def save(df: pd.DataFrame, file_path: Path) -> None:
