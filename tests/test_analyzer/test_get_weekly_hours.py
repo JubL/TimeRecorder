@@ -60,8 +60,8 @@ def test_get_weekly_hours_no_work_days(
     with caplog.at_level(logging.WARNING, logger="src.analyzer"):
         weekly, daily = ana.get_weekly_hours_from_log()
 
-    assert weekly == 0.0
-    assert daily == 0.0
+    assert weekly == 0
+    assert daily == 0
     assert "No work days" in caplog.text
 
 
@@ -81,8 +81,8 @@ def test_get_weekly_hours_non_numeric_work_time_returns_zero(
     ana = analyzer.Analyzer(analyzer_data, df)
     weekly, daily = ana.get_weekly_hours_from_log()
 
-    assert weekly == 0.0
-    assert daily == 0.0
+    assert weekly == 0
+    assert daily == 0
 
 
 @pytest.mark.fast

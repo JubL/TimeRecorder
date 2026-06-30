@@ -15,8 +15,8 @@ def test_mean_and_std_with_valid_data(analyzer_instance: analyzer.Analyzer) -> N
 
     assert mean is not None
     assert std is not None
-    assert mean == 0.0  # sample_logbook_df has all overtime 0.0
-    assert std == 0.0
+    assert mean == 0  # sample_logbook_df has all overtime 0.0
+    assert std == 0
 
 
 @pytest.mark.fast
