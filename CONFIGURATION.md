@@ -78,9 +78,9 @@ holidays:
 visualization:
   plot: false                      # Whether to open plots when plot mode runs
   color_scheme: "ocean"            # ocean | forest | sunset | lavender | coral
-  num_months: 13                   # Months of history for daily-hours style plots
+  num_months: 25                   # Months of history for daily-hours style plots
   rolling_average_window_size: 10  # Days in rolling-average overlays
-  x_tick_interval: 4               # Spacing for x-axis ticks (weeks, depending on plot)
+  x_tick_interval: 6               # Spacing for x-axis ticks (weeks, depending on plot)
   histogram_bin_width: 10          # Histogram bin width in minutes
 ```
 

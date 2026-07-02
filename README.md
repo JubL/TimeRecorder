@@ -125,9 +125,9 @@ data_processing:
 visualization:
   plot: true                   # Show work hours visualization
   color_scheme: "ocean"        # Color scheme: ocean, forest, sunset, lavender, coral
-  num_months: 13               # Number of months to display in visualization
+  num_months: 25               # Number of months to display in visualization
   rolling_average_window_size: 10  # Number of days for rolling average calculation and analyzer statistics
-  x_tick_interval: 3           # Number of weeks between x-axis ticks
+  x_tick_interval: 6           # Number of weeks between x-axis ticks
   histogram_bin_width: 10      # Width of bins for the work hours histogram in minutes
 
 # Analyzer settings
