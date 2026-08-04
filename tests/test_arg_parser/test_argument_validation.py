@@ -293,7 +293,7 @@ def test_validate_time_arguments_none_values() -> None:
 @pytest.mark.integration
 def test_validate_time_arguments_integration_with_parse_args() -> None:
     """Test validation integration with parse_args method."""
-    with patch.object(sys, "argv", ["test_script", "--boot", "--date", "25.07.2025"]):
+    with patch.object(sys, "argv", ["test_script", "--boot", "--date", "25.07.2025", "--lunch", "60"]):
         parser = ap.TimeRecorderArgumentParser()
 
         with patch("src.arg_parser.logger") as mock_logger:

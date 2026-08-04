@@ -47,7 +47,7 @@ def test_run_arg_parser_with_boot() -> None:
 @pytest.mark.fast
 def test_run_arg_parser_with_date_start() -> None:
     """Test run_arg_parser with --date and --start arguments."""
-    with patch.object(sys, "argv", ["test_script", "--date", "25.07.2025", "--start", "08:30"]):
+    with patch.object(sys, "argv", ["test_script", "--date", "25.07.2025", "--start", "08:30", "--lunch", "60"]):
         args = ap.run_arg_parser()
 
         assert args.date == "25.07.2025"

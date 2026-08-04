@@ -46,7 +46,7 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
         # Time completion arguments
         self.parser.add_argument("--end", type=str, help="End time in HH:MM:SS format")
         self.parser.add_argument("--end_now", action="store_true", help="End time is one minute from now.")
-        self.parser.add_argument("--lunch", type=int, help="Lunch break duration in minutes")
+        self.parser.add_argument("--lunch", type=int, help="Lunch break duration in minutes (required with --date)")
 
         # Processing control arguments
         self.parser.add_argument("--log", action=argparse.BooleanOptionalAction, help="Log the results.")
@@ -101,6 +101,10 @@ A powerful and flexible Python tool for tracking and managing work hours.""",
         # if start and date are being used, boot shall be set to False automatically
         if args.date and args.start:
             args.boot = False
+
+        has_date = isinstance(args.date, str) and args.date is not None
+        if has_date and args.lunch is None:
+            self.parser.error("When --date is provided, --lunch must also be provided.")
 
         self.validate_time_arguments(args)
         return args

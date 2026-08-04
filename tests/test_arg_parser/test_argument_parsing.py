@@ -59,7 +59,7 @@ def test_parse_args_boot_time_false() -> None:
 @pytest.mark.fast
 def test_parse_args_date_and_start() -> None:
     """Test parsing with --date and --start arguments."""
-    with patch.object(sys, "argv", ["test_script", "--date", "25.07.2025", "--start", "08:30"]):
+    with patch.object(sys, "argv", ["test_script", "--date", "25.07.2025", "--start", "08:30", "--lunch", "60"]):
         parser = ap.TimeRecorderArgumentParser()
         args = parser.parse_args()
 

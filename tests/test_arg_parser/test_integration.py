@@ -28,7 +28,7 @@ def test_basic_time_recording_workflow() -> None:
 @pytest.mark.integration
 def test_manual_time_recording_workflow() -> None:
     """Test a manual time recording workflow."""
-    with patch.object(sys, "argv", ["test_script", "--date", "25.07.2025", "--start", "08:30", "--end", "17:30"]):
+    with patch.object(sys, "argv", ["test_script", "--date", "25.07.2025", "--start", "08:30", "--end", "17:30", "--lunch", "60"]):
         args = ap.run_arg_parser()
 
         assert args.date == "25.07.2025"
@@ -226,7 +226,7 @@ def test_edge_cases_maximum_arguments() -> None:
 def test_validation_warnings_integration() -> None:
     """Test integration with validation warnings."""
     with (
-        patch.object(sys, "argv", ["test_script", "--boot", "--date", "25.07.2025", "--end", "17:30", "--end_now"]),
+        patch.object(sys, "argv", ["test_script", "--boot", "--date", "25.07.2025", "--end", "17:30", "--end_now", "--lunch", "60"]),
         patch("src.arg_parser.logger") as mock_logger,
     ):
         args = ap.run_arg_parser()
@@ -344,19 +344,21 @@ def test_numeric_argument_boundaries() -> None:
 def test_string_argument_boundaries() -> None:
     """Test string argument boundaries."""
     # Test empty strings
-    with patch.object(sys, "argv", ["test_script", "--date", "", "--start", "", "--end", ""]):
+    with patch.object(sys, "argv", ["test_script", "--date", "", "--start", "", "--end", "", "--lunch", "0"]):
         args = ap.run_arg_parser()
         assert not args.date
         assert not args.start
         assert not args.end
+        assert args.lunch == 0
 
     # Test very long strings
     long_string = "a" * 1000
-    with patch.object(sys, "argv", ["test_script", "--date", long_string, "--start", long_string, "--end", long_string]):
+    with patch.object(sys, "argv", ["test_script", "--date", long_string, "--start", long_string, "--end", long_string, "--lunch", "60"]):
         args = ap.run_arg_parser()
         assert args.date == long_string
         assert args.start == long_string
         assert args.end == long_string
+        assert args.lunch == 60
 
 
 @pytest.mark.fast
@@ -364,7 +366,11 @@ def test_string_argument_boundaries() -> None:
 def test_unicode_argument_handling() -> None:
     """Test handling of unicode arguments."""
     unicode_string = "25.07.2025 🕐 08:30 🕐 17:30"
-    with patch.object(sys, "argv", ["test_script", "--date", unicode_string, "--start", unicode_string, "--end", unicode_string]):
+    with patch.object(
+        sys,
+        "argv",
+        ["test_script", "--date", unicode_string, "--start", unicode_string, "--end", unicode_string, "--lunch", "60"],
+    ):
         args = ap.run_arg_parser()
         assert args.date == unicode_string
         assert args.start == unicode_string
