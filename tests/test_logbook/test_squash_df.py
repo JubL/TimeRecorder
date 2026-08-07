@@ -452,3 +452,86 @@ def test_squash_df_keep_originals_removes_stale_intermediate_aggregate(logbook: 
     assert list(mon_rows["end_time"]) == ["12:00:00", "17:00:00", "19:00:00", "19:00:00"]
     assert list(mon_rows["work_time"][:3]) == [4.0, 4.0, 1.0]
     assert mon_rows.iloc[3]["work_time"] == pytest.approx(9.0, rel=relative_precision)
+
+
+@pytest.mark.fast
+def test_squash_df_keep_originals_with_sick_leave_re_squash(logbook: lb.Logbook, relative_precision: float) -> None:
+    """Re-squash with Sick Leave in commented rows must not double-count stale aggregate."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["#--Mon", "#--Mon", "Mon"],
+            "date": ["15.06.2026", "15.06.2026", "15.06.2026"],
+            "start_time": ["07:30:00 CEST", "Sick Leave", "07:30:00 CEST"],
+            "end_time": ["11:30:00 CEST", "", "16:30:00 CEST"],
+            "lunch_break_duration": [0, 0, 0],
+            "work_time": [4.0, 4.0, 8.0],
+            "case": ["undertime", "", "overtime"],
+            "overtime": [-4.0, "", 0.0],
+        },
+    )
+    logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
+
+    logbook.squash_df_keep_originals()
+    result = logbook.load_logbook()
+
+    mon_rows = result[result["date"] == "15.06.2026"].reset_index(drop=True)
+    assert list(mon_rows["weekday"]) == ["#--Mon", "#--Mon", "Mon"]
+    assert mon_rows.iloc[2]["work_time"] == pytest.approx(8.0, rel=relative_precision)
+    assert mon_rows.iloc[2]["start_time"] == "07:30:00 CEST"
+    assert mon_rows.iloc[2]["end_time"] == "11:30:00 CEST"
+    assert mon_rows.iloc[2]["case"] == "overtime"
+    assert mon_rows.iloc[2]["overtime"] == pytest.approx(0.0, rel=relative_precision)
+
+
+@pytest.mark.fast
+def test_squash_df_keep_originals_first_squash_with_sick_leave(logbook: lb.Logbook, relative_precision: float) -> None:
+    """First squash includes Sick Leave work_time in the day total."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["Mon", "Mon", "Mon"],
+            "date": ["15.06.2026", "15.06.2026", "15.06.2026"],
+            "start_time": ["07:30:00 CEST", "Sick Leave", "07:30:00 CEST"],
+            "end_time": ["11:30:00 CEST", "", "16:30:00 CEST"],
+            "lunch_break_duration": [0, 0, 0],
+            "work_time": [4.0, 4.0, 8.0],
+            "case": ["undertime", "", "overtime"],
+            "overtime": [-4.0, "", 0.0],
+        },
+    )
+    logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
+
+    logbook.squash_df_keep_originals()
+    result = logbook.load_logbook()
+
+    mon_rows = result[result["date"] == "15.06.2026"].reset_index(drop=True)
+    assert list(mon_rows["weekday"]) == ["#--Mon", "#--Mon", "Mon"]
+    assert mon_rows.iloc[2]["work_time"] == pytest.approx(8.0, rel=relative_precision)
+
+
+@pytest.mark.fast
+def test_squash_df_keep_originals_repairs_double_counted_aggregate(logbook: lb.Logbook, relative_precision: float) -> None:
+    """Repair a day corrupted by double-counting a stale aggregate among commented rows."""
+    df = pd.DataFrame(
+        {
+            "weekday": ["#--Mon", "#--Mon", "#--Mon", "Mon"],
+            "date": ["15.06.2026"] * 4,
+            "start_time": ["07:30:00 CEST", "Sick Leave", "07:30:00 CEST", "07:30:00 CEST"],
+            "end_time": ["11:30:00 CEST", "", "16:30:00 CEST", "16:30:00 CEST"],
+            "lunch_break_duration": [0, 0, 0, 0],
+            "work_time": [4.0, 4.0, 8.0, 16.0],
+            "case": ["undertime", "", "overtime", "overtime"],
+            "overtime": [-4.0, "", 0.0, 8.0],
+        },
+    )
+    logbook.save_logbook(df)
+    logbook.df = logbook.load_logbook()
+
+    logbook.squash_df_keep_originals()
+    result = logbook.load_logbook()
+
+    mon_rows = result[result["date"] == "15.06.2026"].reset_index(drop=True)
+    assert list(mon_rows["weekday"]) == ["#--Mon", "#--Mon", "Mon"]
+    assert mon_rows.iloc[2]["work_time"] == pytest.approx(8.0, rel=relative_precision)
+    assert mon_rows.iloc[2]["case"] == "overtime"

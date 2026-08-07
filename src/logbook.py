@@ -458,13 +458,14 @@ class Logbook:
                 plain = group[~group["weekday"].astype(str).str.startswith("#--")]
 
             # Already squashed group with no new rows:
-            # - keep commented rows as-is
+            # - keep source rows as-is (excluding stale aggregates among commented rows)
             # - if cleanup removed the stale plain aggregate, rebuild one fresh aggregate.
             if plain.empty and not commented.empty:
-                for _, row in group.iterrows():
+                commented_sources = self._filter_stale_aggregates(commented, base_weekday)
+                for _, row in commented_sources.iterrows():
                     self._append_row_with_formatted_date(output_rows, row, columns_order)
                 if had_plain_before_cleanup:
-                    source_rows = commented.copy()
+                    source_rows = commented_sources.copy()
                     source_rows["weekday"] = source_rows["base_weekday"]
                     aggregated = self._build_aggregated_row(source_rows, base_weekday)
                     self._append_row_with_formatted_date(output_rows, aggregated, columns_order)
@@ -511,14 +512,35 @@ class Logbook:
             return weekday[3:]
         return weekday
 
+    @staticmethod
+    def _has_valid_time(value: object) -> bool:
+        """Return True when value looks like a clock time (not e.g. 'Sick Leave')."""
+        return isinstance(value, str) and bool(value) and ":" in value
+
+    @staticmethod
+    def _first_valid_time(times: pd.Series) -> str:
+        """Return the first clock-time value in a series, or the first value as fallback."""
+        for time_value in times:
+            if Logbook._has_valid_time(time_value):
+                return time_value
+        return times.iloc[0] if len(times) else ""
+
+    @staticmethod
+    def _last_valid_time(times: pd.Series) -> str:
+        """Return the last clock-time value in a series, or the last value as fallback."""
+        for time_value in reversed(times.tolist()):
+            if Logbook._has_valid_time(time_value):
+                return time_value
+        return times.iloc[-1] if len(times) else ""
+
     def _build_aggregated_row(self, group: pd.DataFrame, weekday: str) -> pd.Series:
         """Build one aggregated row from source rows."""
         aggregated = pd.Series(
             {
                 "date": group["date"].iloc[0],
                 "weekday": weekday,
-                "start_time": group["start_time"].iloc[0],
-                "end_time": group["end_time"].iloc[-1],
+                "start_time": self._first_valid_time(group["start_time"]),
+                "end_time": self._last_valid_time(group["end_time"]),
                 "lunch_break_duration": self._agg_lunch_break(group["lunch_break_duration"]),
                 "work_time": self._agg_work_time(pd.to_numeric(group["work_time"], errors="coerce")),
             },
@@ -527,29 +549,90 @@ class Logbook:
         return aggregated
 
     @staticmethod
-    def _matches_aggregate_candidate(row: pd.Series, aggregate_row: pd.Series, weekday: str) -> bool:
-        """Return True when a plain row equals the stale aggregate."""
+    def _sum_work_time(rows: pd.DataFrame) -> float:
+        """Return the numeric sum of work_time across rows."""
+        return float(Logbook._agg_work_time(pd.to_numeric(rows["work_time"], errors="coerce")))
+
+    @staticmethod
+    def _matches_stale_aggregate(row: pd.Series, source_work_time_sum: float, weekday: str) -> bool:
+        """Return True when a plain row is a stale aggregate of the source rows."""
         float_tolerance = 1e-9
-        if row["weekday"] != weekday:
+        if row["weekday"] != weekday and not str(row["weekday"]).startswith("#--"):
             return False
-        if row["start_time"] != aggregate_row["start_time"] or row["end_time"] != aggregate_row["end_time"]:
-            return False
-
-        row_lunch = pd.to_numeric(pd.Series([row["lunch_break_duration"]]), errors="coerce").iloc[0]
-        agg_lunch = pd.to_numeric(pd.Series([aggregate_row["lunch_break_duration"]]), errors="coerce").iloc[0]
-        lunch_equal = (pd.isna(row_lunch) and pd.isna(agg_lunch)) or (abs(float(row_lunch) - float(agg_lunch)) < float_tolerance)
-        if not lunch_equal:
-            return False
-
         row_work = pd.to_numeric(pd.Series([row["work_time"]]), errors="coerce").iloc[0]
-        agg_work = pd.to_numeric(pd.Series([aggregate_row["work_time"]]), errors="coerce").iloc[0]
-        return (pd.isna(row_work) and pd.isna(agg_work)) or (abs(float(row_work) - float(agg_work)) < float_tolerance)
+        if pd.isna(row_work):
+            return False
+        return abs(float(row_work) - source_work_time_sum) < float_tolerance
+
+    def _is_stale_plain_row(
+        self,
+        row: pd.Series,
+        row_index: object,
+        group: pd.DataFrame,
+        base_weekday: str,
+        commented_sources: pd.DataFrame | None = None,
+    ) -> bool:
+        """Return True when a plain row is a stale aggregate of the group."""
+        others_sum = self._sum_work_time(group.drop(index=[row_index]))
+        if self._matches_stale_aggregate(row, others_sum, base_weekday):
+            return True
+        if commented_sources is not None and not commented_sources.empty:
+            return self._matches_stale_aggregate(row, self._sum_work_time(commented_sources), base_weekday)
+        return False
+
+    def _filter_stale_aggregates(self, rows: pd.DataFrame, base_weekday: str) -> pd.DataFrame:
+        """Remove rows whose work_time equals the sum of all other rows in the set."""
+        remaining = rows.copy()
+        while len(remaining) > 1:
+            stale_indices = [
+                idx
+                for idx, row in remaining.iterrows()
+                if self._matches_stale_aggregate(
+                    row,
+                    self._sum_work_time(remaining.drop(index=[idx])),
+                    base_weekday,
+                )
+            ]
+            if len(stale_indices) != 1:
+                break
+            remaining = remaining.drop(index=[stale_indices[0]])
+        return remaining
 
     def _append_row_with_formatted_date(self, output_rows: list[dict], row: pd.Series, columns_order: list[str]) -> None:
         """Append one row to output, converting date to configured format."""
         row_out = row.copy()
         row_out["date"] = row_out["date"].strftime(self.date_format)
         output_rows.append(row_out[columns_order].to_dict())
+
+    def _split_source_and_stale_rows(
+        self,
+        group: pd.DataFrame,
+        base_weekday: str,
+    ) -> tuple[pd.DataFrame, pd.DataFrame]:
+        """Separate true source rows from stale plain aggregate rows."""
+        commented = group[group["weekday"].astype(str).str.startswith("#--")]
+        plain = group[~group["weekday"].astype(str).str.startswith("#--")]
+
+        if commented.empty:
+            stale_indices = [
+                idx
+                for idx, row in plain.iterrows()
+                if self._is_stale_plain_row(row, idx, group, base_weekday)
+            ]
+            if len(stale_indices) == 1:
+                stale = plain.loc[stale_indices]
+                return plain.drop(index=stale_indices), stale
+            return group, group.iloc[0:0]
+
+        commented_sources = self._filter_stale_aggregates(commented, base_weekday)
+        stale_mask = plain.apply(
+            lambda row: self._is_stale_plain_row(row, row.name, group, base_weekday, commented_sources),
+            axis=1,
+        )
+        stale = plain[stale_mask]
+        source_plain = plain[~stale_mask]
+        source_rows = pd.concat([commented_sources, source_plain])
+        return source_rows, stale
 
     def _append_group_as_originals_and_aggregate(
         self,
@@ -559,15 +642,17 @@ class Logbook:
         columns_order: list[str],
     ) -> None:
         """Append marked source rows and one fresh aggregate row."""
-        for _, original_row in group.iterrows():
+        source_rows, _stale_rows = self._split_source_and_stale_rows(group, base_weekday)
+
+        for _, original_row in source_rows.iterrows():
             marked = original_row.copy()
             if isinstance(marked["weekday"], str) and not marked["weekday"].startswith("#--"):
                 marked["weekday"] = f"#--{marked['weekday']}"
             self._append_row_with_formatted_date(output_rows, marked, columns_order)
 
-        source_rows = group.copy()
-        source_rows["weekday"] = source_rows["base_weekday"]
-        aggregated = self._build_aggregated_row(source_rows, base_weekday)
+        aggregate_source = source_rows.copy()
+        aggregate_source["weekday"] = aggregate_source["base_weekday"]
+        aggregated = self._build_aggregated_row(aggregate_source, base_weekday)
         self._append_row_with_formatted_date(output_rows, aggregated, columns_order)
 
     def _remove_stale_intermediate_aggregate(
@@ -577,16 +662,16 @@ class Logbook:
         plain: pd.DataFrame,
         base_weekday: str,
     ) -> pd.DataFrame:
-        """Drop one stale aggregate row from plain rows when present."""
-        agg_from_commented = self._build_aggregated_row(commented, base_weekday)
-        stale_index = None
-        for idx, row in plain.iterrows():
-            if self._matches_aggregate_candidate(row, agg_from_commented, base_weekday):
-                stale_index = idx
-                break
-        if stale_index is None:
+        """Drop stale aggregate row(s) from plain rows when present."""
+        commented_sources = self._filter_stale_aggregates(commented, base_weekday)
+        stale_indices = [
+            idx
+            for idx, row in plain.iterrows()
+            if self._is_stale_plain_row(row, idx, group, base_weekday, commented_sources)
+        ]
+        if not stale_indices:
             return group
-        return group.drop(index=[stale_index])
+        return group.drop(index=stale_indices)
 
     def find_and_add_missing_days(self) -> None:
         """Find and add missing holidays and weekend days to the log file.
