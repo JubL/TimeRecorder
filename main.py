@@ -33,6 +33,10 @@ def main() -> None:
     # TODO: execution and thus the necessary CLI flags would make much more sense. However, the update_boot_time()
     # TODO: method would need to be moved from the TimeRecorder class.
 
+    # TODO: It looks like, the ValueError for when the worktime is shorter than the lunch time, is not exceped gracefully.
+
+    # TODO: Make the --no-boot flag mandatory, when the --date and the --start flag are given.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist, then load it
