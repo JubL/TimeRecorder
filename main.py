@@ -37,6 +37,9 @@ def main() -> None:
 
     # TODO: Make the --no-boot flag mandatory, when the --date and the --start flag are given.
 
+    # TODO: When squashing the logbook lines, the lunch time is only aggregated if it is explicitly stated.
+    # TODO: The time between single lines which are being squashed together is not aggregated.
+
     args = ap.run_arg_parser()
 
     # Create default config if it doesn't exist, then load it
